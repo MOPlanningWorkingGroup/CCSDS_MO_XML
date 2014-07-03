@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
+	<smc:area name="Planning" number="99" version="1">
+		<smc:service name="PlanningRequestService" number="1">
+			<smc:capabilitySet number="100">
+				<smc:pubsubIP name="subscribe" number="100"
+					supportInReplay="false"
+					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
+					<smc:messages>
+						<smc:publishNotify>
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="PlanningRequestEvent" />
+						</smc:publishNotify>
+					</smc:messages>
+				</smc:pubsubIP>
+				<smc:submitIP name="submitPlanningRequest" number="101"
+					supportInReplay="false"
+					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="PlanningRequestGroup" />
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="PlanningRequest" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="updatePlanningRequest" number="102"
+					supportInReplay="false" comment="Updates the Planning Request by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="PlanningRequest" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="removePlanningRequest" number="103"
+					supportInReplay="false" comment="Removes a Planning Request by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:requestIP name="getPlanningRequest" number="104"
+					supportInReplay="false" comment="Gets a Planning Request by ID">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="MAL" name="Long" />
+						</smc:request>
+						<smc:response>
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="PlanningRequest" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:requestIP name="getPlanningRequestList" number="105"
+					supportInReplay="false"
+					comment="Gets Planning Requests according to the given filter">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="PlanningRequestFilter" />
+						</smc:request>
+						<smc:response>
+							<smc:type list="true" area="Planning" service="PlanningRequestService"
+								name="PlanningRequest" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:requestIP name="getPlanningRequestStatus" number="106"
+					supportInReplay="false"
+					comment="Gets the status of a Planning Request by ID. The Status is basically a State from the Planning Request Life Cycle.">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="MAL" name="Long" />
+						</smc:request>
+						<smc:response>
+							<smc:type area="Planning" service="PlanningRequestService"
+								name="StateEnum" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+			</smc:capabilitySet>
+			<smc:dataTypes>
+				<smc:composite name="PlanningRequestGroup"
+					shortFormPart="1"
+					comment="This data structure defines a planning request group composite">
+					<smc:field name="id" comment="id">
+						<smc:type area="MAL" name="Long" />
+					</smc:field>
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="description" comment="description">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="PlanningRequest" shortFormPart="2"
+					comment="This data structure defines a planning request composite">
+					<smc:field name="id" comment="id">
+						<smc:type area="MAL" name="Long" />
+					</smc:field>
+					<smc:field name="status" comment="status">
+						<smc:type area="Planning" service="PlanningRequestService"
+							name="StateEnum" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="PlanningRequestFilter"
+					shortFormPart="4"
+					comment="This data structure defines a planning request filter composite">
+					<smc:field name="status" comment="status">
+						<smc:type area="Planning" service="PlanningRequestService"
+							name="StateEnum" />
+					</smc:field>
+				</smc:composite>
+				<smc:enumeration name="StateEnum" shortFormPart="5">
+					<smc:item value="SUBMITTED" nvalue="1" />
+					<smc:item value="ACCEPTED" nvalue="2" />
+					<smc:item value="INVALID" nvalue="3" />
+					<smc:item value="SCHEDULED" nvalue="4" />
+					<smc:item value="EXECUTED" nvalue="5" />
+				</smc:enumeration>
+				<smc:composite name="PlanningRequestEvent" shortFormPart="6"
+					comment="This data structure defines a planning request event composite">
+					<smc:field name="id" comment="Planning Request Identifiers">
+						<smc:type area="MAL" name="Long" />
+					</smc:field>
+					<smc:field name="type" comment="Type of event">
+						<smc:type area="Planning" service="PlanningRequestService"
+							name="EventType" />
+					</smc:field>
+				</smc:composite>
+				<smc:enumeration name="EventType" shortFormPart="7">
+					<smc:item value="INSERT" nvalue="1" />
+					<smc:item value="UPDATE" nvalue="2" />
+					<smc:item value="DELETE" nvalue="3" />
+				</smc:enumeration>
+			</smc:dataTypes>
+		</smc:service>
+	</smc:area>
+</smc:specification>
+        
