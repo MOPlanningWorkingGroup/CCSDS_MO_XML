@@ -2,13 +2,13 @@
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
 	<smc:area name="Automation" number="100" version="1">
-		<smc:service name="ScheduleExecutionService" number="2">
+		<smc:service name="ScheduleExecution" number="2">
 			<smc:capabilitySet number="100">
 				<smc:requestIP name="submitSchedule" number="101"
 					supportInReplay="false" comment="Submits a Schedule for execution">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="Schedule" />
 						</smc:request>
 						<smc:response>
@@ -21,7 +21,7 @@
 					<smc:messages>
 						<smc:submit>
 							<smc:type area="MAL" name="Long" />
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="Schedule" />
 						</smc:submit>
 					</smc:messages>
@@ -41,7 +41,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="Schedule" />
 						</smc:response>
 					</smc:messages>
@@ -50,11 +50,11 @@
 					supportInReplay="false" comment="Gets all Schedules">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="ScheduleFilter" />
 						</smc:request>
 						<smc:response>
-							<smc:type list="true" area="MAL" service="ScheduleExecutionService"
+							<smc:type list="true" area="MAL" service="ScheduleExecution"
 								name="Long" />
 						</smc:response>
 					</smc:messages>
@@ -96,7 +96,7 @@
 					comment="Subscribe to Schedule content updates. Notifications are sent on Schedule creation, updates and removal according to the given filter">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="ScheduleEvent" />
 						</smc:publishNotify>
 					</smc:messages>
@@ -106,7 +106,7 @@
 					comment="Subscribe to Schedule execution monitoring. Notifications are sent on Schedule status changes">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="ScheduleEvent" />
 						</smc:publishNotify>
 					</smc:messages>
@@ -119,7 +119,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Automation" service="ScheduleExecutionService"
+							<smc:type area="Automation" service="ScheduleExecution"
 								name="ScheduleStatus" />
 						</smc:response>
 					</smc:messages>
@@ -128,9 +128,6 @@
 			<smc:dataTypes>
 				<smc:composite name="Schedule" shortFormPart="1"
 					comment="This data structure defines a schedule composite">
-					<smc:field name="id" comment="schedule id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<!-- TODO -->
 				</smc:composite>
 				<smc:composite name="ScheduleItem" shortFormPart="2"
@@ -159,13 +156,10 @@
 					comment="This data structure defines a schedule status composite">
 					<smc:field name="state" comment="state">
 						<smc:type area="Automation" name="ScheduleState"
-							service="ScheduleExecutionService" />
+							service="ScheduleExecution" />
 					</smc:field>
 					<smc:field name="message" comment="message">
 						<smc:type list="true" area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="schId" comment="SCH ID">
-						<smc:type area="MAL" name="Long" />
 					</smc:field>
 				</smc:composite>
 				<smc:enumeration name="ScheduleState" shortFormPart="6">
@@ -178,9 +172,7 @@
 				</smc:enumeration>
 				<smc:composite name="ScheduleFilter" shortFormPart="7"
 					comment="This data structure defines a schedule filter composite">
-					<smc:field name="schIds" comment="Collection of Schedule Identifiers">
-						<smc:type list="true" area="MAL" name="Long" />
-					</smc:field>
+					<!-- todo -->
 				</smc:composite>
 				<smc:enumeration name="LevelOfDetail" shortFormPart="6">
 					<smc:item value="HIGH" nvalue="1" />
@@ -192,11 +184,8 @@
 				</smc:enumeration>
 				<smc:composite name="ScheduleEvent" shortFormPart="7"
 					comment="This data structure defines a schedule event composite">
-					<smc:field name="schId" comment="Schedule Identifiers">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<smc:field name="type" comment="Type of event">
-						<smc:type area="Automation" service="ScheduleExecutionService"
+						<smc:type area="Automation" service="ScheduleExecution"
 							name="EventType" />
 					</smc:field>
 				</smc:composite>
@@ -207,17 +196,17 @@
 				</smc:enumeration>
 			</smc:dataTypes>
 		</smc:service>
-		<smc:service name="ProcedureDefinitionService" number="3">
+		<smc:service name="ProcedureDefinition" number="3">
 			<smc:capabilitySet number="200">
 				<smc:requestIP name="addProcedureDefinition" number="201"
 					supportInReplay="false" comment="Adds Procedure Definition">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Automation" service="ProcedureDefinitionService"
+							<smc:type area="Automation" service="ProcedureDefinition"
 								name="ProcedureDefinition" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="MAL" service="ProcedureDefinitionService"
+							<smc:type area="MAL" service="ProcedureDefinition"
 								name="Long" />
 						</smc:response>
 					</smc:messages>
@@ -236,7 +225,7 @@
 					<smc:messages>
 						<smc:submit>
 							<smc:type area="MAL" name="Long" />
-							<smc:type area="Automation" service="ProcedureDefinitionService"
+							<smc:type area="Automation" service="ProcedureDefinition"
 								name="ProcedureDefinition" />
 						</smc:submit>
 					</smc:messages>
@@ -248,7 +237,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Automation" service="ProcedureDefinitionService"
+							<smc:type area="Automation" service="ProcedureDefinition"
 								name="ProcedureDefinition" />
 						</smc:response>
 					</smc:messages>
@@ -257,11 +246,11 @@
 					number="205" supportInReplay="false" comment="Retrieves all Procedure Definitions">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Automation" service="ProcedureDefinitionService"
+							<smc:type area="Automation" service="ProcedureDefinition"
 								name="ProcedureDefinitionFilter" />
 						</smc:request>
 						<smc:response>
-							<smc:type list="true" area="MAL" service="ProcedureDefinitionService"
+							<smc:type list="true" area="MAL" service="ProcedureDefinition"
 								name="Long" />
 						</smc:response>
 					</smc:messages>
@@ -271,7 +260,7 @@
 					comment="Subsribes to procedure definition updates according to the given filter. Notifications are sent when procedure definitions are added, updated or removed">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="Automation" service="ProcedureDefinitionService"
+							<smc:type area="Automation" service="ProcedureDefinition"
 								name="ProcedureDefinitionEvent" />
 						</smc:publishNotify>
 					</smc:messages>
@@ -281,26 +270,17 @@
 				<smc:composite name="ProcedureDefinition"
 					shortFormPart="351"
 					comment="This data structure defines a procedure definition composite">
-					<smc:field name="procId" comment="procedure id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<!-- TODO -->
 				</smc:composite>
 				<smc:composite name="ProcedureDefinitionFilter"
 					shortFormPart="352"
 					comment="This data structure defines a procedure definition filter composite">
-					<smc:field name="procId" comment="procedure id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<!-- TODO -->
 				</smc:composite>
 				<smc:composite name="ProcedureDefinitionEvent" shortFormPart="353"
 					comment="This data structure defines a procedure definition event composite">
-					<smc:field name="procId" comment="Procedure Identifiers">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<smc:field name="type" comment="Type of event">
-						<smc:type area="Automation" service="ProcedureDefinitionService"
+						<smc:type area="Automation" service="ProcedureDefinition"
 							name="EventType" />
 					</smc:field>
 				</smc:composite>
@@ -311,14 +291,14 @@
 				</smc:enumeration>
 			</smc:dataTypes>
 		</smc:service>
-		<smc:service name="ProcedureExecutionService" number="4">
+		<smc:service name="ProcedureExecution" number="4">
 			<smc:capabilitySet number="300">
 				<smc:submitIP name="startProcedure" number="301"
 					supportInReplay="false" comment="Starts the Procedure execution">
 					<smc:messages>
 						<smc:submit>
 							<smc:type area="MAL" name="Long" />
-							<smc:type area="Automation" service="ProcedureExecutionService"
+							<smc:type area="Automation" service="ProcedureExecution"
 								name="ProcedureInvocationDetails" />
 						</smc:submit>
 					</smc:messages>
@@ -354,7 +334,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Automation" service="ProcedureExecutionService"
+							<smc:type area="Automation" service="ProcedureExecution"
 								name="ProcedureOccurrence" />
 						</smc:response>
 					</smc:messages>
@@ -364,11 +344,11 @@
 					comment="Retrieves all Procedure Occurrences that have been submitted (or staged). Occurrences that have completed the execution are automatically removed (unstaged)">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Automation" service="ProcedureExecutionService"
+							<smc:type area="Automation" service="ProcedureExecution"
 								name="ProcedureOccurrenceFilter" />
 						</smc:request>
 						<smc:response>
-							<smc:type list="true" area="MAL" service="ProcedureExecutionService"
+							<smc:type list="true" area="MAL" service="ProcedureExecution"
 								name="Long" />
 						</smc:response>
 					</smc:messages>
@@ -380,7 +360,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Automation" service="ProcedureExecutionService"
+							<smc:type area="Automation" service="ProcedureExecution"
 								name="ProcedureStatus" />
 						</smc:response>
 					</smc:messages>
@@ -390,7 +370,7 @@
 					comment="Subscribe to Procedure execution monitoring. Notifications are sent on Procedure status changes">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="Automation" service="ProcedureExecutionService"
+							<smc:type area="Automation" service="ProcedureExecution"
 								name="ProcedureExecutionEvent" />
 						</smc:publishNotify>
 					</smc:messages>
@@ -399,11 +379,8 @@
 			<smc:dataTypes>
 				<smc:composite name="ProcedureOccurrence"
 					shortFormPart="401" comment="Procedure Occurrence definition">
-					<smc:field name="procId" comment="procedure id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<smc:field name="status" comment="procedure status">
-						<smc:type area="Automation" service="ProcedureExecutionService"
+						<smc:type area="Automation" service="ProcedureExecution"
 							name="ProcedureStatus" />
 					</smc:field>
 					<!-- TODO -->
@@ -411,19 +388,16 @@
 				<smc:composite name="ProcedureOccurrenceFilter"
 					shortFormPart="402" comment="Procedure Occurrence Filter definition">
 					<smc:field name="status" comment="procedure status">
-						<smc:type area="Automation" service="ProcedureExecutionService"
+						<smc:type area="Automation" service="ProcedureExecution"
 							name="ProcedureStatus" />
 					</smc:field>
 					<!-- TODO -->
 				</smc:composite>
 				<smc:composite name="ProcedureInvocationDetails"
 					shortFormPart="403" comment="Starts the Procedure execution">
-					<smc:field name="procId" comment="procedure id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<smc:field name="values" comment="Values">
 						<smc:type list="true" area="Automation" name="DetailValue"
-							service="ProcedureExecutionService" />
+							service="ProcedureExecution" />
 					</smc:field>
 					<!-- TODO -->
 				</smc:composite>
@@ -440,13 +414,10 @@
 					comment="This data structure defines a schedule status composite">
 					<smc:field name="state" comment="state">
 						<smc:type area="Automation" name="ProcedureState"
-							service="ProcedureExecutionService" />
+							service="ProcedureExecution" />
 					</smc:field>
 					<smc:field name="message" comment="message">
 						<smc:type list="true" area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="procId" comment="Procedure ID">
-						<smc:type area="MAL" name="Long" />
 					</smc:field>
 				</smc:composite>
 				<smc:enumeration name="ProcedureState"
@@ -460,11 +431,8 @@
 				</smc:enumeration>
 				<smc:composite name="ProcedureExecutionEvent" shortFormPart="407"
 					comment="This data structure defines a procedure execution event composite">
-					<smc:field name="procId" comment="Procedure Identifiers">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<smc:field name="type" comment="Type of event">
-						<smc:type area="Automation" service="ProcedureExecutionService"
+						<smc:type area="Automation" service="ProcedureExecution"
 							name="EventType" />
 					</smc:field>
 				</smc:composite>

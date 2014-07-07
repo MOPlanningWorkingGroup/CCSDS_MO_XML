@@ -2,36 +2,38 @@
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
 	<smc:area name="Planning" number="99" version="1">
-		<smc:service name="PlanningRequestService" number="1">
+		<smc:service name="PlanningRequest" number="1">
 			<smc:capabilitySet number="100">
 				<smc:pubsubIP name="subscribe" number="100"
 					supportInReplay="false"
 					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="Planning" service="PlanningRequestService"
+							<smc:type area="Planning" service="PlanningRequest"
 								name="PlanningRequestEvent" />
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
-				<smc:submitIP name="submitPlanningRequest" number="101"
-					supportInReplay="false"
-					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
+				<smc:requestIP name="submitPlanningRequest" number="101"
+					supportInReplay="false" comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
 					<smc:messages>
-						<smc:submit>
-							<smc:type area="Planning" service="PlanningRequestService"
+						<smc:request>
+							<smc:type area="Planning" service="PlanningRequest"
 								name="PlanningRequestGroup" />
-							<smc:type area="Planning" service="PlanningRequestService"
+							<smc:type area="Planning" service="PlanningRequest"
 								name="PlanningRequest" />
-						</smc:submit>
+						</smc:request>
+						<smc:response>
+							<smc:type area="MAL" name="Long" />
+						</smc:response>
 					</smc:messages>
-				</smc:submitIP>
+				</smc:requestIP>
 				<smc:submitIP name="updatePlanningRequest" number="102"
 					supportInReplay="false" comment="Updates the Planning Request by ID">
 					<smc:messages>
 						<smc:submit>
 							<smc:type area="MAL" name="Long" />
-							<smc:type area="Planning" service="PlanningRequestService"
+							<smc:type area="Planning" service="PlanningRequest"
 								name="PlanningRequest" />
 						</smc:submit>
 					</smc:messages>
@@ -51,7 +53,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Planning" service="PlanningRequestService"
+							<smc:type area="Planning" service="PlanningRequest"
 								name="PlanningRequest" />
 						</smc:response>
 					</smc:messages>
@@ -61,11 +63,11 @@
 					comment="Gets Planning Requests according to the given filter">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Planning" service="PlanningRequestService"
+							<smc:type area="Planning" service="PlanningRequest"
 								name="PlanningRequestFilter" />
 						</smc:request>
 						<smc:response>
-							<smc:type list="true" area="Planning" service="PlanningRequestService"
+							<smc:type list="true" area="Planning" service="PlanningRequest"
 								name="PlanningRequest" />
 						</smc:response>
 					</smc:messages>
@@ -78,7 +80,7 @@
 							<smc:type area="MAL" name="Long" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="Planning" service="PlanningRequestService"
+							<smc:type area="Planning" service="PlanningRequest"
 								name="StateEnum" />
 						</smc:response>
 					</smc:messages>
@@ -88,9 +90,6 @@
 				<smc:composite name="PlanningRequestGroup"
 					shortFormPart="1"
 					comment="This data structure defines a planning request group composite">
-					<smc:field name="id" comment="id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
 					</smc:field>
@@ -100,11 +99,11 @@
 				</smc:composite>
 				<smc:composite name="PlanningRequest" shortFormPart="2"
 					comment="This data structure defines a planning request composite">
-					<smc:field name="id" comment="id">
-						<smc:type area="MAL" name="Long" />
+					<smc:field name="data" comment="Data structure is not specified">
+						<smc:type area="MAL" name="Blob" />
 					</smc:field>
 					<smc:field name="status" comment="status">
-						<smc:type area="Planning" service="PlanningRequestService"
+						<smc:type area="Planning" service="PlanningRequest"
 							name="StateEnum" />
 					</smc:field>
 				</smc:composite>
@@ -112,7 +111,7 @@
 					shortFormPart="4"
 					comment="This data structure defines a planning request filter composite">
 					<smc:field name="status" comment="status">
-						<smc:type area="Planning" service="PlanningRequestService"
+						<smc:type area="Planning" service="PlanningRequest"
 							name="StateEnum" />
 					</smc:field>
 				</smc:composite>
@@ -129,7 +128,7 @@
 						<smc:type area="MAL" name="Long" />
 					</smc:field>
 					<smc:field name="type" comment="Type of event">
-						<smc:type area="Planning" service="PlanningRequestService"
+						<smc:type area="Planning" service="PlanningRequest"
 							name="EventType" />
 					</smc:field>
 				</smc:composite>
