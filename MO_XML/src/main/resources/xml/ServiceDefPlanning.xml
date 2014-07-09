@@ -4,18 +4,19 @@
 	<smc:area name="Planning" number="99" version="1">
 		<smc:service name="PlanningRequest" number="1">
 			<smc:capabilitySet number="100">
-				<smc:pubsubIP name="subscribe" number="100"
+				<smc:pubsubIP name="monitor" number="100"
 					supportInReplay="false"
 					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
 					<smc:messages>
 						<smc:publishNotify>
 							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequestEvent" />
+								name="PlanningRequestUpdate" />
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
 				<smc:requestIP name="submitPlanningRequest" number="101"
-					supportInReplay="false" comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
+					supportInReplay="false"
+					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
 					<smc:messages>
 						<smc:request>
 							<smc:type area="Planning" service="PlanningRequest"
@@ -103,16 +104,14 @@
 						<smc:type area="MAL" name="Blob" />
 					</smc:field>
 					<smc:field name="status" comment="status">
-						<smc:type area="Planning" service="PlanningRequest"
-							name="StateEnum" />
+						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="PlanningRequestFilter"
 					shortFormPart="4"
 					comment="This data structure defines a planning request filter composite">
 					<smc:field name="status" comment="status">
-						<smc:type area="Planning" service="PlanningRequest"
-							name="StateEnum" />
+						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
 					</smc:field>
 				</smc:composite>
 				<smc:enumeration name="StateEnum" shortFormPart="5">
@@ -122,21 +121,13 @@
 					<smc:item value="SCHEDULED" nvalue="4" />
 					<smc:item value="EXECUTED" nvalue="5" />
 				</smc:enumeration>
-				<smc:composite name="PlanningRequestEvent" shortFormPart="6"
-					comment="This data structure defines a planning request event composite">
-					<smc:field name="id" comment="Planning Request Identifiers">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
-					<smc:field name="type" comment="Type of event">
-						<smc:type area="Planning" service="PlanningRequest"
-							name="EventType" />
+				<smc:composite name="PlanningRequestUpdate" shortFormPart="6"
+					comment="This data structure defines a PlanningRequest Update composite">
+					<smc:field name="counter"
+						comment="A counter used to distinguish the updates and to check the ordering.">
+						<smc:type area="MAL" name="Short" />
 					</smc:field>
 				</smc:composite>
-				<smc:enumeration name="EventType" shortFormPart="7">
-					<smc:item value="INSERT" nvalue="1" />
-					<smc:item value="UPDATE" nvalue="2" />
-					<smc:item value="DELETE" nvalue="3" />
-				</smc:enumeration>
 			</smc:dataTypes>
 		</smc:service>
 	</smc:area>
