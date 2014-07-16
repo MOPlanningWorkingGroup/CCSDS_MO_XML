@@ -1,9 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
+	xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
 	<smc:area name="Planning" number="99" version="1">
 		<smc:service name="PlanningRequest" number="1">
 			<smc:capabilitySet number="100">
+				<smc:requestIP name="listDefinition" number="201"
+					supportInReplay="true"
+					comment="Retrieves Planning Request Definition based on Identifier (name)">
+					<smc:messages>
+						<smc:request>
+							<smc:field name="identifierList" comment="List of identifiers">
+								<smc:type name="IdentifierList" area="MAL" />
+							</smc:field>
+						</smc:request>
+						<smc:response>
+							<smc:field name="planningRequestDefinitionIdList"
+								comment="List of Planning Request Definition IDs">
+								<smc:type list="true" area="MAL" name="Long" />
+							</smc:field>
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:requestIP name="addDefinition" number="301"
+					supportInReplay="false"
+					comment="The addDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
+					<smc:messages>
+						<smc:request
+							comment="Adds Planning Request Definition. Definition serves as a blueprint for Occurrences.">
+							<smc:field name="planningRequestDefinition" comment="The new Planning Request Definition">
+								<smc:type name="PlanningRequestDefinition" service="PlanningRequest"
+									area="Planning" />
+							</smc:field>
+						</smc:request>
+						<smc:response
+							comment="The Planning Request Definition ID">
+							<smc:field name="planningRequestDefinitionId"
+								comment="The Planning Request Definition ID">
+								<smc:type name="Long" area="MAL" />
+							</smc:field>
+						</smc:response>
+					</smc:messages>
+					<smc:errors>
+						<smc:errorRef
+							comment="One of the supplied Planning Request Definitions contains an invalid name">
+							<smc:type name="INVALID" area="COM" />
+							<smc:extraInformation
+								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+						<smc:errorRef
+							comment=" One or more of the Planning Request Definitions being added has supplied a Planning Request name that is already in use in the domain">
+							<smc:type name="DUPLICATE" area="COM" />
+							<smc:extraInformation
+								comment="The extra information field contains the indexes of the erroneous values from the originating request list">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+					</smc:errors>
+				</smc:requestIP>
+				<smc:submitIP name="updateDefinition" number="302"
+					supportInReplay="false"
+					comment="Updates Planning Request Definition referenced by Planning Request ID">
+					<smc:messages>
+						<smc:submit
+							comment="The Planning Request Definition ID">
+							<smc:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
+								<smc:type name="Long" area="MAL" />
+							</smc:field>
+							<smc:field name="planningRequestDefinition" comment="The new Planning Request Definition">
+								<smc:type name="PlanningRequestDefinition" service="PlanningRequest"
+									area="Planning" />
+							</smc:field>
+						</smc:submit>
+					</smc:messages>
+					<smc:errors>
+						<smc:errorRef
+							comment="One of the supplied Planning Request Definitions is trying to change its name">
+							<smc:type name="INVALID" area="COM" />
+							<smc:extraInformation
+								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+						<smc:errorRef
+							comment="One of the supplied Planning Request Definition object instance identifiers is unknown">
+							<smc:type name="UNKNOWN" area="MAL" />
+							<smc:extraInformation
+								comment="The indexes of the error values shall be contained in the extra information field">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+					</smc:errors>
+				</smc:submitIP>
+				<smc:submitIP name="removeDefinition" number="303"
+					supportInReplay="false"
+					comment="Removes Planning Request Definition by ID">
+					<smc:messages>
+						<smc:submit
+							comment="The Planning Request Definition ID">
+							<smc:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
+								<smc:type name="Long" area="MAL" />
+							</smc:field>
+						</smc:submit>
+					</smc:messages>
+					<smc:errors>
+						<smc:errorRef
+							comment="One of the supplied Planning Request Definition object instance identifiers is unknown">
+							<smc:type name="UNKNOWN" area="MAL" />
+							<smc:extraInformation
+								comment="The indexes of the error values shall be contained in the extra information field">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+					</smc:errors>
+				</smc:submitIP>
 				<smc:pubsubIP name="monitor" number="100"
 					supportInReplay="false"
 					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
@@ -19,13 +130,25 @@
 					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequestGroup" />
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequest" />
+							<smc:field name="planningRequestGroup "
+								comment="A way of logically grouping the Planning Requests">
+								<smc:type area="Planning" service="PlanningRequest"
+									name="PlanningRequestGroup" />
+							</smc:field>
+							<smc:field name="planningRequestDefinitionId"
+								comment="ID corresponds to the PlanningRequest occurrence">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+							<smc:field name="planningRequest"
+								comment="The Planning Request that is submitted">
+								<smc:type area="Planning" service="PlanningRequest"
+									name="PlanningRequest" />
+							</smc:field>
 						</smc:request>
 						<smc:response>
-							<smc:type area="MAL" name="Long" />
+							<smc:field name="planningRequestIdentifier" comment="The Planning Request Identifier">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
@@ -91,6 +214,9 @@
 				<smc:composite name="PlanningRequestGroup"
 					shortFormPart="1"
 					comment="This data structure defines a planning request group composite">
+					<smc:field name="id" comment="id">
+						<smc:type area="MAL" name="Long" />
+					</smc:field>
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
 					</smc:field>
@@ -100,11 +226,43 @@
 				</smc:composite>
 				<smc:composite name="PlanningRequest" shortFormPart="2"
 					comment="This data structure defines a planning request composite">
-					<smc:field name="data" comment="Data structure is not specified">
-						<smc:type area="MAL" name="Blob" />
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
 					</smc:field>
-					<smc:field name="status" comment="status">
-						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
+					<smc:field name="description" comment="description">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="planningRequestStatus" comment="Status of planning request">
+						<smc:type area="Planning" service="PlanningRequest" name="PlanningRequestStatus" />
+					</smc:field>
+					<smc:field name="tasks"
+						comment="Tasks (optional).The allowed Task types is specified in PlanningRequestDefinition">
+						<smc:type area="Planning" name="Task" service="Task" />
+					</smc:field>
+					<smc:field name="arguments" comment="Argument values">
+						<smc:type list="true" area="Planning" name="PlanningRequestArgumentValue"
+							service="PlanningRequest" />
+					</smc:field>
+					<smc:field name="attachments" comment="Attachments">
+						<smc:type list="true" area="MAL" name="Blob" service="PlanningRequest" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="PlanningRequestDefinition"
+					shortFormPart="3"
+					comment="This data structure defines a planning request composite">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="description" comment="description">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="allowedTaskTypes" comment="Allowed task types">
+						<smc:type list="true" name="TaskDefinition" service="Task"
+							area="Planning" />
+					</smc:field>
+					<smc:field name="arguments" comment="Argument types of a Task">
+						<smc:type list="true" area="Planning"
+							name="PlanningRequestArgumentDefinition" service="PlanningRequest" />
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="PlanningRequestFilter"
@@ -114,21 +272,234 @@
 						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
 					</smc:field>
 				</smc:composite>
-				<smc:enumeration name="StateEnum" shortFormPart="5">
+				<smc:composite name="PlanningRequestStatus" shortFormPart="5" comment="Planning Request status structure">
+					<smc:field name="state" comment="state">
+						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
+					</smc:field>
+					<smc:field name="problems" comment="state">
+						<smc:type list="true" area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="PlanningRequestIdentifier" comment="PlanningRequest Identifier">
+						<smc:type area="MAL" name="Identifier" />
+					</smc:field>
+				</smc:composite>
+				<smc:enumeration name="StateEnum" shortFormPart="6">
 					<smc:item value="SUBMITTED" nvalue="1" />
 					<smc:item value="ACCEPTED" nvalue="2" />
 					<smc:item value="INVALID" nvalue="3" />
 					<smc:item value="SCHEDULED" nvalue="4" />
 					<smc:item value="EXECUTED" nvalue="5" />
 				</smc:enumeration>
-				<smc:composite name="PlanningRequestUpdate" shortFormPart="6"
+				<smc:composite name="PlanningRequestUpdate"
+					shortFormPart="7"
 					comment="This data structure defines a PlanningRequest Update composite">
 					<smc:field name="counter"
 						comment="A counter used to distinguish the updates and to check the ordering.">
 						<smc:type area="MAL" name="Short" />
 					</smc:field>
 				</smc:composite>
+				<smc:composite name="PlanningRequestArgumentDefinition"
+					shortFormPart="8" comment="Definition argument types of a planning request">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="valueType" comment="The type of the value">
+						<smc:type area="MAL" name="UOctet" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="PlanningRequestArgumentValue"
+					shortFormPart="9" comment="Definition argument types of a planning request">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="value" comment="The argument value">
+						<smc:type area="MAL" name="Attribute" />
+					</smc:field>
+				</smc:composite>
 			</smc:dataTypes>
+		</smc:service>
+		<smc:service xsi:type="com:ExtendedServiceType" name="Task"
+			number="2">
+			<smc:capabilitySet number="200">
+				<smc:requestIP name="listDefinition" number="201"
+					supportInReplay="true"
+					comment="The listDefinition operation retrieves Task Definitions based on Identifier (name)">
+					<smc:messages>
+						<smc:request>
+							<smc:field name="identifierList" comment="List of identifiers">
+								<smc:type name="IdentifierList" area="MAL" />
+							</smc:field>
+						</smc:request>
+						<smc:response>
+							<smc:field name="taskDefinitionIds" comment="List of task definition ID-s">
+								<smc:type list="true" area="MAL" name="Long" />
+							</smc:field>
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="300">
+				<smc:requestIP name="addDefinition" number="301"
+					supportInReplay="false"
+					comment="The addDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
+					<smc:messages>
+						<smc:request
+							comment="The supplied list shall hold the definitions to be added.&#xA;The name field of the supplied TaskDefinition structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique for the domain of the provider otherwise a DUPLICATE error will be raised.&#xA;&#xA;">
+							<smc:type list="true" name="TaskDefinition" service="Task"
+								area="Planning" />
+						</smc:request>
+						<smc:response
+							comment="The response shall contain the list of object instance identifiers for the new definitions.&#xA;The returned list shall maintain the same order as the submitted definitions.&#xA;">
+							<smc:type list="true" name="Long" area="MAL" />
+						</smc:response>
+					</smc:messages>
+					<smc:errors>
+						<smc:errorRef
+							comment="One of the supplied task definitions contains an invalid task name.&#xA;">
+							<smc:type name="INVALID" area="COM" />
+							<smc:extraInformation
+								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+						<smc:errorRef
+							comment="One or more of the action definitions being added has supplied an task name that is already in use in the domain.&#xA;">
+							<smc:type name="DUPLICATE" area="COM" />
+							<smc:extraInformation
+								comment="The extra information field contains the indexes of the erroneous values from the originating request list.&#xA;">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+					</smc:errors>
+				</smc:requestIP>
+				<smc:submitIP name="updateDefinition" number="302"
+					supportInReplay="false"
+					comment="The updateDefinition operation allows a consumer to modify a definition for one or more tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same task name in the fact that the object instance identifier is not changed between the two definitions therefore it is only expected to be used for minor modifications such as descriptions.&#xA;The operation cannot be used to change the name of an existing action definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive.&#xA;">
+					<smc:messages>
+						<smc:submit
+							comment="The submitted lists shall hold the definitions to be modified.&#xA;The first list shall contain the object instance identifiers of the actions definitions to be updated.&#xA;The second list shall contain the replacement action definitions.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;The supplied action definition name must match the name in the existing definition for the corresponding task object instance identifier, an INVALID error is returned otherwise.&#xA;">
+							<smc:type list="true" name="Long" area="MAL" />
+							<smc:type list="true" name="TaskDefinition" service="Task"
+								area="Planning" />
+						</smc:submit>
+					</smc:messages>
+					<smc:errors>
+						<smc:errorRef
+							comment="One of the supplied task definitions is trying to change its task name.&#xA;">
+							<smc:type name="INVALID" area="COM" />
+							<smc:extraInformation
+								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+						<smc:errorRef
+							comment="One of the supplied task definition object instance identifiers is unknown.&#xA;">
+							<smc:type name="UNKNOWN" area="MAL" />
+							<smc:extraInformation
+								comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+					</smc:errors>
+				</smc:submitIP>
+				<smc:submitIP name="removeDefinition" number="303"
+					supportInReplay="false"
+					comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of tasks supported by the task provider.&#xA;The operation does not remove the task definition from the COM archive, merely removes it from the provider. This permits existing, and completed, task instances to continue to reference the correct task definition in the COM archive.&#xA;">
+					<smc:messages>
+						<smc:submit
+							comment="The supplied list holds the object instance identifiers of the definitions to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing task instance then this operation shall not fail.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new task instances.&#xA;The operation shall either completely succeed or fail, in the case of a fail no definitions shall be removed.&#xA;">
+							<smc:type list="true" name="Long" area="MAL" />
+						</smc:submit>
+					</smc:messages>
+					<smc:errors>
+						<smc:errorRef
+							comment="One of the supplied task definition object instance identifiers is unknown.&#xA;">
+							<smc:type name="UNKNOWN" area="MAL" />
+							<smc:extraInformation
+								comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
+								<smc:type list="true" name="UInteger" area="MAL" />
+							</smc:extraInformation>
+						</smc:errorRef>
+					</smc:errors>
+				</smc:submitIP>
+			</smc:capabilitySet>
+			<smc:dataTypes>
+				<smc:composite name="TaskDefinition" shortFormPart="1"
+					comment="This data structure defines a task definition composite">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="description" comment="description">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="arguments" comment="Argument types of a Task">
+						<smc:type list="true" area="Planning" name="TaskArgumentDefinition"
+							service="Task" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="TaskArgumentDefinition"
+					shortFormPart="2" comment="Argument types of a Task">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="valueType" comment="The type of the value">
+						<smc:type area="MAL" name="UOctet" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="Task" shortFormPart="3"
+					comment="This data structure defines a task definition composite">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="description" comment="description">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="arguments" comment="Argument values">
+						<smc:type list="true" area="Planning" name="TaskArgumentValue"
+							service="Task" />
+					</smc:field>
+					<smc:field name="attachments" comment="Attachments to the Task">
+						<smc:type list="true" area="MAL" name="Blob" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="TaskArgumentValue" shortFormPart="4"
+					comment="Argument values">
+					<smc:field name="name" comment="name">
+						<smc:type area="MAL" name="String" />
+					</smc:field>
+					<smc:field name="value" comment="The type of the value">
+						<smc:type area="MAL" name="Attribute" />
+					</smc:field>
+				</smc:composite>
+				<smc:composite name="TaskOccurrence" shortFormPart="5"
+					comment="This data structure defines a task definition composite">
+					<smc:field name="task" comment="The task">
+						<smc:type area="Planning" name="Task" service="Task" />
+					</smc:field>
+				</smc:composite>
+			</smc:dataTypes>
+			<smc:features>
+				<smc:objects
+					comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall be represented as ActionInstance COM object.&#xA;The object instance identifier for an ActionInstance object shall be populated by the consumer.&#xA;The ActionInstance object shall use the related link to indicate which action definition object it uses.&#xA;The source link of the ActionDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall link to the submitAction OperationActivity object using the source link.&#xA;&#xA;">
+					<smc:object name="TaskDefinition" number="1">
+						<smc:objectType>
+							<smc:type name="TaskDefinition" service="Task" area="Planning" />
+						</smc:objectType>
+					</smc:object>
+					<smc:object name="TaskOccurrence" number="2">
+						<smc:objectType>
+							<smc:type name="TaskOccurrence" service="Task" area="Planning" />
+						</smc:objectType>
+						<smc:relatedObject>
+							<smc:objectType number="1" service="Task" area="Planning" />
+						</smc:relatedObject>
+					</smc:object>
+				</smc:objects>
+				<smc:archiveUsage
+					comment="ActionDefinition objects should be stored in the COM archive.&#xA;When an action is sent with the submitAction operation, the ActionInstance object should be stored in the COM archive by the consumer.&#xA;" />
+				<smc:activityUsage
+					comment="The COM Activity service may be used to monitor the transfer and execution of the submitAction operation.&#xA;The COM Activity service may be used to monitor the transfer and execution of action instances.&#xA;The COM activity events shall be generated as defined in the COM activity tracking service for the submitAction operation.&#xA;A Release activity event for the action instance shall be generated when an action is released from a consumer using the submitAction operation.&#xA;An Acceptance activity event for the action instance shall be generated when an action is received by the destination provider as part of the submitAction operation.&#xA;The source link of the activity events for the action instance shall be the ActionInstance object.&#xA;In all activity execution events for the action instance the ActivityExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages.&#xA;&#xA;" />
+			</smc:features>
 		</smc:service>
 	</smc:area>
 </smc:specification>

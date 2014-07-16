@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
+	xmlns:smc="http://www.ccsds.org/schema/ServiceSchema" xmlns:com="http://www.ccsds.org/schema/COMSchema"
+	xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
 	<smc:area name="Automation" number="100" version="1">
-		<smc:service name="ScheduleExecution" number="2">
+		<smc:service xsi:type="com:ExtendedServiceType" name="ScheduleExecution"
+			number="2">
 			<smc:capabilitySet number="100">
 				<smc:requestIP name="submitSchedule" number="101"
 					supportInReplay="false" comment="Submits a Schedule for execution">
@@ -155,8 +157,7 @@
 				<smc:composite name="ScheduleStatus" shortFormPart="4"
 					comment="This data structure defines a schedule status composite">
 					<smc:field name="state" comment="state">
-						<smc:type area="Automation" name="ScheduleState"
-							service="ScheduleExecution" />
+						<smc:type area="Automation" name="ScheduleState" service="ScheduleExecution" />
 					</smc:field>
 					<smc:field name="message" comment="message">
 						<smc:type list="true" area="MAL" name="String" />
@@ -196,7 +197,8 @@
 				</smc:enumeration>
 			</smc:dataTypes>
 		</smc:service>
-		<smc:service name="ProcedureDefinition" number="3">
+		<smc:service xsi:type="com:ExtendedServiceType" name="ProcedureDefinition"
+			number="3">
 			<smc:capabilitySet number="200">
 				<smc:requestIP name="addProcedureDefinition" number="201"
 					supportInReplay="false" comment="Adds Procedure Definition">
@@ -206,8 +208,7 @@
 								name="ProcedureDefinition" />
 						</smc:request>
 						<smc:response>
-							<smc:type area="MAL" service="ProcedureDefinition"
-								name="Long" />
+							<smc:type area="MAL" service="ProcedureDefinition" name="Long" />
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
@@ -270,6 +271,9 @@
 				<smc:composite name="ProcedureDefinition"
 					shortFormPart="351"
 					comment="This data structure defines a procedure definition composite">
+					<mal:extends>
+            			<mal:type name="Composite" area="MAL"/>
+          			</mal:extends>
 					<!-- TODO -->
 				</smc:composite>
 				<smc:composite name="ProcedureDefinitionFilter"
@@ -277,7 +281,8 @@
 					comment="This data structure defines a procedure definition filter composite">
 					<!-- TODO -->
 				</smc:composite>
-				<smc:composite name="ProcedureDefinitionEvent" shortFormPart="353"
+				<smc:composite name="ProcedureDefinitionEvent"
+					shortFormPart="353"
 					comment="This data structure defines a procedure definition event composite">
 					<smc:field name="type" comment="Type of event">
 						<smc:type area="Automation" service="ProcedureDefinition"
@@ -291,7 +296,8 @@
 				</smc:enumeration>
 			</smc:dataTypes>
 		</smc:service>
-		<smc:service name="ProcedureExecution" number="4">
+		<smc:service xsi:type="com:ExtendedServiceType" name="ProcedureExecution"
+			number="4">
 			<smc:capabilitySet number="300">
 				<smc:submitIP name="startProcedure" number="301"
 					supportInReplay="false" comment="Starts the Procedure execution">
@@ -429,7 +435,8 @@
 					<smc:item value="ABORTED" nvalue="5" />
 					<smc:item value="COMPLETED" nvalue="6" />
 				</smc:enumeration>
-				<smc:composite name="ProcedureExecutionEvent" shortFormPart="407"
+				<smc:composite name="ProcedureExecutionEvent"
+					shortFormPart="407"
 					comment="This data structure defines a procedure execution event composite">
 					<smc:field name="type" comment="Type of event">
 						<smc:type area="Automation" service="ProcedureExecution"
@@ -442,6 +449,31 @@
 					<smc:item value="DELETE" nvalue="3" />
 				</smc:enumeration>
 			</smc:dataTypes>
+			<com:features>
+				<com:objects
+					comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall be represented as ActionInstance COM object.&#xA;The object instance identifier for an ActionInstance object shall be populated by the consumer.&#xA;The ActionInstance object shall use the related link to indicate which action definition object it uses.&#xA;The source link of the ActionDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall link to the submitAction OperationActivity object using the source link.&#xA;&#xA;">
+					<com:object name="ProcedureDefinition" number="1">
+						<com:objectType>
+							<mal:type name="ProcedureDefinition" service="ProcedureDefinition"
+								area="Automation" />
+						</com:objectType>
+					</com:object>
+					<com:object name="ProcedureOccurrenceInstance" number="2">
+						<com:objectType>
+							<mal:type name="ProcedureOccurrence" service="ProcedureExecution"
+								area="Automation" />
+						</com:objectType>
+						<com:relatedObject>
+							<com:objectType number="1" service="ProcedureExecution"
+								area="Automation" />
+						</com:relatedObject>
+					</com:object>
+				</com:objects>
+				<com:archiveUsage
+					comment="ActionDefinition objects should be stored in the COM archive.&#xA;When an action is sent with the submitAction operation, the ActionInstance object should be stored in the COM archive by the consumer.&#xA;" />
+				<com:activityUsage
+					comment="The COM Activity service may be used to monitor the transfer and execution of the submitAction operation.&#xA;The COM Activity service may be used to monitor the transfer and execution of action instances.&#xA;The COM activity events shall be generated as defined in the COM activity tracking service for the submitAction operation.&#xA;A Release activity event for the action instance shall be generated when an action is released from a consumer using the submitAction operation.&#xA;An Acceptance activity event for the action instance shall be generated when an action is received by the destination provider as part of the submitAction operation.&#xA;The source link of the activity events for the action instance shall be the ActionInstance object.&#xA;In all activity execution events for the action instance the ActivityExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages.&#xA;&#xA;" />
+			</com:features>
 		</smc:service>
 	</smc:area>
 </smc:specification>
