@@ -16,8 +16,7 @@
 							</smc:field>
 						</smc:request>
 						<smc:response>
-							<smc:field name="scheduletDefinitionIds"
-								comment="List of Schedule Definition IDs">
+							<smc:field name="scheduletDefinitionIds" comment="List of Schedule Definition IDs">
 								<smc:type list="true" area="MAL" name="Long" />
 							</smc:field>
 						</smc:response>
@@ -34,10 +33,8 @@
 									area="Automation" />
 							</smc:field>
 						</smc:request>
-						<smc:response
-							comment="The Schedule Definition ID">
-							<smc:field name="scheduleDefinitionId"
-								comment="The Schedule Definition ID">
+						<smc:response comment="The Schedule Definition ID">
+							<smc:field name="scheduleDefinitionId" comment="The Schedule Definition ID">
 								<smc:type name="Long" area="MAL" />
 							</smc:field>
 						</smc:response>
@@ -65,8 +62,7 @@
 					supportInReplay="false"
 					comment="Updates Schedule Definition referenced by Schedule Definition ID">
 					<smc:messages>
-						<smc:submit
-							comment="The Schedule Definition ID">
+						<smc:submit comment="The Schedule Definition ID">
 							<smc:field name="scheduleDefinitionId" comment="The Schedule Definition ID">
 								<smc:type name="Long" area="MAL" />
 							</smc:field>
@@ -96,11 +92,9 @@
 					</smc:errors>
 				</smc:submitIP>
 				<smc:submitIP name="removeDefinition" number="104"
-					supportInReplay="false"
-					comment="Removes Schedule Definition by ID">
+					supportInReplay="false" comment="Removes Schedule Definition by ID">
 					<smc:messages>
-						<smc:submit
-							comment="The Schedule Definition ID">
+						<smc:submit comment="The Schedule Definition ID">
 							<smc:field name="scheduleDefinitionId" comment="The Schedule Definition ID">
 								<smc:type name="Long" area="MAL" />
 							</smc:field>
@@ -285,9 +279,42 @@
 				</smc:composite>
 				<smc:composite name="Schedule" shortFormPart="3"
 					comment="This data structure defines a schedule composite">
-					<!-- TODO -->
+					<!-- TODO: Schedule Initiation Criteria, which is similar to the Activity Initiation Criteria. The possibilities are Time, Position, Event  -->
+					<smc:field name="scheduleItems" comment="The schedule items">
+						<smc:type list="true" area="Automation" name="ScheduleItem"
+							service="ScheduleExecution" />
+					</smc:field>
+					<smc:field name="est" comment="Earliest Start Time (EST)">
+						<smc:type area="MAL" name="Time" />
+					</smc:field>
+					<smc:field name="lst" comment="Latest Start Time (LST)">
+						<smc:type area="MAL" name="Time" />
+					</smc:field>
+					<smc:field name="lft" comment="Latest Finish Time (LFT)">
+						<smc:type area="MAL" name="Time" />
+					</smc:field>
+					<smc:field name="tad" comment="Task Delay (TAD)">
+						<smc:type area="MAL" name="Time" />
+					</smc:field>
+					<smc:field name="duration" comment="duration">
+						<smc:type area="MAL" name="Duration" />
+					</smc:field>
+					<smc:field name="values" comment="The schedule values">
+						<smc:type list="true" area="Automation" name="AttributeValue"
+							service="ScheduleExecution" />
+					</smc:field>
 				</smc:composite>
-				<smc:composite name="ScheduleItem" shortFormPart="4"
+				<mal:composite name="AttributeValue" shortFormPart="4"
+					comment="The AttributeValue structure holds an Attribute value. It allows a list of different Attribute types to be created whereas List&lt;Attribute&gt; would require the values to be all of the same type.&#xA;">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="value" canBeNull="false"
+						comment="The argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete AttributeValue composite.&#xA;">
+						<mal:type name="Attribute" area="MAL" />
+					</mal:field>
+				</mal:composite>
+				<smc:composite name="ScheduleItem" shortFormPart="5"
 					comment="This data structure defines a schedule item composite">
 					<smc:field name="activityId" comment="activity id">
 						<smc:type area="MAL" name="Long" />
@@ -309,7 +336,7 @@
 					</smc:field>
 					<!-- TODO -->
 				</smc:composite>
-				<smc:composite name="ScheduleStatus" shortFormPart="5"
+				<smc:composite name="ScheduleStatus" shortFormPart="6"
 					comment="This data structure defines a schedule status composite">
 					<smc:field name="state" comment="state">
 						<smc:type area="Automation" name="ScheduleState" service="ScheduleExecution" />
@@ -318,7 +345,7 @@
 						<smc:type list="true" area="MAL" name="String" />
 					</smc:field>
 				</smc:composite>
-				<smc:enumeration name="ScheduleState" shortFormPart="6">
+				<smc:enumeration name="ScheduleState" shortFormPart="7">
 					<smc:item value="RUNNING" nvalue="1" />
 					<smc:item value="PAUSED" nvalue="2" />
 					<smc:item value="HALTED" nvalue="3" />
@@ -326,11 +353,11 @@
 					<smc:item value="ABORTED" nvalue="5" />
 					<smc:item value="COMPLETED" nvalue="6" />
 				</smc:enumeration>
-				<smc:composite name="ScheduleFilter" shortFormPart="7"
+				<smc:composite name="ScheduleFilter" shortFormPart="8"
 					comment="This data structure defines a schedule filter composite">
 					<!-- todo -->
 				</smc:composite>
-				<smc:enumeration name="LevelOfDetail" shortFormPart="8">
+				<smc:enumeration name="LevelOfDetail" shortFormPart="9">
 					<smc:item value="HIGH" nvalue="1" />
 					<smc:item value="MEDIUM" nvalue="2" />
 					<smc:item value="LOW" nvalue="3" />
@@ -338,25 +365,18 @@
 					<smc:item value="DEBUG" nvalue="5" />
 					<smc:item value="STATEMENT" nvalue="6" />
 				</smc:enumeration>
-				<smc:composite name="ScheduleEvent" shortFormPart="9"
+				<smc:composite name="ScheduleEvent" shortFormPart="10"
 					comment="This data structure defines a schedule event composite">
 					<smc:field name="type" comment="Type of event">
 						<smc:type area="Automation" service="ScheduleExecution"
 							name="EventType" />
 					</smc:field>
 				</smc:composite>
-				<smc:enumeration name="EventType" shortFormPart="10">
+				<smc:enumeration name="EventType" shortFormPart="11">
 					<smc:item value="INSERT" nvalue="1" />
 					<smc:item value="UPDATE" nvalue="2" />
 					<smc:item value="DELETE" nvalue="3" />
 				</smc:enumeration>
-				<smc:composite name="ScheduleOccurrence"
-					shortFormPart="11"
-					comment=" ScheduleOccurrence is a Schedule with a related link to the ScheduleDefinition">
-					<smc:field name="schedule" comment="The schedule">
-						<smc:type area="Automation" name="Schedule" service="ScheduleExecution" />
-					</smc:field>
-				</smc:composite>
 			</smc:dataTypes>
 			<smc:features>
 				<smc:objects
@@ -369,7 +389,7 @@
 					</smc:object>
 					<smc:object name="ScheduleOccurrence" number="2">
 						<smc:objectType>
-							<smc:type name="ScheduleOccurrence" service="ScheduleExecution"
+							<smc:type name="Schedule" service="ScheduleExecution"
 								area="Automation" />
 						</smc:objectType>
 						<smc:relatedObject>
@@ -428,8 +448,8 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:requestIP name="listDefinition"
-					number="205" supportInReplay="false" comment="Retrieves all Procedure Definitions">
+				<smc:requestIP name="listDefinition" number="205"
+					supportInReplay="false" comment="Retrieves all Procedure Definitions">
 					<smc:messages>
 						<smc:request>
 							<smc:field name="identifierList" comment="List of identifiers">
@@ -437,7 +457,8 @@
 							</smc:field>
 						</smc:request>
 						<smc:response>
-							<smc:field name="procedureDefinitionIds" comment="Collection of Procedure Definition IDs">
+							<smc:field name="procedureDefinitionIds"
+								comment="Collection of Procedure Definition IDs">
 								<smc:type list="true" area="MAL" service="ProcedureExecution"
 									name="Long" />
 							</smc:field>
@@ -554,8 +575,7 @@
 						<smc:type area="MAL" name="Octet" />
 					</smc:field>
 				</smc:composite>
-				<smc:composite name="Procedure"
-					shortFormPart="3"
+				<smc:composite name="Procedure" shortFormPart="3"
 					comment="This data structure defines a procedure composite">
 					<mal:extends>
 						<mal:type name="Composite" area="MAL" />
@@ -571,10 +591,12 @@
 							service="ProcedureExecution" />
 					</smc:field>
 					<smc:field name="attachments" comment="Attachments">
-						<smc:type list="true" area="MAL" name="Blob" service="ProcedureExecution" />
+						<smc:type list="true" area="MAL" name="Blob"
+							service="ProcedureExecution" />
 					</smc:field>
 					<smc:field name="status" comment="Procedure status">
-						<smc:type area="Automation" name="ProcedureStatus" service="ProcedureExecution" />
+						<smc:type area="Automation" name="ProcedureStatus"
+							service="ProcedureExecution" />
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="ProcedureArgumentValue"
@@ -586,7 +608,8 @@
 						<smc:type area="MAL" name="Attribute" />
 					</smc:field>
 					<smc:field name="status" comment="The procedure status">
-						<smc:type area="Automation" name="ProcedureStatus" service="ProcedureExecution" />
+						<smc:type area="Automation" name="ProcedureStatus"
+							service="ProcedureExecution" />
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="ProcedureOccurrenceFilter"
