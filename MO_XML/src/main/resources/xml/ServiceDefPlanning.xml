@@ -110,7 +110,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:pubsubIP name="monitorPlanningRequests" number="100"
+				<smc:pubsubIP name="monitorPlanningRequests" number="304"
 					supportInReplay="false"
 					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
 					<smc:messages>
@@ -120,7 +120,7 @@
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
-				<smc:requestIP name="add" number="101"
+				<smc:requestIP name="add" number="305"
 					supportInReplay="false"
 					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
 					<smc:messages>
@@ -147,7 +147,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:submitIP name="update" number="102"
+				<smc:submitIP name="update" number="306"
 					supportInReplay="false" comment="Updates the Planning Request by ID">
 					<smc:messages>
 						<smc:submit>
@@ -157,7 +157,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="remove" number="103"
+				<smc:submitIP name="remove" number="307"
 					supportInReplay="false" comment="Removes a Planning Request by ID">
 					<smc:messages>
 						<smc:submit>
@@ -165,7 +165,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:requestIP name="get" number="104"
+				<smc:requestIP name="get" number="308"
 					supportInReplay="false" comment="Gets a Planning Request by ID">
 					<smc:messages>
 						<smc:request>
@@ -177,7 +177,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="list" number="105"
+				<smc:requestIP name="list" number="309"
 					supportInReplay="false"
 					comment="Gets Planning Requests according to the given filter">
 					<smc:messages>
@@ -193,7 +193,7 @@
 				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="200">
-				<smc:requestIP name="listTaskDefinition" number="201"
+				<smc:requestIP name="listTaskDefinition" number="310"
 					supportInReplay="true"
 					comment="The listDefinition operation retrieves Task Definitions based on Identifier (name)">
 					<smc:messages>
@@ -211,9 +211,9 @@
 				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="300">
-				<smc:requestIP name="addTaskDefinition" number="301"
+				<smc:requestIP name="addTaskDefinition" number="311"
 					supportInReplay="false"
-					comment="The addDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
+					comment="The addTaskDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
 					<smc:messages>
 						<smc:request
 							comment="The supplied list shall hold the definitions to be added.&#xA;The name field of the supplied TaskDefinition structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique for the domain of the provider otherwise a DUPLICATE error will be raised.&#xA;&#xA;">
@@ -244,7 +244,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:requestIP>
-				<smc:submitIP name="updateTaskDefinition" number="302"
+				<smc:submitIP name="updateTaskDefinition" number="312"
 					supportInReplay="false"
 					comment="The updateDefinition operation allows a consumer to modify a definition for one or more tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same task name in the fact that the object instance identifier is not changed between the two definitions therefore it is only expected to be used for minor modifications such as descriptions.&#xA;The operation cannot be used to change the name of an existing action definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive.&#xA;">
 					<smc:messages>
@@ -274,7 +274,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:submitIP name="removeTaskDefinition" number="303"
+				<smc:submitIP name="removeTaskDefinition" number="313"
 					supportInReplay="false"
 					comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of tasks supported by the task provider.&#xA;The operation does not remove the task definition from the COM archive, merely removes it from the provider. This permits existing, and completed, task instances to continue to reference the correct task definition in the COM archive.&#xA;">
 					<smc:messages>
@@ -294,7 +294,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:pubsubIP name="monitorTasks" number="304"
+				<smc:pubsubIP name="monitorTasks" number="314"
 					supportInReplay="false"
 					comment="Subscribe to Task monitoring">
 					<smc:messages>
@@ -380,10 +380,10 @@
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="TaskFilter"
-					shortFormPart="12" comment="Task filter structure">
+					shortFormPart="6" comment="Task filter structure">
 					<!--  todo -->
 				</smc:composite>
-				<smc:enumeration name="StateEnum" shortFormPart="6">
+				<smc:enumeration name="StateEnum" shortFormPart="7">
 					<smc:item value="SUBMITTED" nvalue="1" />
 					<smc:item value="ACCEPTED" nvalue="2" />
 					<smc:item value="INVALID" nvalue="3" />
@@ -391,7 +391,7 @@
 					<smc:item value="EXECUTED" nvalue="5" />
 				</smc:enumeration>
 				<smc:composite name="PlanningRequestUpdate"
-					shortFormPart="7"
+					shortFormPart="8"
 					comment="This data structure defines a PlanningRequest Update composite">
 					<smc:field name="counter"
 						comment="A counter used to distinguish the updates and to check the ordering.">
@@ -399,7 +399,7 @@
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="PlanningRequestArgumentDefinition"
-					shortFormPart="8" comment="Definition argument types of a planning request">
+					shortFormPart="9" comment="Definition argument types of a planning request">
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
 					</smc:field>
@@ -408,7 +408,7 @@
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="PlanningRequestArgumentValue"
-					shortFormPart="9" comment="Definition argument types of a planning request">
+					shortFormPart="10" comment="Definition argument types of a planning request">
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
 					</smc:field>
@@ -416,7 +416,7 @@
 						<smc:type area="MAL" name="Attribute" />
 					</smc:field>
 				</smc:composite>
-				<smc:composite name="TaskDefinition" shortFormPart="1"
+				<smc:composite name="TaskDefinition" shortFormPart="11"
 					comment="This data structure defines a task definition composite">
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
@@ -430,7 +430,7 @@
 					</smc:field>
 				</smc:composite>
 				<smc:composite name="TaskArgumentDefinition"
-					shortFormPart="2" comment="Argument types of a Task">
+					shortFormPart="12" comment="Argument types of a Task">
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
 					</smc:field>
@@ -438,7 +438,7 @@
 						<smc:type area="MAL" name="UOctet" />
 					</smc:field>
 				</smc:composite>
-				<smc:composite name="Task" shortFormPart="3"
+				<smc:composite name="Task" shortFormPart="13"
 					comment="This data structure defines a task definition composite">
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
@@ -454,7 +454,7 @@
 						<smc:type list="true" area="MAL" name="Blob" />
 					</smc:field>
 				</smc:composite>
-				<smc:composite name="TaskArgumentValue" shortFormPart="4"
+				<smc:composite name="TaskArgumentValue" shortFormPart="14"
 					comment="Argument values">
 					<smc:field name="name" comment="name">
 						<smc:type area="MAL" name="String" />
@@ -463,7 +463,7 @@
 						<smc:type area="MAL" name="Attribute" />
 					</smc:field>
 				</smc:composite>
-				<smc:composite name="TaskOccurrence" shortFormPart="5"
+				<smc:composite name="TaskOccurrence" shortFormPart="15"
 					comment="This data structure defines a task definition composite">
 					<smc:field name="task" comment="The task">
 						<smc:type area="Planning" name="Task" service="PlanningRequest" />
