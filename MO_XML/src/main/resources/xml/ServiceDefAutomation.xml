@@ -111,7 +111,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:requestIP name="submitSchedule" number="105"
+				<smc:requestIP name="add" number="105"
 					supportInReplay="false" comment="Submits a Schedule for execution">
 					<smc:messages>
 						<smc:request>
@@ -130,7 +130,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:submitIP name="updateSchedule" number="106"
+				<smc:submitIP name="update" number="106"
 					supportInReplay="false" comment="Updates the Schedule by ID">
 					<smc:messages>
 						<smc:submit>
@@ -144,7 +144,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="removeSchedule" number="107"
+				<smc:submitIP name="remove" number="107"
 					supportInReplay="false" comment="Removes a Schedule by ID">
 					<smc:messages>
 						<smc:submit>
@@ -154,7 +154,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:requestIP name="getSchedule" number="108"
+				<smc:requestIP name="get" number="108"
 					supportInReplay="false" comment="Gets a Schedule by ID">
 					<smc:messages>
 						<smc:request>
@@ -170,7 +170,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="getScheduleList" number="109"
+				<smc:requestIP name="list" number="109"
 					supportInReplay="false" comment="Gets all Schedules">
 					<smc:messages>
 						<smc:request>
@@ -183,7 +183,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:submitIP name="startSchedule" number="110"
+				<smc:submitIP name="start" number="110"
 					supportInReplay="false" comment="Starts the Schedule execution">
 					<smc:messages>
 						<smc:submit>
@@ -191,7 +191,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="pauseSchedule" number="111"
+				<smc:submitIP name="pause" number="111"
 					supportInReplay="false" comment="Pauses the Schedule execution">
 					<smc:messages>
 						<smc:submit>
@@ -199,7 +199,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="resumeSchedule" number="112"
+				<smc:submitIP name="resume" number="112"
 					supportInReplay="false" comment="Resumes the paused Schedule execution">
 					<smc:messages>
 						<smc:submit>
@@ -207,7 +207,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="terminateSchedule" number="113"
+				<smc:submitIP name="terminate" number="113"
 					supportInReplay="false" comment="Terminates the running Schedule">
 					<smc:messages>
 						<smc:submit>
@@ -215,13 +215,13 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:pubsubIP name="subscribe" number="114"
+				<smc:pubsubIP name="monitorSchedules" number="114"
 					supportInReplay="false"
 					comment="Subscribe to Schedule content updates. Notifications are sent on Schedule creation, updates and removal according to the given filter">
 					<smc:messages>
 						<smc:publishNotify>
 							<smc:type area="Automation" service="ScheduleExecution"
-								name="ScheduleEvent" />
+								name="ScheduleFilter" />
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
@@ -230,24 +230,13 @@
 					comment="Subscribe to Schedule execution monitoring. Notifications are sent on Schedule status changes">
 					<smc:messages>
 						<smc:publishNotify>
+							<smc:type area="MAL" service="ScheduleExecution"
+								name="Long" />
 							<smc:type area="Automation" service="ScheduleExecution"
-								name="ScheduleEvent" />
+								name="LevelOfDetail" />
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
-				<smc:requestIP name="getScheduleStatus" number="116"
-					supportInReplay="false"
-					comment=" Gets the status of a Schedule by ID. The Status is basically a State from the Schedule Execution Life Cycle">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="MAL" name="Long" />
-						</smc:request>
-						<smc:response>
-							<smc:type area="Automation" service="ScheduleExecution"
-								name="ScheduleStatus" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:dataTypes>
 				<smc:composite name="ScheduleDefinition"
@@ -467,7 +456,7 @@
 				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="300">
-				<smc:submitIP name="startProcedure" number="301"
+				<smc:submitIP name="start" number="301"
 					supportInReplay="false" comment="Starts the Procedure execution">
 					<smc:messages>
 						<smc:submit>
@@ -477,7 +466,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="pauseProcedure" number="302"
+				<smc:submitIP name="pause" number="302"
 					supportInReplay="false" comment="Pauses the executing Procedure">
 					<smc:messages>
 						<smc:submit>
@@ -485,7 +474,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="resumeProcedure" number="303"
+				<smc:submitIP name="resume" number="303"
 					supportInReplay="false" comment="Resumes the paused Procedure">
 					<smc:messages>
 						<smc:submit>
@@ -493,7 +482,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="terminateProcedure" number="304"
+				<smc:submitIP name="terminate" number="304"
 					supportInReplay="false" comment="Terminates the running Procedure">
 					<smc:messages>
 						<smc:submit>
@@ -501,7 +490,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:requestIP name="getProcedure" number="305"
+				<smc:requestIP name="get" number="305"
 					supportInReplay="false" comment="Gets Procedure Occurrence by Identifier">
 					<smc:messages>
 						<smc:request>
@@ -513,7 +502,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="getProcedureList" number="306"
+				<smc:requestIP name="list" number="306"
 					supportInReplay="false"
 					comment="Retrieves all Procedure Occurrences that have been submitted (or staged). Occurrences that have completed the execution are automatically removed (unstaged)">
 					<smc:messages>
@@ -527,25 +516,15 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="getStatus" number="307"
-					supportInReplay="false" comment="Gets the status of a Procedure Occurrence">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="MAL" name="Long" />
-						</smc:request>
-						<smc:response>
-							<smc:type area="Automation" service="ProcedureExecution"
-								name="ProcedureStatus" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:pubsubIP name="monitor" number="308"
+				<smc:pubsubIP name="monitorExecution" number="308"
 					supportInReplay="false"
 					comment="Subscribe to Procedure execution monitoring. Notifications are sent on Procedure status changes">
 					<smc:messages>
 						<smc:publishNotify>
+							<smc:type area="MAL" service="ProcedureExecution"
+								name="Long" />
 							<smc:type area="Automation" service="ProcedureExecution"
-								name="ProcedureExecutionEvent" />
+								name="LevelOfDetail" />
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
@@ -668,6 +647,14 @@
 					<smc:item value="INSERT" nvalue="1" />
 					<smc:item value="UPDATE" nvalue="2" />
 					<smc:item value="DELETE" nvalue="3" />
+				</smc:enumeration>
+				<smc:enumeration name="LevelOfDetail" shortFormPart="12">
+					<smc:item value="HIGH" nvalue="1" />
+					<smc:item value="MEDIUM" nvalue="2" />
+					<smc:item value="LOW" nvalue="3" />
+					<smc:item value="NONE" nvalue="4" />
+					<smc:item value="DEBUG" nvalue="5" />
+					<smc:item value="STATEMENT" nvalue="6" />
 				</smc:enumeration>
 			</smc:dataTypes>
 			<com:features>
