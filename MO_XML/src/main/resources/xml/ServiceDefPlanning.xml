@@ -234,12 +234,12 @@
 					<smc:messages>
 						<smc:request
 							comment="The supplied list shall hold the definitions to be added.&#xA;The name field of the supplied TaskDefinition structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique for the domain of the provider otherwise a DUPLICATE error will be raised.&#xA;&#xA;">
-							<smc:type list="true" name="TaskDefinition" service="PlanningRequest"
+							<smc:type name="TaskDefinition" service="PlanningRequest"
 								area="Planning" />
 						</smc:request>
 						<smc:response
 							comment="The response shall contain the list of object instance identifiers for the new definitions.&#xA;The returned list shall maintain the same order as the submitted definitions.&#xA;">
-							<smc:type list="true" name="Long" area="MAL" />
+							<smc:type name="Long" area="MAL" />
 						</smc:response>
 					</smc:messages>
 					<smc:errors>
@@ -267,8 +267,8 @@
 					<smc:messages>
 						<smc:submit
 							comment="The submitted lists shall hold the definitions to be modified.&#xA;The first list shall contain the object instance identifiers of the actions definitions to be updated.&#xA;The second list shall contain the replacement action definitions.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;The supplied action definition name must match the name in the existing definition for the corresponding task object instance identifier, an INVALID error is returned otherwise.&#xA;">
-							<smc:type list="true" name="Long" area="MAL" />
-							<smc:type list="true" name="TaskDefinition" service="PlanningRequest"
+							<smc:type name="Long" area="MAL" />
+							<smc:type name="TaskDefinition" service="PlanningRequest"
 								area="Planning" />
 						</smc:submit>
 					</smc:messages>
@@ -297,7 +297,7 @@
 					<smc:messages>
 						<smc:submit
 							comment="The supplied list holds the object instance identifiers of the definitions to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing task instance then this operation shall not fail.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new task instances.&#xA;The operation shall either completely succeed or fail, in the case of a fail no definitions shall be removed.&#xA;">
-							<smc:type list="true" name="Long" area="MAL" />
+							<smc:type name="Long" area="MAL" />
 						</smc:submit>
 					</smc:messages>
 					<smc:errors>
