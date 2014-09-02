@@ -2,7 +2,7 @@
 <smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
 	<smc:area name="Planning" number="99" version="1">
-		<smc:service name="PlanningRequest" number="1">
+		<smc:service name="PlanningRequest" number="10">
 			<smc:capabilitySet number="1">
 				<smc:requestIP name="get" number="101"
 					supportInReplay="false" comment="Gets a Planning Request by ID">

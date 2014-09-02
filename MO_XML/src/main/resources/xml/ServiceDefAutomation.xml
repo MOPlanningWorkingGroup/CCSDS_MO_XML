@@ -5,8 +5,8 @@
 	<smc:area name="Automation" number="100" version="1">
 		<smc:service xsi:type="com:ExtendedServiceType" name="ScheduleExecution"
 			number="2">
-			<smc:capabilitySet number="11">
-				<smc:requestIP name="list" number="1" supportInReplay="false"
+			<smc:capabilitySet number="1">
+				<smc:requestIP name="list" number="11" supportInReplay="false"
 					comment="Gets all Schedules">
 					<smc:messages>
 						<smc:request>
