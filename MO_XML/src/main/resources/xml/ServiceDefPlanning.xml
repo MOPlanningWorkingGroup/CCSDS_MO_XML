@@ -4,7 +4,7 @@
 	<smc:area name="Planning" number="99" version="1">
 		<smc:service name="PlanningRequest" number="1">
 			<smc:capabilitySet number="1">
-				<smc:requestIP name="get" number="1"
+				<smc:requestIP name="get" number="101"
 					supportInReplay="false" comment="Gets a Planning Request by ID">
 					<smc:messages>
 						<smc:request>
@@ -16,7 +16,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="list" number="2"
+				<smc:requestIP name="list" number="102"
 					supportInReplay="false"
 					comment="Gets Planning Requests according to the given filter">
 					<smc:messages>
@@ -32,7 +32,7 @@
 				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="2">
-				<smc:requestIP name="add" number="1"
+				<smc:requestIP name="add" number="201"
 					supportInReplay="false"
 					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
 					<smc:messages>
@@ -59,7 +59,7 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:submitIP name="update" number="2"
+				<smc:submitIP name="update" number="202"
 					supportInReplay="false" comment="Updates the Planning Request by ID">
 					<smc:messages>
 						<smc:submit>
@@ -69,7 +69,7 @@
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="remove" number="3"
+				<smc:submitIP name="remove" number="203"
 					supportInReplay="false" comment="Removes a Planning Request by ID">
 					<smc:messages>
 						<smc:submit>
@@ -79,7 +79,7 @@
 				</smc:submitIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="3">
-				<smc:pubsubIP name="monitorPlanningRequests" number="1"
+				<smc:pubsubIP name="monitorPlanningRequests" number="301"
 					supportInReplay="false"
 					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
 					<smc:messages>
@@ -89,7 +89,7 @@
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
-				<smc:pubsubIP name="monitorTasks" number="2"
+				<smc:pubsubIP name="monitorTasks" number="302"
 					supportInReplay="false" comment="Subscribe to Task monitoring">
 					<smc:messages>
 						<smc:publishNotify>
@@ -100,7 +100,7 @@
 				</smc:pubsubIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="4">
-				<smc:requestIP name="listDefinition" number="1"
+				<smc:requestIP name="listDefinition" number="401"
 					supportInReplay="true"
 					comment="Retrieves Planning Request Definition based on Identifier (name)">
 					<smc:messages>
@@ -119,7 +119,7 @@
 				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="5">
-				<smc:requestIP name="addDefinition" number="1"
+				<smc:requestIP name="addDefinition" number="501"
 					supportInReplay="false"
 					comment="The addDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
 					<smc:messages>
@@ -155,7 +155,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:requestIP>
-				<smc:submitIP name="updateDefinition" number="2"
+				<smc:submitIP name="updateDefinition" number="502"
 					supportInReplay="false"
 					comment="Updates Planning Request Definition referenced by Planning Request ID">
 					<smc:messages>
@@ -188,7 +188,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:submitIP name="removeDefinition" number="3"
+				<smc:submitIP name="removeDefinition" number="503"
 					supportInReplay="false" comment="Removes Planning Request Definition by ID">
 					<smc:messages>
 						<smc:submit comment="The Planning Request Definition ID">
@@ -210,7 +210,7 @@
 				</smc:submitIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="6">
-				<smc:requestIP name="listTaskDefinition" number="1"
+				<smc:requestIP name="listTaskDefinition" number="601"
 					supportInReplay="true"
 					comment="The listDefinition operation retrieves Task Definitions based on Identifier (name)">
 					<smc:messages>
@@ -228,17 +228,17 @@
 				</smc:requestIP>
 			</smc:capabilitySet>
 			<smc:capabilitySet number="7">
-				<smc:requestIP name="addTaskDefinition" number="1"
+				<smc:requestIP name="addTaskDefinition" number="701"
 					supportInReplay="false"
-					comment="The addTaskDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
+					comment="The addTaskDefinition operation allows a consumer to define task that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
 					<smc:messages>
 						<smc:request
-							comment="The supplied list shall hold the definitions to be added.&#xA;The name field of the supplied TaskDefinition structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique for the domain of the provider otherwise a DUPLICATE error will be raised.&#xA;&#xA;">
+							comment="The supplied definition shall hold the definition to be added.&#xA;The name field of the supplied TaskDefinition structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique for the domain of the provider otherwise a DUPLICATE error will be raised.&#xA;&#xA;">
 							<smc:type name="TaskDefinition" service="PlanningRequest"
 								area="Planning" />
 						</smc:request>
 						<smc:response
-							comment="The response shall contain the list of object instance identifiers for the new definitions.&#xA;The returned list shall maintain the same order as the submitted definitions.&#xA;">
+							comment="The response shall contain new task definition ID">
 							<smc:type name="Long" area="MAL" />
 						</smc:response>
 					</smc:messages>
@@ -261,12 +261,12 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:requestIP>
-				<smc:submitIP name="updateTaskDefinition" number="2"
+				<smc:submitIP name="updateTaskDefinition" number="702"
 					supportInReplay="false"
 					comment="The updateDefinition operation allows a consumer to modify a definition for one or more tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same task name in the fact that the object instance identifier is not changed between the two definitions therefore it is only expected to be used for minor modifications such as descriptions.&#xA;The operation cannot be used to change the name of an existing action definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive.&#xA;">
 					<smc:messages>
 						<smc:submit
-							comment="The submitted lists shall hold the definitions to be modified.&#xA;The first list shall contain the object instance identifiers of the actions definitions to be updated.&#xA;The second list shall contain the replacement action definitions.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;The supplied action definition name must match the name in the existing definition for the corresponding task object instance identifier, an INVALID error is returned otherwise.&#xA;">
+							comment="The submitted task definition shall hold the definition to be modified.&#xA;The first list shall contain the object instance identifier of the actions definition to be updated.&#xA;The second contain the replacement action definition.&#xA;">
 							<smc:type name="Long" area="MAL" />
 							<smc:type name="TaskDefinition" service="PlanningRequest"
 								area="Planning" />
@@ -291,12 +291,12 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:submitIP name="removeTaskDefinition" number="3"
+				<smc:submitIP name="removeTaskDefinition" number="703"
 					supportInReplay="false"
-					comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of tasks supported by the task provider.&#xA;The operation does not remove the task definition from the COM archive, merely removes it from the provider. This permits existing, and completed, task instances to continue to reference the correct task definition in the COM archive.&#xA;">
+					comment="The removeDefinition operation allows a consumer to remove definition from the list of tasks supported by the task provider.&#xA;The operation does not remove the task definition from the COM archive, merely removes it from the provider. This permits existing, and completed, task instances to continue to reference the correct task definition in the COM archive.&#xA;">
 					<smc:messages>
 						<smc:submit
-							comment="The supplied list holds the object instance identifiers of the definitions to be removed from the provider.&#xA;The list may contain the wildcard value of '0'.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing task instance then this operation shall not fail.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new task instances.&#xA;The operation shall either completely succeed or fail, in the case of a fail no definitions shall be removed.&#xA;">
+							comment="The supplied definiton holds the object instance identifier of the definition to be removed from the provider.&#xA;The definition may contain the wildcard value of '0'.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing task instance then this operation shall not fail.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new task instances.&#xA;The operation shall either completely succeed or fail, in the case of a fail no definitions shall be removed.&#xA;">
 							<smc:type name="Long" area="MAL" />
 						</smc:submit>
 					</smc:messages>
