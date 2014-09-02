@@ -5,7 +5,117 @@
 	<smc:area name="Automation" number="100" version="1">
 		<smc:service xsi:type="com:ExtendedServiceType" name="ScheduleExecution"
 			number="2">
-			<smc:capabilitySet number="100">
+			<smc:capabilitySet number="1">
+				<smc:requestIP name="list" number="1" supportInReplay="false"
+					comment="Gets all Schedules">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="Automation" service="ScheduleExecution"
+								name="ScheduleFilter" />
+						</smc:request>
+						<smc:response>
+							<smc:type list="true" area="MAL" service="ScheduleExecution"
+								name="Long" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:requestIP name="get" number="2" supportInReplay="false"
+					comment="Gets a Schedule by ID">
+					<smc:messages>
+						<smc:request>
+							<smc:field name="scheduleId" comment="Schedule Identifier">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+						</smc:request>
+						<smc:response>
+							<smc:field name="schedule" comment="The Schedule to execute">
+								<smc:type area="Automation" service="ScheduleExecution"
+									name="Schedule" />
+							</smc:field>
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="2">
+				<smc:requestIP name="add" number="1" supportInReplay="false"
+					comment="Submits a Schedule for execution">
+					<smc:messages>
+						<smc:request>
+							<smc:field name="scheduleDefinitionId" comment="ScheduleDefinition ID">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+							<smc:field name="schedule" comment="The Schedule to execute">
+								<smc:type area="Automation" service="ScheduleExecution"
+									name="Schedule" />
+							</smc:field>
+						</smc:request>
+						<smc:response>
+							<smc:field name="scheduleId" comment="Schedule Identifier">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:submitIP name="update" number="2" supportInReplay="false"
+					comment="Updates the Schedule by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:field name="scheduleId" comment="Schedule Identifier">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+							<smc:field name="schedule" comment="The Schedule to execute">
+								<smc:type area="Automation" service="ScheduleExecution"
+									name="Schedule" />
+							</smc:field>
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="remove" number="3" supportInReplay="false"
+					comment="Removes a Schedule by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:field name="scheduleId" comment="Schedule Identifier">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="3">
+				<smc:submitIP name="start" number="1" supportInReplay="false"
+					comment="Starts the Schedule execution">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="pause" number="2" supportInReplay="false"
+					comment="Pauses the Schedule execution">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="resume" number="3" supportInReplay="false"
+					comment="Resumes the paused Schedule execution">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="terminate" number="4"
+					supportInReplay="false" comment="Terminates the running Schedule">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="4">
 				<smc:requestIP name="listDefinition" number="101"
 					supportInReplay="true"
 					comment="Retrieves Schedule Definition based on Identifier (name)">
@@ -22,7 +132,9 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="addDefinition" number="102"
+			</smc:capabilitySet>
+			<smc:capabilitySet number="5">
+				<smc:requestIP name="addDefinition" number="1"
 					supportInReplay="false"
 					comment="Adds Schedule Definition. Definition serves as a blueprint for Occurrences">
 					<smc:messages>
@@ -58,7 +170,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:requestIP>
-				<smc:submitIP name="updateDefinition" number="103"
+				<smc:submitIP name="updateDefinition" number="2"
 					supportInReplay="false"
 					comment="Updates Schedule Definition referenced by Schedule Definition ID">
 					<smc:messages>
@@ -91,7 +203,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:submitIP name="removeDefinition" number="104"
+				<smc:submitIP name="removeDefinition" number="3"
 					supportInReplay="false" comment="Removes Schedule Definition by ID">
 					<smc:messages>
 						<smc:submit comment="The Schedule Definition ID">
@@ -111,111 +223,9 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:requestIP name="add" number="105"
-					supportInReplay="false" comment="Submits a Schedule for execution">
-					<smc:messages>
-						<smc:request>
-							<smc:field name="scheduleDefinitionId" comment="ScheduleDefinition ID">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-							<smc:field name="schedule" comment="The Schedule to execute">
-								<smc:type area="Automation" service="ScheduleExecution"
-									name="Schedule" />
-							</smc:field>
-						</smc:request>
-						<smc:response>
-							<smc:field name="scheduleId" comment="Schedule Identifier">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:submitIP name="update" number="106"
-					supportInReplay="false" comment="Updates the Schedule by ID">
-					<smc:messages>
-						<smc:submit>
-							<smc:field name="scheduleId" comment="Schedule Identifier">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-							<smc:field name="schedule" comment="The Schedule to execute">
-								<smc:type area="Automation" service="ScheduleExecution"
-									name="Schedule" />
-							</smc:field>
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="remove" number="107"
-					supportInReplay="false" comment="Removes a Schedule by ID">
-					<smc:messages>
-						<smc:submit>
-							<smc:field name="scheduleId" comment="Schedule Identifier">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:requestIP name="get" number="108"
-					supportInReplay="false" comment="Gets a Schedule by ID">
-					<smc:messages>
-						<smc:request>
-							<smc:field name="scheduleId" comment="Schedule Identifier">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-						</smc:request>
-						<smc:response>
-							<smc:field name="schedule" comment="The Schedule to execute">
-								<smc:type area="Automation" service="ScheduleExecution"
-									name="Schedule" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:requestIP name="list" number="109"
-					supportInReplay="false" comment="Gets all Schedules">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="Automation" service="ScheduleExecution"
-								name="ScheduleFilter" />
-						</smc:request>
-						<smc:response>
-							<smc:type list="true" area="MAL" service="ScheduleExecution"
-								name="Long" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:submitIP name="start" number="110"
-					supportInReplay="false" comment="Starts the Schedule execution">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="pause" number="111"
-					supportInReplay="false" comment="Pauses the Schedule execution">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="resume" number="112"
-					supportInReplay="false" comment="Resumes the paused Schedule execution">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="terminate" number="113"
-					supportInReplay="false" comment="Terminates the running Schedule">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:pubsubIP name="monitorSchedules" number="114"
+			</smc:capabilitySet>
+			<smc:capabilitySet number="6">
+				<smc:pubsubIP name="monitorSchedules" number="1"
 					supportInReplay="false"
 					comment="Subscribe to Schedule content updates. Notifications are sent on Schedule creation, updates and removal according to the given filter">
 					<smc:messages>
@@ -225,13 +235,12 @@
 						</smc:publishNotify>
 					</smc:messages>
 				</smc:pubsubIP>
-				<smc:pubsubIP name="monitorExecution" number="115"
+				<smc:pubsubIP name="monitorExecution" number="2"
 					supportInReplay="false"
 					comment="Subscribe to Schedule execution monitoring. Notifications are sent on Schedule status changes">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="MAL" service="ScheduleExecution"
-								name="Long" />
+							<smc:type area="MAL" service="ScheduleExecution" name="Long" />
 							<smc:type area="Automation" service="ScheduleExecution"
 								name="LevelOfDetail" />
 						</smc:publishNotify>
@@ -268,7 +277,8 @@
 				</smc:composite>
 				<smc:composite name="Schedule" shortFormPart="3"
 					comment="This data structure defines a schedule composite">
-					<!-- TODO: Schedule Initiation Criteria, which is similar to the Activity Initiation Criteria. The possibilities are Time, Position, Event  -->
+					<!-- TODO: Schedule Initiation Criteria, which is similar to the Activity 
+						Initiation Criteria. The possibilities are Time, Position, Event -->
 					<smc:field name="scheduleItems" comment="The schedule items">
 						<smc:type list="true" area="Automation" name="ScheduleItem"
 							service="ScheduleExecution" />
@@ -395,49 +405,74 @@
 		</smc:service>
 		<smc:service xsi:type="com:ExtendedServiceType" name="ProcedureExecution"
 			number="4">
-			<smc:capabilitySet number="200">
-				<smc:requestIP name="addDefinition" number="201"
-					supportInReplay="false" comment="Adds Procedure Definition">
+			<smc:capabilitySet number="1">
+				<smc:requestIP name="list" number="1" supportInReplay="false"
+					comment="Retrieves all Procedure Occurrences that have been submitted (or staged). Occurrences that have completed the execution are automatically removed (unstaged)">
 					<smc:messages>
 						<smc:request>
-							<smc:field name="procedureDefinition" comment="Procedure Definition">
-								<smc:type area="Automation" service="ProcedureExecution"
-									name="ProcedureDefinition" />
-							</smc:field>
+							<smc:type area="Automation" service="ProcedureExecution"
+								name="ProcedureOccurrenceFilter" />
 						</smc:request>
 						<smc:response>
-							<smc:field name="procedureDefinitionId" comment="The Procedure Definition ID">
-								<smc:type area="MAL" service="ProcedureExecution" name="Long" />
-							</smc:field>
+							<smc:type list="true" area="MAL" service="ProcedureExecution"
+								name="Long" />
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:submitIP name="updateDefinition" number="203"
-					supportInReplay="false"
-					comment="Updates Procedure Definition referenced by Procedure Identifier">
+				<smc:requestIP name="get" number="2" supportInReplay="false"
+					comment="Gets Procedure Occurrence by Identifier">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="MAL" name="Long" />
+						</smc:request>
+						<smc:response>
+							<smc:type area="Automation" service="ProcedureExecution"
+								name="Procedure" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="2">
+				<smc:requestIP name="start" number="1"
+					supportInReplay="false" comment="Starts the Procedure execution">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="MAL" name="Long" />
+							<smc:type area="Automation" service="ProcedureExecution"
+								name="ProcedureInvocationDetails" />
+						</smc:request>
+						<smc:response>
+							<smc:type area="MAL" name="Long" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:submitIP name="pause" number="2"
+					supportInReplay="false" comment="Pauses the executing Procedure">
 					<smc:messages>
 						<smc:submit>
-							<smc:field name="procedureDefinitionId" comment="The Procedure Definition ID">
-								<smc:type area="MAL" service="ProcedureExecution" name="Long" />
-							</smc:field>
-							<smc:field name="procedureDefinition" comment="Procedure Definition">
-								<smc:type area="Automation" service="ProcedureExecution"
-									name="ProcedureDefinition" />
-							</smc:field>
+							<smc:type area="MAL" name="Long" />
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:submitIP name="removeDefinition" number="202"
-					supportInReplay="false" comment="Removes Procedure Definition by ID">
+				<smc:submitIP name="resume" number="3"
+					supportInReplay="false" comment="Resumes the paused Procedure">
 					<smc:messages>
 						<smc:submit>
-							<smc:field name="procedureDefinitionId" comment="The Procedure Definition ID">
-								<smc:type area="MAL" service="ProcedureExecution" name="Long" />
-							</smc:field>
+							<smc:type area="MAL" name="Long" />
 						</smc:submit>
 					</smc:messages>
 				</smc:submitIP>
-				<smc:requestIP name="listDefinition" number="205"
+				<smc:submitIP name="terminate" number="4"
+					supportInReplay="false" comment="Terminates the running Procedure">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="3">
+				<smc:requestIP name="listDefinition" number="1"
 					supportInReplay="false" comment="Retrieves all Procedure Definitions">
 					<smc:messages>
 						<smc:request>
@@ -455,74 +490,56 @@
 					</smc:messages>
 				</smc:requestIP>
 			</smc:capabilitySet>
-			<smc:capabilitySet number="300">
-				<smc:submitIP name="start" number="301"
-					supportInReplay="false" comment="Starts the Procedure execution">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-							<smc:type area="Automation" service="ProcedureExecution"
-								name="ProcedureInvocationDetails" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="pause" number="302"
-					supportInReplay="false" comment="Pauses the executing Procedure">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="resume" number="303"
-					supportInReplay="false" comment="Resumes the paused Procedure">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="terminate" number="304"
-					supportInReplay="false" comment="Terminates the running Procedure">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:requestIP name="get" number="305"
-					supportInReplay="false" comment="Gets Procedure Occurrence by Identifier">
+			<smc:capabilitySet number="4">
+				<smc:requestIP name="addDefinition" number="1"
+					supportInReplay="false" comment="Adds Procedure Definition">
 					<smc:messages>
 						<smc:request>
-							<smc:type area="MAL" name="Long" />
+							<smc:field name="procedureDefinition" comment="Procedure Definition">
+								<smc:type area="Automation" service="ProcedureExecution"
+									name="ProcedureDefinition" />
+							</smc:field>
 						</smc:request>
 						<smc:response>
-							<smc:type area="Automation" service="ProcedureExecution"
-								name="Procedure" />
+							<smc:field name="procedureDefinitionId" comment="The Procedure Definition ID">
+								<smc:type area="MAL" service="ProcedureExecution" name="Long" />
+							</smc:field>
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="list" number="306"
+				<smc:submitIP name="updateDefinition" number="2"
 					supportInReplay="false"
-					comment="Retrieves all Procedure Occurrences that have been submitted (or staged). Occurrences that have completed the execution are automatically removed (unstaged)">
+					comment="Updates Procedure Definition referenced by Procedure Identifier">
 					<smc:messages>
-						<smc:request>
-							<smc:type area="Automation" service="ProcedureExecution"
-								name="ProcedureOccurrenceFilter" />
-						</smc:request>
-						<smc:response>
-							<smc:type list="true" area="MAL" service="ProcedureExecution"
-								name="Long" />
-						</smc:response>
+						<smc:submit>
+							<smc:field name="procedureDefinitionId" comment="The Procedure Definition ID">
+								<smc:type area="MAL" service="ProcedureExecution" name="Long" />
+							</smc:field>
+							<smc:field name="procedureDefinition" comment="Procedure Definition">
+								<smc:type area="Automation" service="ProcedureExecution"
+									name="ProcedureDefinition" />
+							</smc:field>
+						</smc:submit>
 					</smc:messages>
-				</smc:requestIP>
-				<smc:pubsubIP name="monitorExecution" number="308"
+				</smc:submitIP>
+				<smc:submitIP name="removeDefinition" number="3"
+					supportInReplay="false" comment="Removes Procedure Definition by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:field name="procedureDefinitionId" comment="The Procedure Definition ID">
+								<smc:type area="MAL" service="ProcedureExecution" name="Long" />
+							</smc:field>
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="5">
+				<smc:pubsubIP name="monitorExecution" number="1"
 					supportInReplay="false"
 					comment="Subscribe to Procedure execution monitoring. Notifications are sent on Procedure status changes">
 					<smc:messages>
 						<smc:publishNotify>
-							<smc:type area="MAL" service="ProcedureExecution"
-								name="Long" />
+							<smc:type area="MAL" service="ProcedureExecution" name="Long" />
 							<smc:type area="Automation" service="ProcedureExecution"
 								name="LevelOfDetail" />
 						</smc:publishNotify>

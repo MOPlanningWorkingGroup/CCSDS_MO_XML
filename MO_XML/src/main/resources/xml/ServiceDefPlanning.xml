@@ -3,8 +3,104 @@
 	xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
 	<smc:area name="Planning" number="99" version="1">
 		<smc:service name="PlanningRequest" number="1">
-			<smc:capabilitySet number="100">
-				<smc:requestIP name="listDefinition" number="201"
+			<smc:capabilitySet number="1">
+				<smc:requestIP name="get" number="1"
+					supportInReplay="false" comment="Gets a Planning Request by ID">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="MAL" name="Long" />
+						</smc:request>
+						<smc:response>
+							<smc:type area="Planning" service="PlanningRequest"
+								name="PlanningRequest" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:requestIP name="list" number="2"
+					supportInReplay="false"
+					comment="Gets Planning Requests according to the given filter">
+					<smc:messages>
+						<smc:request>
+							<smc:type area="Planning" service="PlanningRequest"
+								name="PlanningRequestFilter" />
+						</smc:request>
+						<smc:response>
+							<smc:type list="true" area="Planning" service="PlanningRequest"
+								name="PlanningRequest" />
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="2">
+				<smc:requestIP name="add" number="1"
+					supportInReplay="false"
+					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
+					<smc:messages>
+						<smc:request>
+							<smc:field name="planningRequestGroup "
+								comment="A way of logically grouping the Planning Requests">
+								<smc:type area="Planning" service="PlanningRequest"
+									name="PlanningRequestGroup" />
+							</smc:field>
+							<smc:field name="planningRequestDefinitionId"
+								comment="ID corresponds to the PlanningRequest occurrence">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+							<smc:field name="planningRequest"
+								comment="The Planning Request that is submitted">
+								<smc:type area="Planning" service="PlanningRequest"
+									name="PlanningRequest" />
+							</smc:field>
+						</smc:request>
+						<smc:response>
+							<smc:field name="planningRequestIdentifier" comment="The Planning Request Identifier">
+								<smc:type area="MAL" name="Long" />
+							</smc:field>
+						</smc:response>
+					</smc:messages>
+				</smc:requestIP>
+				<smc:submitIP name="update" number="2"
+					supportInReplay="false" comment="Updates the Planning Request by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+							<smc:type area="Planning" service="PlanningRequest"
+								name="PlanningRequest" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+				<smc:submitIP name="remove" number="3"
+					supportInReplay="false" comment="Removes a Planning Request by ID">
+					<smc:messages>
+						<smc:submit>
+							<smc:type area="MAL" name="Long" />
+						</smc:submit>
+					</smc:messages>
+				</smc:submitIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="3">
+				<smc:pubsubIP name="monitorPlanningRequests" number="1"
+					supportInReplay="false"
+					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
+					<smc:messages>
+						<smc:publishNotify>
+							<smc:type area="Planning" service="PlanningRequest"
+								name="PlanningRequestFilter" />
+						</smc:publishNotify>
+					</smc:messages>
+				</smc:pubsubIP>
+				<smc:pubsubIP name="monitorTasks" number="2"
+					supportInReplay="false" comment="Subscribe to Task monitoring">
+					<smc:messages>
+						<smc:publishNotify>
+							<smc:type area="Planning" service="PlanningRequest"
+								name="TaskFilter" />
+						</smc:publishNotify>
+					</smc:messages>
+				</smc:pubsubIP>
+			</smc:capabilitySet>
+			<smc:capabilitySet number="4">
+				<smc:requestIP name="listDefinition" number="1"
 					supportInReplay="true"
 					comment="Retrieves Planning Request Definition based on Identifier (name)">
 					<smc:messages>
@@ -21,7 +117,9 @@
 						</smc:response>
 					</smc:messages>
 				</smc:requestIP>
-				<smc:requestIP name="addDefinition" number="301"
+			</smc:capabilitySet>
+			<smc:capabilitySet number="5">
+				<smc:requestIP name="addDefinition" number="1"
 					supportInReplay="false"
 					comment="The addDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
 					<smc:messages>
@@ -57,7 +155,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:requestIP>
-				<smc:submitIP name="updateDefinition" number="302"
+				<smc:submitIP name="updateDefinition" number="2"
 					supportInReplay="false"
 					comment="Updates Planning Request Definition referenced by Planning Request ID">
 					<smc:messages>
@@ -90,7 +188,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:submitIP name="removeDefinition" number="303"
+				<smc:submitIP name="removeDefinition" number="3"
 					supportInReplay="false" comment="Removes Planning Request Definition by ID">
 					<smc:messages>
 						<smc:submit comment="The Planning Request Definition ID">
@@ -110,90 +208,9 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:pubsubIP name="monitorPlanningRequests" number="304"
-					supportInReplay="false"
-					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
-					<smc:messages>
-						<smc:publishNotify>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequestFilter" />
-						</smc:publishNotify>
-					</smc:messages>
-				</smc:pubsubIP>
-				<smc:requestIP name="add" number="305"
-					supportInReplay="false"
-					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
-					<smc:messages>
-						<smc:request>
-							<smc:field name="planningRequestGroup "
-								comment="A way of logically grouping the Planning Requests">
-								<smc:type area="Planning" service="PlanningRequest"
-									name="PlanningRequestGroup" />
-							</smc:field>
-							<smc:field name="planningRequestDefinitionId"
-								comment="ID corresponds to the PlanningRequest occurrence">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-							<smc:field name="planningRequest"
-								comment="The Planning Request that is submitted">
-								<smc:type area="Planning" service="PlanningRequest"
-									name="PlanningRequest" />
-							</smc:field>
-						</smc:request>
-						<smc:response>
-							<smc:field name="planningRequestIdentifier" comment="The Planning Request Identifier">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:submitIP name="update" number="306"
-					supportInReplay="false" comment="Updates the Planning Request by ID">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequest" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="remove" number="307"
-					supportInReplay="false" comment="Removes a Planning Request by ID">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:requestIP name="get" number="308"
-					supportInReplay="false" comment="Gets a Planning Request by ID">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="MAL" name="Long" />
-						</smc:request>
-						<smc:response>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequest" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:requestIP name="list" number="309"
-					supportInReplay="false"
-					comment="Gets Planning Requests according to the given filter">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequestFilter" />
-						</smc:request>
-						<smc:response>
-							<smc:type list="true" area="Planning" service="PlanningRequest"
-								name="PlanningRequest" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
 			</smc:capabilitySet>
-			<smc:capabilitySet number="200">
-				<smc:requestIP name="listTaskDefinition" number="310"
+			<smc:capabilitySet number="6">
+				<smc:requestIP name="listTaskDefinition" number="1"
 					supportInReplay="true"
 					comment="The listDefinition operation retrieves Task Definitions based on Identifier (name)">
 					<smc:messages>
@@ -210,8 +227,8 @@
 					</smc:messages>
 				</smc:requestIP>
 			</smc:capabilitySet>
-			<smc:capabilitySet number="300">
-				<smc:requestIP name="addTaskDefinition" number="311"
+			<smc:capabilitySet number="7">
+				<smc:requestIP name="addTaskDefinition" number="1"
 					supportInReplay="false"
 					comment="The addTaskDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
 					<smc:messages>
@@ -244,7 +261,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:requestIP>
-				<smc:submitIP name="updateTaskDefinition" number="312"
+				<smc:submitIP name="updateTaskDefinition" number="2"
 					supportInReplay="false"
 					comment="The updateDefinition operation allows a consumer to modify a definition for one or more tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same task name in the fact that the object instance identifier is not changed between the two definitions therefore it is only expected to be used for minor modifications such as descriptions.&#xA;The operation cannot be used to change the name of an existing action definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive.&#xA;">
 					<smc:messages>
@@ -274,7 +291,7 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:submitIP name="removeTaskDefinition" number="313"
+				<smc:submitIP name="removeTaskDefinition" number="3"
 					supportInReplay="false"
 					comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of tasks supported by the task provider.&#xA;The operation does not remove the task definition from the COM archive, merely removes it from the provider. This permits existing, and completed, task instances to continue to reference the correct task definition in the COM archive.&#xA;">
 					<smc:messages>
@@ -294,16 +311,6 @@
 						</smc:errorRef>
 					</smc:errors>
 				</smc:submitIP>
-				<smc:pubsubIP name="monitorTasks" number="314"
-					supportInReplay="false"
-					comment="Subscribe to Task monitoring">
-					<smc:messages>
-						<smc:publishNotify>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="TaskFilter" />
-						</smc:publishNotify>
-					</smc:messages>
-				</smc:pubsubIP>
 			</smc:capabilitySet>
 			<smc:dataTypes>
 				<smc:composite name="PlanningRequestGroup"
@@ -379,9 +386,9 @@
 						<smc:type area="MAL" name="Identifier" />
 					</smc:field>
 				</smc:composite>
-				<smc:composite name="TaskFilter"
-					shortFormPart="6" comment="Task filter structure">
-					<!--  todo -->
+				<smc:composite name="TaskFilter" shortFormPart="6"
+					comment="Task filter structure">
+					<!-- todo -->
 				</smc:composite>
 				<smc:enumeration name="StateEnum" shortFormPart="7">
 					<smc:item value="SUBMITTED" nvalue="1" />
@@ -475,15 +482,18 @@
 					comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall be represented as ActionInstance COM object.&#xA;The object instance identifier for an ActionInstance object shall be populated by the consumer.&#xA;The ActionInstance object shall use the related link to indicate which action definition object it uses.&#xA;The source link of the ActionDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall link to the submitAction OperationActivity object using the source link.&#xA;&#xA;">
 					<smc:object name="TaskDefinition" number="1">
 						<smc:objectType>
-							<smc:type name="TaskDefinition" service="PlanningRequest" area="Planning" />
+							<smc:type name="TaskDefinition" service="PlanningRequest"
+								area="Planning" />
 						</smc:objectType>
 					</smc:object>
 					<smc:object name="TaskOccurrence" number="2">
 						<smc:objectType>
-							<smc:type name="TaskOccurrence" service="PlanningRequest" area="Planning" />
+							<smc:type name="TaskOccurrence" service="PlanningRequest"
+								area="Planning" />
 						</smc:objectType>
 						<smc:relatedObject>
-							<smc:objectType number="1" service="PlanningRequest" area="Planning" />
+							<smc:objectType number="1" service="PlanningRequest"
+								area="Planning" />
 						</smc:relatedObject>
 					</smc:object>
 				</smc:objects>
