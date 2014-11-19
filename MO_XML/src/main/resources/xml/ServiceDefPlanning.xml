@@ -1,508 +1,698 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<smc:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:smc="http://www.ccsds.org/schema/ServiceSchema">
-	<smc:area name="Planning" number="99" version="1">
-		<smc:service name="PlanningRequest" number="10">
-			<smc:capabilitySet number="1">
-				<smc:requestIP name="get" number="101"
-					supportInReplay="false" comment="Gets a Planning Request by ID">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="MAL" name="Long" />
-						</smc:request>
-						<smc:response>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequest" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:requestIP name="list" number="102"
-					supportInReplay="false"
-					comment="Gets Planning Requests according to the given filter">
-					<smc:messages>
-						<smc:request>
-							<smc:type area="Planning" service="PlanningRequest"
-								name="PlanningRequestFilter" />
-						</smc:request>
-						<smc:response>
-							<smc:type list="true" area="Planning" service="PlanningRequest"
-								name="PlanningRequest" />
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-			</smc:capabilitySet>
-			<smc:capabilitySet number="2">
-				<smc:requestIP name="add" number="201"
-					supportInReplay="false"
-					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
-					<smc:messages>
-						<smc:request>
-							<smc:field name="planningRequestGroup "
-								comment="A way of logically grouping the Planning Requests">
-								<smc:type area="Planning" service="PlanningRequest"
-									name="PlanningRequestGroup" />
-							</smc:field>
-							<smc:field name="planningRequestDefinitionId"
-								comment="ID corresponds to the PlanningRequest occurrence">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-							<smc:field name="planningRequest"
-								comment="The Planning Request that is submitted">
-								<smc:type area="Planning" service="PlanningRequest"
+<mal:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:mal="http://www.ccsds.org/schema/ServiceSchema"
+	xmlns:plan="http://www.ccsds.org/schema/PlanningCOMSchema">
+	<mal:area name="Planning" number="5" version="1">
+		<mal:service xsi:type="com:ExtendedServiceType" name="PlanningRequest"
+			number="1">
+			<mal:capabilitySet number="1">
+				<mal:requestIP name="get" number="1" supportInReplay="false"
+					comment="Gets a Planning Request by ID">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="planningRequestId" comment="The Planning Request ID">
+								<mal:type area="MAL" name="Long" />
+							</mal:field>
+						</mal:request>
+						<mal:response>
+							<mal:field name="planningRequest" comment="The Planning Request">
+								<mal:type area="Planning" service="PlanningRequest"
 									name="PlanningRequest" />
-							</smc:field>
-						</smc:request>
-						<smc:response>
-							<smc:field name="planningRequestIdentifier" comment="The Planning Request Identifier">
-								<smc:type area="MAL" name="Long" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-				<smc:submitIP name="update" number="202"
-					supportInReplay="false" comment="Updates the Planning Request by ID">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-							<smc:type area="Planning" service="PlanningRequest"
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="The Planning Request does not exist">
+							<mal:type name="UNKNOWN" area="COM" />
+						</mal:errorRef>
+					</mal:errors>
+				</mal:requestIP>
+				<mal:requestIP name="list" number="2" supportInReplay="false"
+					comment="Gets Planning Requests according to the given filter">
+					<mal:messages>
+						<mal:request>
+							<mal:type area="Planning" service="PlanningRequest"
+								name="PlanningRequestFilter" />
+						</mal:request>
+						<mal:response>
+							<mal:type list="true" area="Planning" service="PlanningRequest"
 								name="PlanningRequest" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-				<smc:submitIP name="remove" number="203"
-					supportInReplay="false" comment="Removes a Planning Request by ID">
-					<smc:messages>
-						<smc:submit>
-							<smc:type area="MAL" name="Long" />
-						</smc:submit>
-					</smc:messages>
-				</smc:submitIP>
-			</smc:capabilitySet>
-			<smc:capabilitySet number="3">
-				<smc:pubsubIP name="monitorPlanningRequests" number="301"
+						</mal:response>
+					</mal:messages>
+				</mal:requestIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="2">
+				<mal:requestIP name="add" number="3" supportInReplay="false"
+					comment="Submits a Planning Request. Provider does not have to process it immediately. Provider assigns a unique Identifierto the Planning Request. Subsequent modifications and inquiries about the Planning Request can be done using that ID. Once submitted, the Planning Request's status is SUBMITTED. SUBMITTED does not mean that the PR has been validated">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="planningRequestDefinitionIdentifier"
+								comment="PlanningRequestDefinition ID, that corresponds to the PlanningRequest instance">
+								<mal:type area="MAL" name="Long" />
+							</mal:field>
+							<mal:field name="planningRequest"
+								comment="The Planning Request that is submitted">
+								<mal:type area="Planning" service="PlanningRequest"
+									name="PlanningRequest" />
+							</mal:field>
+						</mal:request>
+						<mal:response>
+							<mal:field name="planningRequestId" comment="The Planning Request ID">
+								<mal:type area="MAL" name="Long" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+				</mal:requestIP>
+				<mal:submitIP name="update" number="4" supportInReplay="false"
+					comment="Updates the Planning Request by ID">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="planningRequestId" comment="The Planning Request ID">
+								<mal:type area="MAL" name="Long" />
+							</mal:field>
+							<mal:field name="planningRequestIdentifier"
+								comment="The Planning Request that will be referenced by the Planning Request ID">
+								<mal:type area="Planning" service="PlanningRequest"
+									name="PlanningRequest" />
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="The Planning Request does not exist">
+							<mal:type name="UNKNOWN" area="COM" />
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+				<mal:submitIP name="remove" number="5" supportInReplay="false"
+					comment="Removes a Planning Request by ID">
+					<mal:messages>
+						<mal:submit>
+							<mal:field name="planningRequestId" comment="The Planning Request ID">
+								<mal:type area="MAL" name="Long" />
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef comment="The Planning Request does not exist">
+							<mal:type name="UNKNOWN" area="COM" />
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="3">
+				<mal:pubsubIP name="monitorPlanningRequests" number="6"
 					supportInReplay="false"
 					comment="Subscribe to Planning Request monitoring. Monitoring events are published whenever a Planning Request is submitted, updated, deleted, or some Planning Request Status changes. This method notifies about Planning Request changes that match the given filter.">
-					<smc:messages>
-						<smc:publishNotify>
-							<smc:type area="Planning" service="PlanningRequest"
+					<mal:messages>
+						<mal:publishNotify>
+							<mal:type area="Planning" service="PlanningRequest"
 								name="PlanningRequestFilter" />
-						</smc:publishNotify>
-					</smc:messages>
-				</smc:pubsubIP>
-				<smc:pubsubIP name="monitorTasks" number="302"
+						</mal:publishNotify>
+					</mal:messages>
+				</mal:pubsubIP>
+				<mal:pubsubIP name="monitorTasks" number="7"
 					supportInReplay="false" comment="Subscribe to Task monitoring">
-					<smc:messages>
-						<smc:publishNotify>
-							<smc:type area="Planning" service="PlanningRequest"
+					<mal:messages>
+						<mal:publishNotify>
+							<mal:type area="Planning" service="PlanningRequest"
 								name="TaskFilter" />
-						</smc:publishNotify>
-					</smc:messages>
-				</smc:pubsubIP>
-			</smc:capabilitySet>
-			<smc:capabilitySet number="4">
-				<smc:requestIP name="listDefinition" number="401"
+						</mal:publishNotify>
+					</mal:messages>
+				</mal:pubsubIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="4">
+				<mal:requestIP name="listDefinition" number="8"
 					supportInReplay="true"
 					comment="Retrieves Planning Request Definition based on Identifier (name)">
-					<smc:messages>
-						<smc:request>
-							<smc:field name="identifierList" comment="List of identifiers">
-								<smc:type name="IdentifierList" area="MAL" />
-							</smc:field>
-						</smc:request>
-						<smc:response>
-							<smc:field name="planningRequestDefinitionIdList"
+					<mal:messages>
+						<mal:request>
+							<mal:field name="identifierList"
+								comment="List of names of the objects, an unbounded Unicode String">
+								<mal:type name="IdentifierList" area="MAL" />
+							</mal:field>
+						</mal:request>
+						<mal:response>
+							<mal:field name="planningRequestDefinitionIdList"
 								comment="List of Planning Request Definition IDs">
-								<smc:type list="true" area="MAL" name="Long" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-			</smc:capabilitySet>
-			<smc:capabilitySet number="5">
-				<smc:requestIP name="addDefinition" number="501"
+								<mal:type list="true" area="MAL" name="Long" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+				</mal:requestIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="5">
+				<mal:requestIP name="addDefinition" number="9"
 					supportInReplay="false"
 					comment="The addDefinition operation allows a consumer to define one or more taks that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
-					<smc:messages>
-						<smc:request
-							comment="Adds Planning Request Definition. Definition serves as a blueprint for Occurrences.">
-							<smc:field name="planningRequestDefinition" comment="The new Planning Request Definition">
-								<smc:type name="PlanningRequestDefinition" service="PlanningRequest"
+					<mal:messages>
+						<mal:request
+							comment="Adds Planning Request Definition. Definition serves as a blueprint for instances.">
+							<mal:field name="planningRequestDefinition" comment="The new Planning Request Definition">
+								<mal:type name="PlanningRequestDefinition" service="PlanningRequest"
 									area="Planning" />
-							</smc:field>
-						</smc:request>
-						<smc:response comment="The Planning Request Definition ID">
-							<smc:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
-								<smc:type name="Long" area="MAL" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-					<smc:errors>
-						<smc:errorRef
+							</mal:field>
+						</mal:request>
+						<mal:response comment="The Planning Request Definition ID">
+							<mal:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
+								<mal:type name="Long" area="MAL" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef
 							comment="One of the supplied Planning Request Definitions contains an invalid name">
-							<smc:type name="INVALID" area="COM" />
-							<smc:extraInformation
+							<mal:type name="INVALID" area="COM" />
+							<mal:extraInformation
 								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-						<smc:errorRef
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+						<mal:errorRef
 							comment=" One or more of the Planning Request Definitions being added has supplied a Planning Request name that is already in use in the domain">
-							<smc:type name="DUPLICATE" area="COM" />
-							<smc:extraInformation
+							<mal:type name="DUPLICATE" area="COM" />
+							<mal:extraInformation
 								comment="The extra information field contains the indexes of the erroneous values from the originating request list">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-					</smc:errors>
-				</smc:requestIP>
-				<smc:submitIP name="updateDefinition" number="502"
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:requestIP>
+				<mal:submitIP name="updateDefinition" number="10"
 					supportInReplay="false"
 					comment="Updates Planning Request Definition referenced by Planning Request ID">
-					<smc:messages>
-						<smc:submit comment="The Planning Request Definition ID">
-							<smc:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
-								<smc:type name="Long" area="MAL" />
-							</smc:field>
-							<smc:field name="planningRequestDefinition" comment="The new Planning Request Definition">
-								<smc:type name="PlanningRequestDefinition" service="PlanningRequest"
+					<mal:messages>
+						<mal:submit
+							comment="Updates Planning Request Definition referenced by Planning Request ID">
+							<mal:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
+								<mal:type name="Long" area="MAL" />
+							</mal:field>
+							<mal:field name="planningRequestDefinition" comment="The new Planning Request Definition">
+								<mal:type name="PlanningRequestDefinition" service="PlanningRequest"
 									area="Planning" />
-							</smc:field>
-						</smc:submit>
-					</smc:messages>
-					<smc:errors>
-						<smc:errorRef
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef
 							comment="One of the supplied Planning Request Definitions is trying to change its name">
-							<smc:type name="INVALID" area="COM" />
-							<smc:extraInformation
+							<mal:type name="INVALID" area="COM" />
+							<mal:extraInformation
 								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-						<smc:errorRef
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+						<mal:errorRef
 							comment="One of the supplied Planning Request Definition object instance identifiers is unknown">
-							<smc:type name="UNKNOWN" area="MAL" />
-							<smc:extraInformation
+							<mal:type name="UNKNOWN" area="MAL" />
+							<mal:extraInformation
 								comment="The indexes of the error values shall be contained in the extra information field">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-					</smc:errors>
-				</smc:submitIP>
-				<smc:submitIP name="removeDefinition" number="503"
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+				<mal:submitIP name="removeDefinition" number="11"
 					supportInReplay="false" comment="Removes Planning Request Definition by ID">
-					<smc:messages>
-						<smc:submit comment="The Planning Request Definition ID">
-							<smc:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
-								<smc:type name="Long" area="MAL" />
-							</smc:field>
-						</smc:submit>
-					</smc:messages>
-					<smc:errors>
-						<smc:errorRef
+					<mal:messages>
+						<mal:submit comment="The Planning Request Definition ID">
+							<mal:field name="planningRequestDefinitionId" comment="The Planning Request Definition ID">
+								<mal:type name="Long" area="MAL" />
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef
 							comment="One of the supplied Planning Request Definition object instance identifiers is unknown">
-							<smc:type name="UNKNOWN" area="MAL" />
-							<smc:extraInformation
+							<mal:type name="UNKNOWN" area="MAL" />
+							<mal:extraInformation
 								comment="The indexes of the error values shall be contained in the extra information field">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-					</smc:errors>
-				</smc:submitIP>
-			</smc:capabilitySet>
-			<smc:capabilitySet number="6">
-				<smc:requestIP name="listTaskDefinition" number="601"
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="6">
+				<mal:requestIP name="listTaskDefinition" number="12"
 					supportInReplay="true"
-					comment="The listDefinition operation retrieves Task Definitions based on Identifier (name)">
-					<smc:messages>
-						<smc:request>
-							<smc:field name="identifierList" comment="List of identifiers">
-								<smc:type name="IdentifierList" area="MAL" />
-							</smc:field>
-						</smc:request>
-						<smc:response>
-							<smc:field name="taskDefinitionIds" comment="List of task definition ID-s">
-								<smc:type list="true" area="MAL" name="Long" />
-							</smc:field>
-						</smc:response>
-					</smc:messages>
-				</smc:requestIP>
-			</smc:capabilitySet>
-			<smc:capabilitySet number="7">
-				<smc:requestIP name="addTaskDefinition" number="701"
+					comment="Retrieves Task Definition based on Identifier (name)">
+					<mal:messages>
+						<mal:request>
+							<mal:field name="identifierList"
+								comment="List of names of the objects, an unbounded Unicode String">
+								<mal:type name="IdentifierList" area="MAL" />
+							</mal:field>
+						</mal:request>
+						<mal:response>
+							<mal:field name="taskDefinitionIds" comment="List of task definition IDs">
+								<mal:type list="true" area="MAL" name="Long" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+				</mal:requestIP>
+			</mal:capabilitySet>
+			<mal:capabilitySet number="7">
+				<mal:requestIP name="addTaskDefinition" number="13"
 					supportInReplay="false"
-					comment="The addTaskDefinition operation allows a consumer to define task that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the action service.&#xA;">
-					<smc:messages>
-						<smc:request
+					comment="Adds Task Definition. Definition serves as a blueprint for instances">
+					<mal:messages>
+						<mal:request
 							comment="The supplied definition shall hold the definition to be added.&#xA;The name field of the supplied TaskDefinition structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique for the domain of the provider otherwise a DUPLICATE error will be raised.&#xA;&#xA;">
-							<smc:type name="TaskDefinition" service="PlanningRequest"
-								area="Planning" />
-						</smc:request>
-						<smc:response
-							comment="The response shall contain new task definition ID">
-							<smc:type name="Long" area="MAL" />
-						</smc:response>
-					</smc:messages>
-					<smc:errors>
-						<smc:errorRef
+							<mal:field name="taskDefinition" comment="The Task Definition">
+								<mal:type name="TaskDefinition" service="PlanningRequest"
+									area="Planning" />
+							</mal:field>
+						</mal:request>
+						<mal:response comment="The response shall contain new task definition ID">
+							<mal:field name="taskDefinitionId" comment="The Task Definition ID">
+								<mal:type name="Long" area="MAL" />
+							</mal:field>
+						</mal:response>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef
 							comment="One of the supplied task definitions contains an invalid task name.&#xA;">
-							<smc:type name="INVALID" area="COM" />
-							<smc:extraInformation
+							<mal:type name="INVALID" area="COM" />
+							<mal:extraInformation
 								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-						<smc:errorRef
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+						<mal:errorRef
 							comment="One or more of the action definitions being added has supplied an task name that is already in use in the domain.&#xA;">
-							<smc:type name="DUPLICATE" area="COM" />
-							<smc:extraInformation
+							<mal:type name="DUPLICATE" area="COM" />
+							<mal:extraInformation
 								comment="The extra information field contains the indexes of the erroneous values from the originating request list.&#xA;">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-					</smc:errors>
-				</smc:requestIP>
-				<smc:submitIP name="updateTaskDefinition" number="702"
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:requestIP>
+				<mal:submitIP name="updateTaskDefinition" number="14"
 					supportInReplay="false"
-					comment="The updateDefinition operation allows a consumer to modify a definition for one or more tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same task name in the fact that the object instance identifier is not changed between the two definitions therefore it is only expected to be used for minor modifications such as descriptions.&#xA;The operation cannot be used to change the name of an existing action definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive.&#xA;">
-					<smc:messages>
-						<smc:submit
+					comment="Updates Task Definition referenced by Task Definition ID.">
+					<mal:messages>
+						<mal:submit
 							comment="The submitted task definition shall hold the definition to be modified.&#xA;The first list shall contain the object instance identifier of the actions definition to be updated.&#xA;The second contain the replacement action definition.&#xA;">
-							<smc:type name="Long" area="MAL" />
-							<smc:type name="TaskDefinition" service="PlanningRequest"
-								area="Planning" />
-						</smc:submit>
-					</smc:messages>
-					<smc:errors>
-						<smc:errorRef
+							<mal:field name="taskDefinitionId" comment="The Task Definition ID">
+								<mal:type name="Long" area="MAL" />
+							</mal:field>
+							<mal:field name="taskDefinition" comment="The Task Definition">
+								<mal:type name="TaskDefinition" service="PlanningRequest"
+									area="Planning" />
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef
 							comment="One of the supplied task definitions is trying to change its task name.&#xA;">
-							<smc:type name="INVALID" area="COM" />
-							<smc:extraInformation
+							<mal:type name="INVALID" area="COM" />
+							<mal:extraInformation
 								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied.&#xA;">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-						<smc:errorRef
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+						<mal:errorRef
 							comment="One of the supplied task definition object instance identifiers is unknown.&#xA;">
-							<smc:type name="UNKNOWN" area="MAL" />
-							<smc:extraInformation
+							<mal:type name="UNKNOWN" area="MAL" />
+							<mal:extraInformation
 								comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-					</smc:errors>
-				</smc:submitIP>
-				<smc:submitIP name="removeTaskDefinition" number="703"
-					supportInReplay="false"
-					comment="The removeDefinition operation allows a consumer to remove definition from the list of tasks supported by the task provider.&#xA;The operation does not remove the task definition from the COM archive, merely removes it from the provider. This permits existing, and completed, task instances to continue to reference the correct task definition in the COM archive.&#xA;">
-					<smc:messages>
-						<smc:submit
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+				<mal:submitIP name="removeTaskDefinition" number="15"
+					supportInReplay="false" comment="Removes Task Definition by ID">
+					<mal:messages>
+						<mal:submit
 							comment="The supplied definiton holds the object instance identifier of the definition to be removed from the provider.&#xA;The definition may contain the wildcard value of '0'.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an executing task instance then this operation shall not fail.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new task instances.&#xA;The operation shall either completely succeed or fail, in the case of a fail no definitions shall be removed.&#xA;">
-							<smc:type name="Long" area="MAL" />
-						</smc:submit>
-					</smc:messages>
-					<smc:errors>
-						<smc:errorRef
+							<mal:field name="taskDefinitionId" comment="The Task Definition ID">
+								<mal:type name="Long" area="MAL" />
+							</mal:field>
+						</mal:submit>
+					</mal:messages>
+					<mal:errors>
+						<mal:errorRef
 							comment="One of the supplied task definition object instance identifiers is unknown.&#xA;">
-							<smc:type name="UNKNOWN" area="MAL" />
-							<smc:extraInformation
+							<mal:type name="UNKNOWN" area="MAL" />
+							<mal:extraInformation
 								comment="The indexes of the error values shall be contained in the extra information field.&#xA;">
-								<smc:type list="true" name="UInteger" area="MAL" />
-							</smc:extraInformation>
-						</smc:errorRef>
-					</smc:errors>
-				</smc:submitIP>
-			</smc:capabilitySet>
-			<smc:dataTypes>
-				<smc:composite name="PlanningRequestGroup"
-					shortFormPart="1"
-					comment="This data structure defines a planning request group composite">
-					<smc:field name="id" comment="id">
-						<smc:type area="MAL" name="Long" />
-					</smc:field>
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="description" comment="description">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="PlanningRequest" shortFormPart="2"
-					comment="This data structure defines a planning request composite">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="description" comment="description">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="planningRequestStatus" comment="Status of planning request">
-						<smc:type area="Planning" service="PlanningRequest" name="PlanningRequestStatus" />
-					</smc:field>
-					<smc:field name="tasks"
-						comment="Tasks (optional).The allowed Task types is specified in PlanningRequestDefinition">
-						<smc:type area="Planning" name="Task" service="PlanningRequest" />
-					</smc:field>
-					<smc:field name="arguments" comment="Argument values">
-						<smc:type list="true" area="Planning" name="PlanningRequestArgumentValue"
+								<mal:type list="true" name="UInteger" area="MAL" />
+							</mal:extraInformation>
+						</mal:errorRef>
+					</mal:errors>
+				</mal:submitIP>
+			</mal:capabilitySet>
+			<mal:dataTypes>
+				<mal:composite name="PlanningRequest" shortFormPart="1"
+					comment="Planning Request is the main service object of the Planning Request service. Planning Request contains Tasks. Planning Request always relates to exactly one Planning Request Definition">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="id"
+						comment="ID of a Planning Request. The ID is generated by the service provider upon PR submission">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="planningRequestStatusId" comment="ID of the planning request status">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="planningRequestDefinitionId" comment="ID of a Planning Request Definition">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="comment"
+						comment="Comment, or any other free text, that describes the Planning Request submission">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="source"
+						comment="The origin on the request, eg from Flight Dynamics or SOC">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="destination"
+						comment="The target system of the Planning Request">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="domains"
+						comment="The collection of domain names for which the Planning Request is placed">
+						<mal:type list="true" area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="argumentValues"
+						comment="The argument values. The arguments are in the order of argument definitions in the Planning Request definition object">
+						<mal:type list="true" name="ArgumentValue" area="PlanningCOM" />
+					</mal:field>
+					<mal:field name="tasks" comment="The list of tasks">
+						<mal:type list="true" area="Planning" name="Task"
 							service="PlanningRequest" />
-					</smc:field>
-					<smc:field name="attachments" comment="Attachments">
-						<smc:type list="true" area="MAL" name="Blob" service="PlanningRequest" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="PlanningRequestDefinition"
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="PlanningRequestDefinition"
+					shortFormPart="2"
+					comment="The Planning Request Definition defines a 'class' or a 'type' of Planning Requests. Each Planning Request is associated with exactly one Planning Request Definition. The 'arguments' of the definition are used for defining those fields that are not standardized in the Planning Request">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="id"
+						comment="ID of the Planning Request Definition. The ID is generated by the service provider upon submission">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="name"
+						comment="The name of the Planning Request definition">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="description"
+						comment="The description of the Planning Request Definition">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="validateOnSubmit"
+						comment="Indicates that the Planning Request is validated on submission. Validation means that the Planning Request fields are checked for correctness/integrity, eg dates are valid">
+						<mal:type area="MAL" name="Boolean" />
+					</mal:field>
+					<mal:field name="arguments"
+						comment="The argument definitions. The argument definitions specify the type of arguments. The arguments can be used for mission specific fields">
+						<mal:type list="true" area="PlanningCOM" name="ArgumentDefinition" />
+					</mal:field>
+					<mal:field name="taskDefinitions" comment="The list of task definitions">
+						<mal:type list="true" area="Planning" name="TaskDefinition"
+							service="PlanningRequest" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="PlanningRequestFilter"
 					shortFormPart="3"
-					comment="This data structure defines a planning request composite">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="description" comment="description">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="allowedTaskTypes" comment="Allowed task types">
-						<smc:type list="true" name="TaskDefinition" service="PlanningRequest"
-							area="Planning" />
-					</smc:field>
-					<smc:field name="arguments" comment="Argument types of a Task">
-						<smc:type list="true" area="Planning"
-							name="PlanningRequestArgumentDefinition" service="PlanningRequest" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="PlanningRequestFilter"
-					shortFormPart="4"
 					comment="This data structure defines a planning request filter composite">
-					<smc:field name="status" comment="status">
-						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="PlanningRequestStatus"
-					shortFormPart="5" comment="Planning Request status structure">
-					<smc:field name="state" comment="state">
-						<smc:type area="Planning" service="PlanningRequest" name="StateEnum" />
-					</smc:field>
-					<smc:field name="problems" comment="state">
-						<smc:type list="true" area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="PlanningRequestIdentifier" comment="PlanningRequest Identifier">
-						<smc:type area="MAL" name="Identifier" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="TaskFilter" shortFormPart="6"
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="status" comment="status">
+						<mal:type area="Planning" service="PlanningRequest" name="StateEnum" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="TaskFilter" shortFormPart="4"
 					comment="Task filter structure">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
 					<!-- todo -->
-				</smc:composite>
-				<smc:enumeration name="StateEnum" shortFormPart="7">
-					<smc:item value="SUBMITTED" nvalue="1" />
-					<smc:item value="ACCEPTED" nvalue="2" />
-					<smc:item value="INVALID" nvalue="3" />
-					<smc:item value="SCHEDULED" nvalue="4" />
-					<smc:item value="EXECUTED" nvalue="5" />
-				</smc:enumeration>
-				<smc:composite name="PlanningRequestUpdate"
+				</mal:composite>
+				<mal:composite name="TaskDefinition" shortFormPart="5"
+					comment="The Task Definition defines a 'class' or a 'type' of Tasks. Each Task is associated with exactly one Task Definition. The 'arguments' of the definition are used for defining those fields that are not standardized in the Task">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="id"
+						comment="ID of the Task Definition. The ID is generated by the service provider upon submission">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="name" comment="The name of the Task definition">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="description" comment="The description of the Task definition">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="arguments"
+						comment="The argument definitions. The argument definitions specify the type of arguments. The arguments can be used for mission specific fields">
+						<mal:type list="true" area="PlanningCOM" name="ArgumentDefinition" />
+					</mal:field>
+					<mal:field name="subTasks"
+						comment="The sub Task definition. Defines which TasksDefinitions are allowed to the the sub Tasks">
+						<mal:type list="true" area="Planning" name="TaskDefinition"
+							service="PlanningRequest" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="Task" shortFormPart="6"
+					comment="This data structure defines a task definition composite">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="id"
+						comment="ID of the Task. The ID is generated by the service provider upon a Task submission">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="taskDefinitionId" comment="ID of the task definition">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="comment"
+						comment="Comment, or any other free text, that describes the Planning Request submission">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="subTasks"
+						comment="List of sub Tasks. The sub Tasks are in the order of sub Task definitions in the Task definition object">
+						<mal:type list="true" area="Planning" name="Task"
+							service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="argumentValues"
+						comment="The argument values. The arguments are in the order of argument definitions in the Task definition object">
+						<mal:type list="true" name="ArgumentValue" area="PlanningCOM" />
+					</mal:field>
+					<mal:field name="executionTiming"
+						comment="The execution timing constraints of a Task">
+						<mal:type area="PlanningCOM" name="ExecutionTimingConstraints" />
+					</mal:field>
+					<mal:field name="executionDetails" comment="The running constraints of a Task">
+						<mal:type area="PlanningCOM" name="ExecutionRunningConstraints" />
+					</mal:field>
+					<mal:field name="taskStatusId" comment="ID of task status">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="TaskStatus" shortFormPart="7"
+					comment="The status of a Task. The Task status tells where the Task is in its life cycle. Problems with a Task may be related to planning or execution">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="taskId" comment="ID of the task">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="submittedNotValidated"
+						comment="The Planning Request has been submitted. The input fields have not been validated for consistency by the service provider. Example consistency validation is checking for invalid fields. Consistency checking does not include planning conflicts">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="submittedValidated"
+						comment="The Planning Request has been submitted, and the input fields have been validated for consistency">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="submittedInvalid"
+						comment="The Planning Request has been submitted, but one or more fields have errors">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="accepted"
+						comment="The planning request has been accepted by the planning system for the inclusion to the plan">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="rejected"
+						comment="The Planning Request has not been accepted by the planning system">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="planConflict"
+						comment="The planning system cannot include the Planning Request to the plan due to a (resource/temporal) conflict">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="planned"
+						comment="The Planning Request has been included in a Plan">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="scheduled" comment="The Planning Request has been scheduled">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="distributedForExecution"
+						comment="The scheduled Planning Request has been distributed to the destination system">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="executeCompleted"
+						comment="The scheduled Planning Request has been successfully executed">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="executeFailed"
+						comment="The scheduled Planning Request execution has failed">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="PlanningRequestStatus"
 					shortFormPart="8"
-					comment="This data structure defines a PlanningRequest Update composite">
-					<smc:field name="counter"
-						comment="A counter used to distinguish the updates and to check the ordering.">
-						<smc:type area="MAL" name="Short" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="PlanningRequestArgumentDefinition"
-					shortFormPart="9" comment="Definition argument types of a planning request">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="valueType" comment="The type of the value">
-						<smc:type area="MAL" name="UOctet" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="PlanningRequestArgumentValue"
-					shortFormPart="10" comment="Definition argument types of a planning request">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="value" comment="The argument value">
-						<smc:type area="MAL" name="Attribute" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="TaskDefinition" shortFormPart="11"
-					comment="This data structure defines a task definition composite">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="description" comment="description">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="arguments" comment="Argument types of a Task">
-						<smc:type list="true" area="Planning" name="TaskArgumentDefinition"
+					comment="The status of a Planning Request. The Planning Request status tells where the Planning Request is in its life cycle. Problems with a Planning Request may be related to the Planning Request Object, or the Tasks that are part of the Planning Request">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="planningRequestId" comment="ID of the planning request">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="submittedNotValidated"
+						comment="The Planning Request has been submitted. The input fields have not been validated for consistency by the service provider. Example consistency validation is checking for invalid fields. Consistency checking does not include planning conflicts">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="submittedValidated"
+						comment="The Planning Request has been submitted, and the input fields have been validated for consistency">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="submittedInvalid"
+						comment="The Planning Request has been submitted, but one or more fields have errors">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="accepted"
+						comment="The planning request has been accepted by the planning system for the inclusion to the plan">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="rejected"
+						comment="The Planning Request has not been accepted by the planning system">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="planConflict"
+						comment="The planning system cannot include the Planning Request to the plan due to a (resource/temporal) conflict">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="planned"
+						comment="The Planning Request has been included in a Plan">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="scheduled" comment="The Planning Request has been scheduled">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="distributedForExecution"
+						comment="The scheduled Planning Request has been distributed to the destination system">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="executeCompleted"
+						comment="The scheduled Planning Request has been successfully executed">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+					<mal:field name="executeFailed"
+						comment="The scheduled Planning Request execution has failed">
+						<mal:type area="Planning" name="StatusTag" service="PlanningRequest" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="StatusTag" shortFormPart="9"
+					comment="This data structure defines a status tag composite">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="date" comment="date">
+						<mal:type area="MAL" name="Time" />
+					</mal:field>
+					<mal:field name="comment" comment="comment">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="PlanningRequestResponse"
+					shortFormPart="10"
+					comment="Response object for a Planning Request submission. The Planning Request need not be validated, when the PlanningRequestResponse is sent back to the client. PlanningRequestResponse merely indicates that a PlanningRequest has been received by the planning request service provider">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="id" comment="ID of a Planning Request response">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="date"
+						comment="The date of the Planning Request response">
+						<mal:type area="MAL" name="Time" />
+					</mal:field>
+					<mal:field name="planningRequestId" comment="The ID of the Planning Request">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="resourceAvailabilitys" comment="The ID of the Planning Request">
+						<mal:type list="true" area="Planning" name="ResourceAvailability"
 							service="PlanningRequest" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="TaskArgumentDefinition"
-					shortFormPart="12" comment="Argument types of a Task">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="valueType" comment="The type of the value">
-						<smc:type area="MAL" name="UOctet" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="Task" shortFormPart="13"
-					comment="This data structure defines a task definition composite">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="description" comment="description">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="arguments" comment="Argument values">
-						<smc:type list="true" area="Planning" name="TaskArgumentValue"
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="ResourceAvailability"
+					shortFormPart="11"
+					comment="ResourceAvailability connects a Task and a Resource. If it is known what Resources are required for a Task execution, then ResourceAvailability lists the intervals, where it is possible to execute the Task. This is useful in the case where a Task timing constraints lead to a conflict, and the planning system offers alternative timing constraints ResourceAvailabilityInterval).">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="resourceId" comment="The ID of the resource">
+						<mal:type list="true" area="MAL" name="Long" />
+					</mal:field>
+					<mal:field name="intervals" comment="List of Intervals">
+						<mal:type list="true" area="Planning" name="ResourceAvailabilityInterval"
 							service="PlanningRequest" />
-					</smc:field>
-					<smc:field name="attachments" comment="Attachments to the Task">
-						<smc:type list="true" area="MAL" name="Blob" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="TaskArgumentValue" shortFormPart="14"
-					comment="Argument values">
-					<smc:field name="name" comment="name">
-						<smc:type area="MAL" name="String" />
-					</smc:field>
-					<smc:field name="value" comment="The type of the value">
-						<smc:type area="MAL" name="Attribute" />
-					</smc:field>
-				</smc:composite>
-				<smc:composite name="TaskOccurrence" shortFormPart="15"
-					comment="This data structure defines a task definition composite">
-					<smc:field name="task" comment="The task">
-						<smc:type area="Planning" name="Task" service="PlanningRequest" />
-					</smc:field>
-				</smc:composite>
-			</smc:dataTypes>
-			<smc:features>
-				<smc:objects
-					comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall be represented as ActionInstance COM object.&#xA;The object instance identifier for an ActionInstance object shall be populated by the consumer.&#xA;The ActionInstance object shall use the related link to indicate which action definition object it uses.&#xA;The source link of the ActionDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall link to the submitAction OperationActivity object using the source link.&#xA;&#xA;">
-					<smc:object name="TaskDefinition" number="1">
-						<smc:objectType>
-							<smc:type name="TaskDefinition" service="PlanningRequest"
-								area="Planning" />
-						</smc:objectType>
-					</smc:object>
-					<smc:object name="TaskOccurrence" number="2">
-						<smc:objectType>
-							<smc:type name="TaskOccurrence" service="PlanningRequest"
-								area="Planning" />
-						</smc:objectType>
-						<smc:relatedObject>
-							<smc:objectType number="1" service="PlanningRequest"
-								area="Planning" />
-						</smc:relatedObject>
-					</smc:object>
-				</smc:objects>
-				<smc:archiveUsage
-					comment="TaskDefinition objects should be stored in the COM archive.&#xA;When an action is sent with the submitTask operation, the TaskInstance object should be stored in the COM archive by the consumer.&#xA;" />
-				<smc:activityUsage
-					comment="The COM Activity service may be used to monitor the transfer and execution of the submitTask operation.&#xA;The COM Activity service may be used to monitor the transfer and execution of task instances.&#xA;The COM activity events shall be generated as defined in the COM activity tracking service for the submitTask operation.&#xA;A Release activity event for the action instance shall be generated when an task is released from a consumer using the submitTask operation.&#xA;An Acceptance activity event for the task instance shall be generated when an task is received by the destination provider as part of the submitTask operation.&#xA;The source link of the activity events for the task instance shall be the TaskInstance object.&#xA;In all activity execution events for the action instance the TaskExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages.&#xA;&#xA;" />
-			</smc:features>
-		</smc:service>
-	</smc:area>
-</smc:specification>
+					</mal:field>
+					<mal:field name="taskId" comment="ID of the Task">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="ResourceAvailabilityInterval"
+					shortFormPart="12"
+					comment="This data structure defines a resource availability composite">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="earliestStart" comment="The earliest start of the Task/Activity">
+						<mal:type area="PlanningCOM" name="Trigger" />
+					</mal:field>
+					<mal:field name="latestStart" comment="The latest start of the Task/Activity">
+						<mal:type area="PlanningCOM" name="Trigger" />
+					</mal:field>
+					<mal:field name="latestEnd" comment="The latest end of the Task/Activity">
+						<mal:type area="PlanningCOM" name="Trigger" />
+					</mal:field>
+				</mal:composite>
+				<mal:composite name="Audit" shortFormPart="13"
+					comment="Audit is an encapsulation of version related information">
+					<mal:extends>
+						<mal:type name="Composite" area="MAL" />
+					</mal:extends>
+					<mal:field name="version"
+						comment="The version number. The version number format is not standardized">
+						<mal:type area="MAL" name="String" />
+					</mal:field>
+					<mal:field name="dateCreated" comment="The creation date">
+						<mal:type area="MAL" name="Time" />
+					</mal:field>
+					<mal:field name="dateModified" comment="The date of latest change">
+						<mal:type area="MAL" name="Time" />
+					</mal:field>
+					<mal:field name="planningRequestId" comment="ID of the Planning Request">
+						<mal:type area="MAL" name="Long" />
+					</mal:field>
+				</mal:composite>
+				<mal:enumeration name="StateEnum" shortFormPart="14">
+					<mal:item value="SUBMITTED" nvalue="1" />
+					<mal:item value="ACCEPTED" nvalue="2" />
+					<mal:item value="INVALID" nvalue="3" />
+					<mal:item value="SCHEDULED" nvalue="4" />
+					<mal:item value="EXECUTED" nvalue="5" />
+				</mal:enumeration>
+			</mal:dataTypes>
+		</mal:service>
+	</mal:area>
+</mal:specification>
         
