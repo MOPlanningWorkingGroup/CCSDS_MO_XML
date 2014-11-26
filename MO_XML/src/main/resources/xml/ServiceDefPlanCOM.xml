@@ -35,26 +35,20 @@
 					<mal:type list="true" area="PlanningCOM" name="ArgumentDefinition" />
 				</mal:field>
 			</mal:composite>
-			<mal:composite name="Trigger" shortFormPart="3"
-				comment="This data structure defines a trigger composite">
+			<mal:composite name="TimeTrigger" shortFormPart="4"
+				comment="This data structure defines a time trigger composite">
 				<mal:extends>
 					<mal:type name="Composite" area="MAL" />
 				</mal:extends>
 				<mal:field name="id" comment="ID of the trigger">
 					<mal:type area="MAL" name="Long" />
 				</mal:field>
-				<mal:field name="timeTrigger" comment="The synchronization time constraint">
-					<mal:type name="TimeTrigger" area="PlanningCOM" />
+				<mal:field name="name" comment="Name of the trigger">
+					<mal:type area="MAL" name="String" />
 				</mal:field>
-				<mal:field name="eventTrigger" comment="The synchronization event constraint">
-					<mal:type name="EventTrigger" area="PlanningCOM" />
+				<mal:field name="description" comment="Description of the trigger">
+					<mal:type area="MAL" name="String" />
 				</mal:field>
-			</mal:composite>
-			<mal:composite name="TimeTrigger" shortFormPart="4"
-				comment="This data structure defines a time trigger composite">
-				<mal:extends>
-					<mal:type name="Composite" area="MAL" />
-				</mal:extends>
 				<mal:field name="time" comment="time">
 					<mal:type area="MAL" name="Time" />
 				</mal:field>
@@ -70,6 +64,15 @@
 				<mal:extends>
 					<mal:type name="Composite" area="MAL" />
 				</mal:extends>
+				<mal:field name="id" comment="ID of the trigger">
+					<mal:type area="MAL" name="Long" />
+				</mal:field>
+				<mal:field name="name" comment="Name of the trigger">
+					<mal:type area="MAL" name="String" />
+				</mal:field>
+				<mal:field name="description" comment="Description of the trigger">
+					<mal:type area="MAL" name="String" />
+				</mal:field>
 				<mal:field name="baseEvent"
 					comment="The Event to which the trigger is synchronized">
 					<mal:type area="PlanningCOM" name="Event" />
@@ -79,51 +82,13 @@
 					<mal:type area="PlanningCOM" name="Event" />
 				</mal:field>
 			</mal:composite>
-			<mal:composite name="ExecutionTimingConstraints"
-				shortFormPart="6"
-				comment="This data structure defines a execution timing constraints composite">
-				<mal:extends>
-					<mal:type name="Composite" area="MAL" />
-				</mal:extends>
-				<mal:field name="start" comment="The scheduled start time or event">
-					<mal:type area="PlanningCOM" name="Trigger" />
-				</mal:field>
-				<mal:field name="end" comment="The scheduled end time or event">
-					<mal:type area="PlanningCOM" name="Trigger" />
-				</mal:field>
-				<mal:field name="earliestStart" comment="The earliest start time or event">
-					<mal:type area="PlanningCOM" name="Trigger" />
-				</mal:field>
-				<mal:field name="latestStart" comment="The latest start time or event">
-					<mal:type area="PlanningCOM" name="Trigger" />
-				</mal:field>
-				<mal:field name="latestEnd" comment="The latest end time or event">
-					<mal:type area="PlanningCOM" name="Trigger" />
-				</mal:field>
-			</mal:composite>
-			<mal:composite name="ExecutionRunningConstraints"
-				shortFormPart="7"
-				comment="A collection of running constraints for a Task/Activity. Considered low priority">
-				<mal:extends>
-					<mal:type name="Composite" area="MAL" />
-				</mal:extends>
-				<mal:field name="executionPredecessors" comment="executionPredecessors">
-					<mal:type list="true" area="PlanningCOM" name="ExecutionPredecessor" />
-				</mal:field>
-				<mal:field name="levelOfMonitoringFeedback" comment="levelOfMonitoringFeedback">
-					<mal:type area="PlanningCOM" name="LevelOfMonitoringFeedback" />
-				</mal:field>
-				<mal:field name="userConfirmation" comment="userConfirmation">
-					<mal:type area="PlanningCOM" name="UserConfirmation" />
-				</mal:field>
-			</mal:composite>
 			<mal:composite name="ExecutionPredecessor"
 				shortFormPart="8"
 				comment="The Task, whose completion or failure is a pre-condition for some other Task">
 				<mal:extends>
 					<mal:type name="Composite" area="MAL" />
 				</mal:extends>
-				<mal:field name="taskKd" comment="The task that is a predecessor">
+				<mal:field name="id" comment="The Task/Activity Id that is a predecessor">
 					<mal:type area="MAL" name="Long" />
 				</mal:field>
 				<mal:field name="executionStatus" comment="executionStatus">
