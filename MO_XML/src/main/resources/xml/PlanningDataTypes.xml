@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
+  <mal:area name="PlanningDataTypes" number="6" version="1"
+            comment="This section details the data types used in the planning and other planning related services, such as automation. This section does not contain services. The structures are defined in terms of the MO MAL.">
+	 <mal:dataTypes>
+	 <!-- ArgumentDefinitionDetails -->
+      <mal:composite name="ArgumentDefinitionDetails" shortFormPart="1"
+                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="name" canBeNull="false"
+					comment="The name of the argument definition. Must not be empty or the wildcard value.">
+          <mal:type name="Identifier" area="MAL"/>
+        </mal:field>
+        <mal:field name="description" canBeNull="true"
+					comment="The description of the argument definition.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+        <mal:field name="attributeType" canBeNull="false"
+                   comment="Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.">
+          <mal:type name="Octet" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+	  <!-- AttributeValue -->
+      <mal:composite name="AttributeValue" shortFormPart="2"
+                     comment="The AttributeValue structure holds an Attribute value. It allows a list of different Attribute types to be created whereas List&lt;Attribute&gt; would require the values to be all of the same type.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="value" canBeNull="false"
+                   comment="TThe argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete AttributeValue composite. The structure is identical to the MC AttributeValue.">
+          <mal:type name="Attribute" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+	 <!-- StatusRecord -->
+      <mal:composite name="StatusRecord" shortFormPart="3"
+                     comment="The StatusRecord structure holds information related to a field in a status object. Example status object is a planning request status.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="date" canBeNull="false"
+					comment="The date of the record.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="comment" canBeNull="true"
+                   comment="Comment for the record.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+	  <!-- TriggerDetails -->
+      <mal:composite name="TriggerDetails" shortFormPart="6"
+                     comment="The TriggerDetails structure holds the synchronization information related to tasks and activities.  An example is a task or activity start time. There are two types of task/activity synchronization: based on time and based on event.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="triggerName" canBeNull="false"
+                   comment="The name of the synchronization. A start time or event, for example.">
+          <mal:type name="TriggerName" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="triggerType" canBeNull="false"
+                   comment="The type of synchronization. The possibilities are time or event based synchonization. Depending on the value of triggerType, only one of timeTrigger or eventTrigger is relevant. The other is null.">
+          <mal:type name="TriggerType" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="timeTrigger" canBeNull="true"
+                   comment="Time related synchronization structure.">
+          <mal:type name="TimeTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="eventTrigger" canBeNull="true"
+                   comment="Event related synchronization structure.">
+          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+      </mal:composite>
+ 	  <!-- TimeTrigger -->
+      <mal:composite name="TimeTrigger" shortFormPart="7"
+                     comment="The TimeTrigger structure holds the time based synchronization information related to tasks and activities.  An example is a task or activity start time.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="timeValue"
+					comment="Time of the Event, millisecond precision.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="isAbsoluteTime" canBeNull="false"
+                   comment="If set then absolute time, else relative time.">
+          <mal:type name="Boolean" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+  	  <!-- EventTrigger -->
+      <mal:composite name="EventTrigger" shortFormPart="8"
+                     comment="The EventTrigger structure holds the event based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence.&#xA;TBD: a list of event arguments may be required">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="baseEventDefinition" canBeNull="false"
+					comment="The event type to which the trigger is synchronized. The events are not standardized as part of the planning request service.">
+          <mal:type name="Identifier" area="MAL"/>
+        </mal:field>
+        <mal:field name="everyOccurrence" canBeNull="false"
+                   comment="If set then the task or activity is started on every occurrence of the event type.">
+          <mal:type name="Boolean" area="MAL"/>
+        </mal:field>
+        <mal:field name="eventCount" canBeNull="true"
+                   comment="The task or activity is started on the specified count of the event occurrence.">
+          <mal:type name="Long" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+	 <!-- TriggerName -->
+      <mal:enumeration name="TriggerName" shortFormPart="4"
+                       comment="TriggerName is an enumeration holding the names of task or activity synchronization. Examples are start, uplink. The synchronization names in the example may be time or event based.">
+        <mal:item value="START" nvalue="1"
+                  comment="The start of a task or activity."/>
+        <mal:item value="END" nvalue="2"
+                  comment="The end of a task or activity."/>
+        <mal:item value="EARLIEST_START" nvalue="3"
+                  comment="The earliest start of a task or activity."/>
+        <mal:item value="LATEST_START" nvalue="4"
+                  comment="The latest start of a task or activity."/>
+        <mal:item value="LATEST_END" nvalue="5"
+                  comment="The latest end of a task or activity."/>
+        <mal:item value="RELEASE" nvalue="6"
+                  comment="The release of a task or activity."/>
+        <mal:item value="UPLINK" nvalue="7"
+                  comment="The uplink of a task or activity."/>
+        <mal:item value="TBD" nvalue="8"
+                  comment="TBD: more types to add to the enumeration"/>
+      </mal:enumeration>
+	  <!-- TriggerType -->
+      <mal:enumeration name="TriggerType" shortFormPart="5"
+                       comment="TriggerType is an enumeration holding the synchronization types. The possibilities are time and event based synchronization.">
+        <mal:item value="TIME" nvalue="1"
+                  comment="An absolute or relative time."/>
+        <mal:item value="EVENT" nvalue="2"
+                  comment="Event. Encompasses all kinds of events: originating from FD and from the implementing system. "/>
+      </mal:enumeration>
+    </mal:dataTypes>
+  </mal:area>
+</mal:specification>

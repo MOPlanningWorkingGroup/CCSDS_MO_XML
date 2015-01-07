@@ -1,938 +1,616 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mal:specification xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:com="http://www.ccsds.org/schema/COMSchema" xmlns:mal="http://www.ccsds.org/schema/ServiceSchema"
-	xmlns:plan="http://www.ccsds.org/schema/PlanningCOMSchema">
-	<mal:area name="Automation" number="6" version="1">
-		<mal:service xsi:type="com:ExtendedServiceType" name="ScheduleExecution"
-			number="1">
-			<mal:capabilitySet number="1">
-				<mal:requestIP name="list" number="1" supportInReplay="false"
-					comment="Gets all Schedules">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="scheduleFilter " comment="The ScheduleFilter">
-								<mal:type area="Automation" service="ScheduleExecution"
-									name="ScheduleFilter" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="listOfScheduleIdentifiers " comment="Collection of Schedule Identifiers">
-								<mal:type list="true" area="MAL" name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-				<mal:requestIP name="get" number="2" supportInReplay="false"
-					comment="Gets a Schedule by ID">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="schedule" comment="The Schedule">
-								<mal:type area="Automation" service="ScheduleExecution"
-									name="Schedule" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="2">
-				<mal:requestIP name="add" number="3" supportInReplay="false"
-					comment="Submits a Schedule for execution">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="scheduleDefinitionId"
-								comment="ScheduleDefinition ID, that corresponds to the Schedule instance">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-							<mal:field name="schedule" comment="The Schedule to execute">
-								<mal:type area="Automation" service="ScheduleExecution"
-									name="Schedule" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-				<mal:submitIP name="update" number="4" supportInReplay="false"
-					comment="Updates the Schedule by ID">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-							<mal:field name="schedule" comment="The new Schedule">
-								<mal:type area="Automation" service="ScheduleExecution"
-									name="Schedule" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-				</mal:submitIP>
-				<mal:submitIP name="remove" number="5" supportInReplay="false"
-					comment="Removes a Schedule by ID">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-				</mal:submitIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="3">
-				<mal:submitIP name="start" number="6" supportInReplay="false"
-					comment="Starts the Schedule execution">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Schedule is running">
-							<mal:type name="INVALID" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="pause" number="7" supportInReplay="false"
-					comment="Pauses the Schedule execution">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Schedule is not running">
-							<mal:type name="INVALID" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="resume" number="8" supportInReplay="false"
-					comment="Resumes the paused Schedule execution">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Schedule is not paused">
-							<mal:type name="INVALID" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="terminate" number="9"
-					supportInReplay="false" comment="Terminates the running Schedule">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="scheduleId" comment="The Schedule Identifier">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Schedule was not running">
-							<mal:type name="INVALID" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="4">
-				<mal:requestIP name="listDefinition" number="10"
-					supportInReplay="true"
-					comment="Retrieves Schedule Definition based on Identifier (name)">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="identifierList"
-								comment=" List of names of the objects, an unbounded Unicode String">
-								<mal:type name="IdentifierList" area="MAL" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="scheduletDefinitionIds" comment="List of Schedule Definition IDs">
-								<mal:type list="true" area="MAL" name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="5">
-				<mal:requestIP name="addDefinition" number="11"
-					supportInReplay="false"
-					comment="Adds Schedule Definition. Definition serves as a blueprint for instances">
-					<mal:messages>
-						<mal:request
-							comment="Adds Schedule Definition. Definition serves as a blueprint for instances.">
-							<mal:field name="scheduleDefinition" comment="The Schedule Definition">
-								<mal:type name="ScheduleDefinition" service="ScheduleExecution"
-									area="Automation" />
-							</mal:field>
-						</mal:request>
-						<mal:response comment="The Schedule Definition ID">
-							<mal:field name="scheduleDefinitionId" comment="The Schedule Definition ID">
-								<mal:type name="Long" area="MAL" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef
-							comment="One of the supplied Schedule Definitions contains an invalid name">
-							<mal:type name="INVALID" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-						<mal:errorRef
-							comment="One or more of the Schedule Definitions being added has supplied a Planning Request name that is already in use in the domain">
-							<mal:type name="DUPLICATE" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating request list">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-					</mal:errors>
-				</mal:requestIP>
-				<mal:submitIP name="updateDefinition" number="12"
-					supportInReplay="false"
-					comment="Updates Schedule Definition referenced by Schedule Definition ID">
-					<mal:messages>
-						<mal:submit comment="The Schedule Definition ID">
-							<mal:field name="scheduleDefinitionId" comment="The Schedule Definition ID">
-								<mal:type name="Long" area="MAL" />
-							</mal:field>
-							<mal:field name="scheduleDefinition" comment="The new Schedule Definition">
-								<mal:type name="ScheduleDefinition" service="ScheduleExecution"
-									area="Automation" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef
-							comment="One of the supplied Schedule Definitions is trying to change its name">
-							<mal:type name="INVALID" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-						<mal:errorRef
-							comment="One of the supplied Schedule Definition object instance identifiers is unknown">
-							<mal:type name="UNKNOWN" area="MAL" />
-							<mal:extraInformation
-								comment="The indexes of the error values shall be contained in the extra information field">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="removeDefinition" number="13"
-					supportInReplay="false" comment="Removes Schedule Definition by ID">
-					<mal:messages>
-						<mal:submit comment="The Schedule Definition ID">
-							<mal:field name="scheduleDefinitionId" comment="The Schedule Definition ID">
-								<mal:type name="Long" area="MAL" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef
-							comment="One of the supplied Schedule Definition object instance identifiers is unknown">
-							<mal:type name="UNKNOWN" area="MAL" />
-							<mal:extraInformation
-								comment="The indexes of the error values shall be contained in the extra information field">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="6">
-				<mal:pubsubIP name="monitorSchedules" number="14"
-					supportInReplay="false"
-					comment="Subscribe to Schedule content updates. Notifications are sent on Schedule creation, updates and removal according to the given filter">
-					<mal:messages>
-						<mal:publishNotify>
-							<mal:type area="Automation" service="ScheduleExecution"
-								name="ScheduleFilter" />
-						</mal:publishNotify>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Schedule has completed/terminated">
-							<mal:type name="UNKNOWN" area="MAL" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:pubsubIP>
-				<mal:pubsubIP name="monitorExecution" number="15"
-					supportInReplay="false"
-					comment="Subscribe to Schedule execution monitoring. Notifications are sent on Schedule status changes">
-					<mal:messages>
-						<mal:publishNotify>
-							<mal:field name="scheduleId" comment="The Schedule ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-							<mal:field name="levelOfDetail" comment="The Level of Detail">
-								<mal:type area="Automation" service="ScheduleExecution"
-									name="LevelOfDetail" />
-							</mal:field>
-						</mal:publishNotify>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Schedule has completed/terminated">
-							<mal:type name="UNKNOWN" area="MAL" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:pubsubIP>
-			</mal:capabilitySet>
-			<mal:dataTypes>
-				<mal:composite name="ScheduleDefinition"
-					shortFormPart="1"
-					comment="The Schedule Definition defines a 'class' or a 'type' of Schedules. Each Schedule is associated with exactly one Schedule Definition. The 'arguments' of the definition are used for defining those fields that are not standardized in the Schedule">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id"
-						comment="ID of the Schedule definition. The ID is generated by the service provider upon submission">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="name" comment="The name of the Schedule definition">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="description"
-						comment="The description of the Schedule definition">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="arguments"
-						comment="The argument definitions. The argument definitions specify the type of arguments">
-						<mal:type list="true" area="PlanningCOM" name="ArgumentDefinition" />
-					</mal:field>
-					<mal:field name="typeOfSchedule"
-						comment="Type of the schedule: ground, onboard. TBD: enumeration for possible values">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="standaloneOrIncrement"
-						comment="If true then standalone schedule, else a fragment">
-						<mal:type area="MAL" name="Boolean" />
-					</mal:field>
-					<mal:field name="eventDefinitions" comment="eventDefinitions">
-						<mal:type list="true" area="PlanningCOM" name="EventDefinition" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="Schedule" shortFormPart="2"
-					comment="Schedule is the main service object of the Schedule service. Schedule contains Schedule items. Schedule always relates to exactly one Schedule Definition">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id"
-						comment="ID of the Schedule. The ID is generated by the service provider upon submission">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="name" comment="The name of  the Activity">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="description" comment="The description of the Activity">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="source"
-						comment="The origin on the schedule, eg from Flight Dynamics or SOC">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="destination" comment="The target system of the schedule">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="argumentValues"
-						comment="The argument values. The arguments are in the order of argument definitions in the Schedule definition object">
-						<plan:type list="true" name="ArgumentValue" area="PlanningCOM" />
-					</mal:field>
-					<mal:field name="scheduleDefinitions" comment="scheduleDefinitions">
-						<mal:type list="true" area="Automation" name="ScheduleDefinition"
-							service="ScheduleExecution" />
-					</mal:field>
-					<mal:field name="scheduleItems" comment="scheduleItems">
-						<mal:type list="true" area="Automation" name="ScheduleItem"
-							service="ScheduleExecution" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="ScheduleResponse" shortFormPart="3"
-					comment="The response object for a Schedule Instance submission">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id" comment="ID of a Schedule response">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="date" comment="The date of the Schedule response">
-						<mal:type area="MAL" name="Time" />
-					</mal:field>
-					<mal:field name="scheduleId" comment="The ID of a Schedule">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="ScheduleItem" shortFormPart="4"
-					comment="An abstract line item in a schedule. Concrete implementations of a schedule item may be an activity, tc, procedure, another schedule">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id" comment="ID of the schedule item">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="executionStatus" comment="The current status of the schedule">
-						<mal:type area="Automation" service="ScheduleExecution"
-							name="ExecutionStatus" />
-					</mal:field>
-					<mal:field name="activity" comment="The Activity">
-						<mal:type area="Automation" service="ScheduleExecution"
-							name="Activity" />
-					</mal:field>
-					<mal:field name="action" comment="The Action">
-						<mal:type area="Automation" service="ScheduleExecution"
-							name="Action" />
-					</mal:field>
-					<mal:field name="timeTriggers"
-						comment="The time triggers">
-						<mal:type list="true" name="TimeTrigger" area="PlanningCOM" />
-					</mal:field>
-					<mal:field name="eventTriggers"
-						comment="The event triggers">
-						<mal:type list="true" name="EventTrigger" area="PlanningCOM" />
-					</mal:field>
-					<mal:field name="levelOfMonitoringFeedback" comment="levelOfMonitoringFeedback">
-						<mal:type area="PlanningCOM" name="LevelOfMonitoringFeedback" />
-					</mal:field>
-					<mal:field name="userConfirmation" comment="userConfirmation">
-						<mal:type area="PlanningCOM" name="UserConfirmation" />
-					</mal:field>
-					<mal:field name="predecessorActivitie" comment="Predecessor Activitie">
-						<mal:type list="true" area="PlanningCOM" name="ExecutionPredecessor" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="ScheduleStatus" shortFormPart="5"
-					comment="The status of a Schedule. The Schedule status tells where the Schedule is in its life cycle">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="submitted" comment="submitted">
-						<mal:type area="Automation" name="StatusTag" service="ScheduleExecution" />
-					</mal:field>
-					<mal:field name="uplinked" comment="uplinked">
-						<mal:type area="Automation" name="StatusTag" service="ScheduleExecution" />
-					</mal:field>
-					<mal:field name="started" comment="started">
-						<mal:type area="Automation" name="StatusTag" service="ScheduleExecution" />
-					</mal:field>
-					<mal:field name="ended" comment="ended">
-						<mal:type area="Automation" name="StatusTag" service="ScheduleExecution" />
-					</mal:field>
-					<mal:field name="scheduleId" comment="The ID of a Schedule">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="SomeOtherTypeOfScheduleItem"
-					shortFormPart="6" comment="SomeOtherTypeOfScheduleItem">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<!-- TODO -->
-				</mal:composite>
-				<mal:composite name="Activity" shortFormPart="7"
-					comment="Activity is anything that has a measurable period of time (a command, a remote procedure, a schedule, etc.)">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id" comment="ID of the Activity">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="scheduleId" comment="The ID of the Activity Schedule">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="procedureId" comment="The ID of the Activity Procedure">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="Action" shortFormPart="8"
-					comment="Implementation of a Action">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-				</mal:composite>
-				<mal:composite name="ScheduleFilter" shortFormPart="9"
-					comment="This data structure defines a schedule filter composite">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<!-- todo -->
-				</mal:composite>
-				<mal:enumeration name="LevelOfDetail" shortFormPart="10">
-					<mal:item value="HIGH" nvalue="1" />
-					<mal:item value="MEDIUM" nvalue="2" />
-					<mal:item value="LOW" nvalue="3" />
-					<mal:item value="NONE" nvalue="4" />
-					<mal:item value="DEBUG" nvalue="5" />
-					<mal:item value="STATEMENT" nvalue="6" />
-				</mal:enumeration>
-				<mal:enumeration name="ExecutionStatus"
-					shortFormPart="11">
-					<mal:item value="NOT_STARTED" nvalue="1" />
-					<mal:item value="COMPLETED" nvalue="2" />
-					<mal:item value="FAILED" nvalue="3" />
-				</mal:enumeration>
-				<mal:composite name="Audit" shortFormPart="12"
-					comment="Audit is an encapsulation of version related information">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="version"
-						comment="The version number. The version number format is not standardized">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="dateCreated" comment="The creation date">
-						<mal:type area="MAL" name="Time" />
-					</mal:field>
-					<mal:field name="dateModified" comment="The date of latest change">
-						<mal:type area="MAL" name="Time" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="StatusTag" shortFormPart="13"
-					comment="A tag that is used for recording information of a status field, such as 'planned' state in a Planning Request">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="date" comment="date">
-						<mal:type area="MAL" name="Time" />
-					</mal:field>
-					<mal:field name="comment" comment="Free text">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-				</mal:composite>
-			</mal:dataTypes>
-			<mal:features>
-				<mal:objects
-					comment="The definitions of the schedules shall be represented as ScheduleDefinition COM objects.&#xA;Instances of an schedule that are submitted to a provider using the submitSchedule operation shall be represented as ScheduleInstance COM object.&#xA;The object instance identifier for an ScheduleInstance object shall be populated by the consumer.&#xA;The ScheduleInstance object shall use the related link to indicate which action definition object it uses.&#xA;The source link of the ScheduleDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object.&#xA;Instances of an action that are submitted to a provider using the submitSchedule operation shall link to the submitSchedule OperationActivity object using the source link.&#xA;&#xA;">
-					<mal:object name="ScheduleDefinition" number="1">
-						<mal:objectType>
-							<mal:type name="ScheduleDefinition" service="ScheduleExecution"
-								area="Automation" />
-						</mal:objectType>
-					</mal:object>
-					<mal:object name="Schedule" number="2">
-						<mal:objectType>
-							<mal:type name="Schedule" service="ScheduleExecution"
-								area="Automation" />
-						</mal:objectType>
-						<mal:relatedObject>
-							<mal:objectType number="1" service="ScheduleExecution"
-								area="Automation" />
-						</mal:relatedObject>
-					</mal:object>
-				</mal:objects>
-				<mal:archiveUsage
-					comment="ScheduleDefinition objects should be stored in the COM archive.&#xA;When an schedule is sent with the submitSchedule operation, the ScheduleInstance object should be stored in the COM archive by the consumer.&#xA;" />
-				<mal:activityUsage
-					comment="The COM Activity service may be used to monitor the transfer and execution of the submitSchedule operation.&#xA;The COM Activity service may be used to monitor the transfer and execution of schedule instances.&#xA;The COM activity events shall be generated as defined in the COM activity tracking service for the submitSchedule operation.&#xA;A Release activity event for the action instance shall be generated when an action is released from a consumer using the submitAction operation.&#xA;An Acceptance activity event for the action instance shall be generated when an action is received by the destination provider as part of the submitAction operation.&#xA;The source link of the activity events for the action instance shall be the ActionInstance object.&#xA;In all activity execution events for the action instance the ActivityExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages.&#xA;&#xA;" />
-			</mal:features>
-		</mal:service>
-		<mal:service xsi:type="com:ExtendedServiceType" name="ProcedureExecution"
-			number="2">
-			<mal:capabilitySet number="1">
-				<mal:requestIP name="list" number="1" supportInReplay="false"
-					comment="Retrieves all running Procedures. Instances that have completed the execution are automatically removed.">
-					<mal:messages>
-						<mal:request>
-							<mal:type area="Automation" service="ProcedureExecution"
-								name="ProcedureFilter" />
-						</mal:request>
-						<mal:response>
-							<mal:field name="listOfIds" comment="Collection of Procedure Instance IDs">
-								<mal:type list="true" area="MAL" name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-				<mal:requestIP name="get" number="2" supportInReplay="false"
-					comment="Gets Procedure instance by Identifier">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="procedureId" comment="The Procedure Instance ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="procedure" comment="The Procedure Instance">
-								<mal:type area="Automation" service="ProcedureExecution"
-									name="Procedure" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="Procedure Instance does not exist">
-							<mal:type name="UNKNOWN" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:requestIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="2">
-				<mal:requestIP name="start" number="3"
-					supportInReplay="false" comment="Starts the Procedure execution">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="procedureId" comment="The Procedure ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-							<mal:field name="ProcedureInvocationDetails"
-								comment="Contains the details for executing the procedure, such as the argument values and other attributes (e.g. tracing level)">
-								<mal:type area="Automation" service="ProcedureExecution"
-									name="ProcedureInvocationDetails" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="procedureId" comment="The Procedure ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-				<mal:submitIP name="pause" number="4" supportInReplay="false"
-					comment="Pauses the executing Procedure">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="procedureId" comment="The Procedure ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Procedure is not running">
-							<mal:type name="UNKNOWN" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="resume" number="5" supportInReplay="false"
-					comment="Resumes the paused Procedure">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="procedureId" comment="The Procedure ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Procedure is not paused">
-							<mal:type name="UNKNOWN" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="terminate" number="6"
-					supportInReplay="false"
-					comment="Terminates the running Procedure. Terminated Procedure cannot be resumed. Paused Procedure can be resumed">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="procedureId" comment="The Procedure ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef comment="The Procedure is not running">
-							<mal:type name="UNKNOWN" area="COM" />
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="3">
-				<mal:requestIP name="listDefinition" number="7"
-					supportInReplay="false"
-					comment="Retrieves Procedure Definition based on Identifier (name)">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="identifierList"
-								comment="List of names of the objects, an unbounded Unicode String">
-								<mal:type name="IdentifierList" area="MAL" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="procedureDefinitionIds"
-								comment="Collection of Procedure Definition IDs">
-								<mal:type list="true" area="MAL" service="ProcedureExecution"
-									name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-				</mal:requestIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="4">
-				<mal:requestIP name="addDefinition" number="8"
-					supportInReplay="false"
-					comment="Adds Procedure Definition. Definition serves as a blueprint for Instances">
-					<mal:messages>
-						<mal:request>
-							<mal:field name="procedureDefinition" comment="The Procedure Definition">
-								<mal:type area="Automation" service="ProcedureExecution"
-									name="ProcedureDefinition" />
-							</mal:field>
-						</mal:request>
-						<mal:response>
-							<mal:field name="procedureDefinitionId" comment="The Procedure Definition ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:response>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef
-							comment="One of the supplied Procedure Definitions contains an invalid name">
-							<mal:type name="INVALID" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-						<mal:errorRef
-							comment="One or more of the Procedure Definitions being added has supplied a Procedure name that is already in use in the domain">
-							<mal:type name="DUPLICATE" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating request list">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-					</mal:errors>
-				</mal:requestIP>
-				<mal:submitIP name="updateDefinition" number="9"
-					supportInReplay="false"
-					comment="Updates Procedure Definition referenced by Procedure Definition ID">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="procedureDefinitionId" comment="The Procedure Definition ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-							<mal:field name="procedureDefinition" comment="The new Procedure Definition">
-								<mal:type area="Automation" service="ProcedureExecution"
-									name="ProcedureDefinition" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef
-							comment="One of the supplied Procedure Definitions contains an invalid name">
-							<mal:type name="INVALID" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating list supplied">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-						<mal:errorRef
-							comment="One or more of the Procedure Definitions being added has supplied a Procedure name that is already in use in the domain">
-							<mal:type name="UNKNOWN" area="COM" />
-							<mal:extraInformation
-								comment="The extra information field contains the indexes of the erroneous values from the originating request list">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-				<mal:submitIP name="removeDefinition" number="10"
-					supportInReplay="false" comment="Removes Procedure Definition by ID">
-					<mal:messages>
-						<mal:submit>
-							<mal:field name="procedureDefinitionId" comment="The Procedure Definition ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-						</mal:submit>
-					</mal:messages>
-					<mal:errors>
-						<mal:errorRef
-							comment="One or more of the Procedure Definitions being added has supplied a Procedure name that is already in use in the domain">
-							<mal:type name="UNKNOWN" area="COM" />
-							<mal:extraInformation
-								comment="The indexes of the error values shall be contained in the extra information field">
-								<mal:type list="true" name="UInteger" area="MAL" />
-							</mal:extraInformation>
-						</mal:errorRef>
-					</mal:errors>
-				</mal:submitIP>
-			</mal:capabilitySet>
-			<mal:capabilitySet number="5">
-				<mal:pubsubIP name="monitorExecution" number="11"
-					supportInReplay="false"
-					comment="Subscribe to Procedure execution monitoring. Notifications are sent on Procedure status changes">
-					<mal:messages>
-						<mal:publishNotify>
-							<mal:field name="procedureId" comment="The Procedure instance ID">
-								<mal:type area="MAL" name="Long" />
-							</mal:field>
-							<mal:type area="Automation" service="ProcedureExecution"
-								name="LevelOfDetail" />
-						</mal:publishNotify>
-					</mal:messages>
-				</mal:pubsubIP>
-			</mal:capabilitySet>
-			<mal:dataTypes>
-				<mal:composite name="ProcedureDefinition"
-					shortFormPart="1"
-					comment="This data structure defines a procedure definition composite">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id"
-						comment="ID of the Procedure definition. The ID is generated by the service provider upon submission">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="name" comment="Name of procedure definition">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="description" comment="Description of procedure definition">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="content" comment="Content of procedure definition">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="arguments"
-						comment="The argument definitions. The argument definitions specify the type of arguments">
-						<mal:type list="true" area="PlanningCOM" name="ArgumentDefinition" />
-					</mal:field>
-					<mal:field name="language" comment="Language of procedure definition">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="Procedure" shortFormPart="2"
-					comment="The Procedure (instance) contains the argument values according to the Procedure Definition">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="id"
-						comment="ID of the Procedure The ID is generated by the service provider upon submission">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="name" comment="The name of  the Activity">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="description" comment="The description of the Activity">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-					<mal:field name="argumentValues"
-						comment="The argument values. The arguments are in the order of argument definitions in the Procedure definition object">
-						<plan:type list="true" name="ArgumentValue" area="PlanningCOM" />
-					</mal:field>
-					<mal:field name="procedureDefinitions" comment="procedureDefinitions">
-						<mal:type list="true" area="Automation" name="ProcedureDefinition"
-							service="ProcedureExecution" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="ProcedureFilter" shortFormPart="3"
-					comment="Procedure Filter definition">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="status" comment="procedure status">
-						<mal:type area="Automation" service="ProcedureExecution"
-							name="ProcedureStatus" />
-					</mal:field>
-					<!-- TODO -->
-				</mal:composite>
-				<mal:composite name="ProcedureInvocationDetails"
-					shortFormPart="4" comment="Starts the Procedure execution">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="values" comment="Values">
-						<mal:type list="true" area="Automation" name="DetailValue"
-							service="ProcedureExecution" />
-					</mal:field>
-					<!-- TODO -->
-				</mal:composite>
-				<mal:composite name="DetailValue" shortFormPart="5"
-					comment="Describes detail value pair">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="key" comment="Unique ID">
-						<mal:type area="MAL" name="Long" />
-					</mal:field>
-					<mal:field name="value" comment="Value">
-						<mal:type area="MAL" name="String" />
-					</mal:field>
-				</mal:composite>
-				<mal:composite name="ProcedureStatus" shortFormPart="6"
-					comment="This data structure defines a schedule status composite">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="state" comment="state">
-						<mal:type area="Automation" name="ProcedureState"
-							service="ProcedureExecution" />
-					</mal:field>
-					<mal:field name="message" comment="message">
-						<mal:type list="true" area="MAL" name="String" />
-					</mal:field>
-				</mal:composite>
-				<mal:enumeration name="ProcedureState"
-					shortFormPart="7">
-					<mal:item value="RUNNING" nvalue="1" />
-					<mal:item value="PAUSED" nvalue="2" />
-					<mal:item value="HALTED" nvalue="3" />
-					<mal:item value="ERROR" nvalue="4" />
-					<mal:item value="ABORTED" nvalue="5" />
-					<mal:item value="COMPLETED" nvalue="6" />
-				</mal:enumeration>
-				<mal:composite name="ProcedureExecutionEvent"
-					shortFormPart="8"
-					comment="This data structure defines a procedure execution event composite">
-					<mal:extends>
-						<mal:type name="Composite" area="MAL" />
-					</mal:extends>
-					<mal:field name="type" comment="Type of event">
-						<mal:type area="Automation" service="ProcedureExecution"
-							name="EventType" />
-					</mal:field>
-				</mal:composite>
-				<mal:enumeration name="EventType" shortFormPart="9">
-					<mal:item value="INSERT" nvalue="1" />
-					<mal:item value="UPDATE" nvalue="2" />
-					<mal:item value="DELETE" nvalue="3" />
-				</mal:enumeration>
-				<mal:enumeration name="LevelOfDetail" shortFormPart="10">
-					<mal:item value="HIGH" nvalue="1" />
-					<mal:item value="MEDIUM" nvalue="2" />
-					<mal:item value="LOW" nvalue="3" />
-					<mal:item value="NONE" nvalue="4" />
-					<mal:item value="DEBUG" nvalue="5" />
-					<mal:item value="STATEMENT" nvalue="6" />
-				</mal:enumeration>
-			</mal:dataTypes>
-			<com:features>
-				<com:objects
-					comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall be represented as ActionInstance COM object.&#xA;The object instance identifier for an ActionInstance object shall be populated by the consumer.&#xA;The ActionInstance object shall use the related link to indicate which action definition object it uses.&#xA;The source link of the ActionDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall link to the submitAction OperationActivity object using the source link.&#xA;&#xA;">
-					<com:object name="ProcedureDefinition" number="1">
-						<com:objectType>
-							<mal:type name="ProcedureDefinition" service="ProcedureDefinition"
-								area="Automation" />
-						</com:objectType>
-					</com:object>
-					<com:object name="Procedure" number="2">
-						<com:objectType>
-							<mal:type name="Procedure" service="ProcedureExecution"
-								area="Automation" />
-						</com:objectType>
-						<com:relatedObject>
-							<com:objectType number="1" service="ProcedureExecution"
-								area="Automation" />
-						</com:relatedObject>
-					</com:object>
-				</com:objects>
-				<com:archiveUsage
-					comment="ActionDefinition objects should be stored in the COM archive.&#xA;When an action is sent with the submitAction operation, the ActionInstance object should be stored in the COM archive by the consumer.&#xA;" />
-				<com:activityUsage
-					comment="The COM Activity service may be used to monitor the transfer and execution of the submitAction operation.&#xA;The COM Activity service may be used to monitor the transfer and execution of action instances.&#xA;The COM activity events shall be generated as defined in the COM activity tracking service for the submitAction operation.&#xA;A Release activity event for the action instance shall be generated when an action is released from a consumer using the submitAction operation.&#xA;An Acceptance activity event for the action instance shall be generated when an action is received by the destination provider as part of the submitAction operation.&#xA;The source link of the activity events for the action instance shall be the ActionInstance object.&#xA;In all activity execution events for the action instance the ActivityExecution.stageCount field shall be set to 2 plus the total number of progress stages.&#xA;In the activity execution event, when notification of an action starting is requested, the ActivityExecution.executionStage field shall be set to 1.&#xA;In the activity execution event, when notification of an action progress is requested, the ActivityExecution.executionStage field shall be set to 1 plus the current progress stage. &#xA;In the activity execution event, when notification of an action completion is requested, the ActivityExecution.executionStage field shall be set to 2 plus the total number of progress stages.&#xA;&#xA;" />
-			</com:features>
-		</mal:service>
-	</mal:area>
+<mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
+  <mal:area name="Automation" number="7" version="1"
+            comment="TODO:This section details the automation services; the structures used by the services are detailed in section 4. Both the services and structures are defined in terms of the MO MAL, which is defined in [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [3].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section 1.6.3.2 and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '4'.">
+    <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
+                 comment="The schedule service has tree main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
+				 &#xA;A schedule is submitted to the provider using the submitSchedule operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the schedule has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
+				 &#xA;The submitSchedule operation takes the object instance identifier of the submitted schedule. This is required for the potential use of the COM activity tracking service, in order to populate the source fields of the activity tracking events. Coordination may be required between schedule service consumers to ensure the schedule object instance identifiers are unique. How this is done is outside the scope of this specification however a good approach is the use of a central COM archive as that can provide the unique instance identifiers.
+				 &#xA;The nominal sequence of schedule distribution and status monitoring are shown in Figure:&#xA;&lt; TODO: insert sequence diag here &gt;
+				 &#xA;The consumer is responsible for creating and archiving the schedule instance object and then using the submitSchedule operation to submit it to the schedule service provider.
+				 &#xA;The schedule status consist of a set of fields. The fields are related to schedule life cycle states (submitted, started, etc). The schedule life cycle is not part of the specification.
+				 &#xA;Consumer may subscribe to the monitoring of schedule instances. The notifications contain the schedule status objects.">
+      <mal:documentation name="High Level Requirements" order="1">The schedule service shall provide:
+&lt;ol&gt;
+ &lt;li&gt;the capability for submitting schedules;&lt;/li&gt;
+ &lt;li&gt;the capability for submitting schedule patches for merging purposes;&lt;/li&gt;
+ &lt;li&gt;the capability for getting a schedule status;&lt;/li&gt;
+ &lt;li&gt;the capability for monitoring schedule status;&lt;/li&gt;
+ &lt;li&gt;the capability for listing the numeric identifiers for the schedule definitions;&lt;/li&gt;
+ &lt;li&gt;the capability for defining a new schedule definition;&lt;/li&gt;
+ &lt;li&gt;the capability for updating an existing schedule definition;&lt;/li&gt;
+ &lt;li&gt;the capability for removing an existing schedule definition.&lt;/li&gt;
+ &lt;li&gt;the capability for controlling a schedule execution.&lt;/li&gt;
+&lt;/ol&gt;
+        The list of schedules that are supported by the schedule service shall be declared when deploying that service.
+        Each schedule submission shall include:
+&lt;ol&gt;
+ &lt;li&gt;the schedule definition numeric identifier;&lt;/li&gt;
+ &lt;li&gt;the schedule instance numeric identifier;&lt;/li&gt;
+ &lt;li&gt;the schedule instance object.&lt;/li&gt;
+&lt;/ol&gt;
+        The schedule request service may use the COM Activity Tracking service to report the delivery of a submitted schedules.
+        The submitSchedule operation shall be used to submit a schedule.
+      </mal:documentation>
+      <mal:documentation name="Functional Requirements" order="2">TODO
+      </mal:documentation>
+      <mal:capabilitySet number="1" comment="Submit schedule instance">
+	  <!-- submitSchedule -->
+      <mal:submitIP name="submitSchedule" number="1" supportInReplay="false"
+                      comment="The submitSchedule operation allows a consumer to submit a schedule to a provider.&#xA;TBD: The errors need to be specified for schedule fields.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="defInstId"
+                         comment="The defInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleDefinition to be used.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be used for the optional activity tracking events.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="schDetails"
+                         comment="The schDetails part of the submission shall contain the information of the schedule instance.&#xA;The operation shall return once the schedule has been accepted by the provider.">
+                <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+			<!--TODO-->
+            <mal:errorRef comment="The argument list contains one or more invalid fields.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="Submitted schedule definition is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2" comment="Submit schedule updates for a merge">
+	  <!-- patchSchedule -->
+      <mal:submitIP name="patchSchedule" number="2" supportInReplay="false"
+                      comment="The submitSchedule operation allows a consumer to submit a schedule update to a provider. The use case for this operation is merging schedule updates.&#xA;TBD: The errors need to be specified for invalid planning and schedule fields.">
+          <mal:messages>
+			<mal:submit>
+              <mal:field name="defInstId"
+                         comment="The defInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleDefinition to be used.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be used for the optional activity tracking events.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="schDetails"
+                         comment="The schDetails part of the submission shall contain the information of the schedule instance.&#xA;The operation shall return once the schedule has been accepted by the provider.">
+                <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+              <mal:field name="targetSchDefInstId"
+                         comment="The targetSchDefInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleDefinition of the target schedule onto which the patch is going to be merged.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="targetSchInstId"
+                         comment="The targetSchInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance of the target schedule onto which the patch is going to be merged.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+			<!--TODO-->
+            <mal:errorRef comment="The argument list contains one or more invalid fields.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="Submitted schedule definition is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3" comment="Get schedule status">
+	  <!-- getScheduleStatus -->
+        <mal:requestIP name="getScheduleStatus" number="3" supportInReplay="true"
+                       comment="The getScheduleStatus operation allows a consumer to get a schedule status.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="schIds"
+                         comment="The schIds field shall contain a list of schedule ids to retrieve the schedule statuses for.&#xA;The request may contain the wildcard value of '*' to return statuses for all submitted schedules.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="schStatus"
+                         comment="The operation shall return ScheduleStatusDetails objects. The order of the schedule status objects corresponds to the order of the submitted schedule instance ids. If a schedule instance id does not exist, then the corresponding schedule status object is null.">
+                <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="4" comment="Monitor schedule status">
+	  <!-- monitorSchedules -->
+		<mal:pubsubIP name="monitorSchedules" number="4" supportInReplay="true"
+                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;TBD: How to specify the schedule ids that we wish to monitor. The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+          <mal:messages>
+            <mal:publishNotify>
+              <mal:field name="objId"
+                         comment="The MAL EntityKey.firstSubKey shall contain the schedule name.&#xA;The MAL EntityKey.secondSubKey shall contain the ScheduleDefinition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the ScheduleInstance object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the ScheduleInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
+                <mal:type name="ObjectId" area="COM"/>
+              </mal:field>
+              <mal:field name="status"
+                         comment="The second part of the publish message shall be the ScheduleInstance object value.">
+                <mal:type name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:publishNotify>
+          </mal:messages>
+        </mal:pubsubIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="5" comment="Control schedule">
+	  <!-- start -->
+      <mal:submitIP name="start" number="5" supportInReplay="false"
+                      comment="The start operation allows a consumer to start executing a submitted or a paused schedule.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be started.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no schedule associated with the schedule instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The schedule has been terminated and may not be started.">
+              <mal:type name="SCHEDULE_TERMINATED" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- pause -->
+      <mal:submitIP name="pause" number="6" supportInReplay="false"
+                      comment="The pause operation allows a consumer to pause an executing schedule. Non-running schedules may not be paused and will return an error.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be paused.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no schedule associated with the schedule instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The schedule is not running.">
+              <mal:type name="SCHEDULE_NOT_RUNNING" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The schedule has been terminated and may not be started.">
+              <mal:type name="SCHEDULE_TERMINATED" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- resume -->
+      <mal:submitIP name="resume" number="7" supportInReplay="false"
+                      comment="The resume operation allows a consumer to resume a paused schedule. Non-paused schedules may not be resumed and will return an error.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be resumed.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no schedule associated with the schedule instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The schedule is already running.">
+              <mal:type name="SCHEDULE_RUNNING" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The schedule has been terminated and may not be started.">
+              <mal:type name="SCHEDULE_TERMINATED" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- terminate -->
+      <mal:submitIP name="terminate" number="8" supportInReplay="false"
+                      comment="The terminate operation allows a consumer to terminate a running or paused schedule. Non-running or terminated schedules will return an error.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be terminated.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no schedule associated with the schedule instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The schedule is not running.">
+              <mal:type name="SCHEDULE_NOT_RUNNING" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="6" comment="List schedule definition">
+	  <!-- listDefinition -->
+	          <mal:requestIP name="listDefinition" number="9" supportInReplay="true"
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ScheduleDefinition objects for the supported types of schedule of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ScheduleDefinition objects.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="prNames"
+                         comment="The prNames field shall contain a list of schedule definition names to retrieve the ScheduleDefinition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported ScheduleDefinition objects.">
+                <mal:type list="true" name="Identifier" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="prDefInstIds"
+                         comment="The response shall contain a list of matching ScheduleDefinition object instance ids.&#xA;The returned list shall maintain the same order as the submitted list unless the wildcard value was included in the request.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+
+      </mal:capabilitySet>
+      <mal:capabilitySet number="7" comment="Add, update, remove schedule definition">
+		<!-- addDefinition -->
+        <mal:requestIP name="addDefinition" number="10" supportInReplay="false"
+                       comment="The addDefinition operation allows a consumer to define one or more schedule types that do not currently exist. The new ScheduleDefinition object is expected to be stored in the COM archive by the provider of the schedule service.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="prDefDetails"
+                         comment="The prDefDetails field shall hold the list of definitions to be added.&#xA;The name field of the supplied ScheduleDefinitionDetails structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ScheduleDefinition objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.">
+                <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="prDefInstIds"
+                         comment="The response shall contain the list of object instance identifiers for the new definitions.&#xA;The returned list shall maintain the same order as the submitted definitions.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One of the supplied schedule definitions contains an invalid schedule name.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="One or more of the schedule definitions being added has supplied a schedule name that is already in use in the domain.">
+              <mal:type name="DUPLICATE" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+		<!-- updateDefinition -->
+        <mal:submitIP name="updateDefinition" number="11" supportInReplay="false"
+                      comment="The updateDefinition operation allows a consumer to modify a definition for one or more schedules without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same schedule name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing schedule definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="prDefInstIds"
+                         comment="The prDefInstIds field shall contain the list of object instance identifiers of the ScheduleDefinition objects to be updated.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="prDefDetails"
+                         comment="The prDefDetails field shall contain the list of replacement details for the matched ScheduleDefinition objects.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;Only the description or the unit fields of the arguments shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be modified as a result of this operation call.">
+                <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One of the supplied schedule definitions is trying to change its schedule definition name.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="One of the supplied ScheduleDefinition object instance identifiers is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+		<!-- removeDefinition -->
+        <mal:submitIP name="removeDefinition" number="12" supportInReplay="false"
+                      comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request types supported by the schedule provider.&#xA;The operation does not remove the ScheduleDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ScheduleInstance objects to continue to reference the correct ScheduleDefinition object in the COM archive.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="prDefInstIds"
+                         comment="The prDefInstIds field holds the list of ScheduleDefinition object instance identifiers of the definitions to be removed from the provider.&#xA;The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all definitions of the provider.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an active schedule instance then this operation shall not fail because of this reason.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new schedule instances.&#xA;If an error is raised then no definitions shall be removed as a result of this operation call.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One of the supplied ScheduleDefinition object instance identifiers is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:dataTypes>
+		<!-- ScheduleDefinitionDetails -->
+        <mal:composite name="ScheduleDefinitionDetails" shortFormPart="1"
+                       comment="The ScheduleDefinitionDetails structure holds the definition information of a schedule.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The unique name of the schedule definition. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false"
+					comment="The description of the schedule definition.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="arguments" canBeNull="true"
+                     comment="Definitions of schedule arguments.">
+            <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="eventTypes" canBeNull="false"
+                     comment="Types of permitted events for this schedule.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ScheduleInstanceDetails -->
+        <mal:composite name="ScheduleInstanceDetails" shortFormPart="2"
+                       comment="The ScheduleInstanceDetails structure holds the information required for an instance of a schedule such as the argument values to use.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The unique name of the schedule instance. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false"
+					comment="Comment for the schedule instance.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentValues" canBeNull="true"
+                     comment="The argument values. The order of arguments corresponds to the order of argument definitions if the schedule definition object.">
+            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="timingConstraints" canBeNull="true"
+                     comment="Synchronization constraints for the schedule.">
+            <mal:type list="true" name="TriggerDetails" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="scheduleItems" canBeNull="true"
+                     comment="The schedule items.">
+            <mal:type list="true" name="ScheduleItemInstanceDetails" service="Schedule" area="Automation"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ScheduleItemInstanceDetails -->
+        <mal:composite name="ScheduleItemInstanceDetails" shortFormPart="3"
+                       comment="The ScheduleItemInstanceDetails structure holds the information required for an instance of a schedule item. The schedule item is a wrapper for an action, procedure or another schedule.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="scheduleItemInstName" canBeNull="false"
+                     comment="The unique name of a schedule item. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="scheduleInstName" canBeNull="false"
+                     comment="The name of the schedule instance associated with this schedule item. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="timingConstraints" canBeNull="false"
+                     comment="Synchronization constraints for the schedule item.">
+            <mal:type name="TriggerDetails" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="delegateItemType" canBeNull="false"
+                     comment="The type of the associated activity or action this schedule item wraps.">
+            <mal:type name="ScheduleItemType" service="Schedule" area="Automation"/>
+          </mal:field>
+          <mal:field name="delegateItemDefName" canBeNull="false"
+                     comment="The name of the delegate item definition instance associated with this schedule item. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="delegateItemInstName" canBeNull="false"
+                     comment="The name of the delegate item instance associated with this schedule item. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ScheduleStatusDetails -->
+        <mal:composite name="ScheduleStatusDetails" shortFormPart="4"
+                       comment="The ScheduleStatusDetails structure holds the information related to the schedule status. The schedule status consists of as set of fields, related to a typical schedule life cycle. The schedule life cycle is not part of the standard.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="scheduleInstName" canBeNull="false"
+                     comment="The name of the schedule instance associated with this schedule status. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="scheduleItemStatus" canBeNull="false"
+					comment="Contains the schedule item details objects, in the order of the schedule items in the schedule.">
+            <mal:type name="ScheduleItemStatusDetails" service="Schedule" area="Automation"/>
+          </mal:field>
+          <mal:field name="submitted" canBeNull="true"
+                     comment="The schedule has been submitted.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="uplinked" canBeNull="true"
+                     comment="The schedule has been uplinked.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="started" canBeNull="true"
+                     comment="The schedule has started execution.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="finished" canBeNull="true"
+                     comment="The schedule has finished execution.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="failed" canBeNull="true"
+                     comment="The schedule execution failed.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ScheduleItemStatusDetails -->
+        <mal:composite name="ScheduleItemStatusDetails" shortFormPart="5"
+                       comment="The ScheduleItemStatusDetails structure holds the information related to the schedule item status. The schedule item status consists of as set of fields.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="scheduleItemInstName" canBeNull="false"
+                     comment="The name of the schedule item instance associated with this schedule item status. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="started" canBeNull="true"
+                     comment="The schedule item has started execution.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="finished" canBeNull="true"
+                     comment="The schedule item has finished execution.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="failed" canBeNull="true"
+                     comment="The schedule item execution failed.">
+            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ScheduleItemType -->
+		  <mal:enumeration name="ScheduleItemType" shortFormPart="6"
+						   comment="ScheduleItemType is an enumeration holding the types of wrapped schedule items.">
+			<mal:item value="ACTION" nvalue="1"
+					  comment="M&amp;C action"/>
+			<mal:item value="PROCEDURE" nvalue="2"
+					  comment="Automation procedure"/>
+			<mal:item value="SCHEDULE" nvalue="2"
+					  comment="Automation schedule"/>
+		  </mal:enumeration>
+		<!-- SchedulePatchOperations -->
+        <mal:composite name="SchedulePatchOperations" shortFormPart="7"
+                       comment="The SchedulePatchOperations structure holds the patch operations to be applied to the associated schedule in order to merge the associated schedule.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="scheduleInstName" canBeNull="false"
+                     comment="The name of the schedule instance associated with this schedule patch. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentValues" canBeNull="false"
+                     comment="The patch operations to be applied to the argument values of  the associated schedule.">
+            <mal:type name="PatchOperation" service="Schedule" area="Automation"/>
+          </mal:field>
+          <mal:field name="timingConstraints" canBeNull="false"
+                     comment="The patch operations to be applied to the timing constraints of the associated schedule.">
+            <mal:type name="PatchOperation" service="Schedule" area="Automation"/>
+          </mal:field>
+          <mal:field name="scheduleItems" canBeNull="false"
+                     comment="The schedule item patch operations correspond to the schedule items.">
+            <mal:type name="ScheduleItemPatchOperations" service="Schedule" area="Automation"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ScheduleItemPatchOperations -->
+        <mal:composite name="ScheduleItemPatchOperations" shortFormPart="8"
+                       comment="The ScheduleItemPatchOperations structure holds the patch operations to be applied to the associated schedule item in order to merge the associated schedule item.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="scheduleItemInstName" canBeNull="false"
+                     comment="The name of the schedule item instance associated with this schedule item patch. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="timingConstraints" canBeNull="false"
+                     comment="The patch operations to be applied to the timing constraints of the associated schedule item.">
+            <mal:type name="TriggerDetails" area="PlanningDataTypes"/>
+          </mal:field>
+        </mal:composite>
+		<!-- PatchOperation -->
+		<mal:enumeration name="PatchOperation" shortFormPart="9"
+						   comment="PatchOperation is an enumeration holding the types of merge or patch operations.">
+			<mal:item value="ADD" nvalue="1"
+					  comment="Add new item."/>
+			<mal:item value="REMOVE" nvalue="2"
+					  comment="Remove the item."/>
+			<mal:item value="UPDATE" nvalue="2"
+					  comment="Update the item by replacing it with the supplied item."/>
+		  </mal:enumeration>
+      </mal:dataTypes>
+	<mal:errors>
+      <mal:error name="SCHEDULE_RUNNING" number="70101" comment="Schedule is running"/>
+      <mal:error name="SCHEDULE_NOT_RUNNING" number="70102" comment="Schedule is not running"/>
+      <mal:error name="SCHEDULE_TERMINATED" number="70103" comment="Schedule has been terminate"/>
+    </mal:errors>
+      <com:features>
+        <com:objects comment="TODO:The definitions of the schedules shall be represented as ScheduleDefinition COM objects.&#xA;The source link of the ScheduleDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall be represented as ScheduleInstance COM object.&#xA;The object instance identifier for an ScheduleInstance object shall be populated by the consumer.&#xA;The ScheduleInstance object shall use the related link to indicate which ScheduleDefinition object it uses.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall link to the submitSchdedule OperationActivity object using the source link.&#xA;The source link of the submitSchedule OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
+          <com:object name="ScheduleDefinition" number="1">
+            <com:objectType>
+              <mal:type name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ScheduleInstance" number="2">
+            <com:objectType>
+              <mal:type name="ScheduleInstanceDetails" service="Schedule" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Schedule" area="Automation"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="ScheduleStatus" number="3">
+            <com:objectType>
+              <mal:type name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Schedule" area="Automation"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the schedule service.">
+        </com:events>
+        <com:archiveUsage comment="ScheduleDefinition objects should be stored in the COM archive by the service provider.&#xA;When a schedule is sent with the submitSchedule or patchSchedule operation, the ScheduleInstance object should be stored in the COM archive by the consumer.&#xA;ScheduleStatus should be stored in the COM archive by the consumer."/>
+        <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the submitSchedule and patchSchedule operation.&#xA;The COM Activity service can be used to monitor the transfer of ScheduleInstance objects."/>
+      </com:features>
+    </mal:service>
+    <mal:service xsi:type="com:ExtendedServiceType" name="Procedure" number="2"
+                 comment="TODO: The procedure service is a lower priority.">
+    </mal:service>
+	 <mal:dataTypes>
+    </mal:dataTypes>
+  </mal:area>
 </mal:specification>
-        
