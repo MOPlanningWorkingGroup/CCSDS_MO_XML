@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="Automation" number="7" version="1"
-            comment="TODO:This section details the automation services; the structures used by the services are detailed in section 4. Both the services and structures are defined in terms of the MO MAL, which is defined in [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [3].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section 1.6.3.2 and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '4'.">
+            comment="This section details the automation services; the structures used by the services are detailed in section TBD. Both the services and structures are defined in terms of the MO MAL, which is defined in [TBD], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [TBD].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section TBD and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '7'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
                  comment="The schedule service has tree main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
 				 &#xA;A schedule is submitted to the provider using the submitSchedule operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the schedule has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
@@ -24,7 +24,7 @@
  &lt;li&gt;the capability for removing an existing schedule definition.&lt;/li&gt;
  &lt;li&gt;the capability for controlling a schedule execution.&lt;/li&gt;
 &lt;/ol&gt;
-        The list of schedules that are supported by the schedule service shall be declared when deploying that service.
+        The list of schedule types that are supported by the schedule service shall be declared when deploying that service.
         Each schedule submission shall include:
 &lt;ol&gt;
  &lt;li&gt;the schedule definition numeric identifier;&lt;/li&gt;
@@ -34,12 +34,16 @@
         The schedule request service may use the COM Activity Tracking service to report the delivery of a submitted schedules.
         The submitSchedule operation shall be used to submit a schedule.
       </mal:documentation>
-      <mal:documentation name="Functional Requirements" order="2">TODO
-      </mal:documentation>
+<!--       <mal:documentation name="Functional Requirements" order="2"> -->
+<!--       </mal:documentation> -->
+      <mal:documentation name="TODO section (state of this specification)" order="3">
+		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
+		TODO: UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, TBD after the specification is considered more stable.
+		</mal:documentation>
       <mal:capabilitySet number="1" comment="Submit schedule instance">
 	  <!-- submitSchedule -->
       <mal:submitIP name="submitSchedule" number="1" supportInReplay="false"
-                      comment="The submitSchedule operation allows a consumer to submit a schedule to a provider.&#xA;TBD: The errors need to be specified for schedule fields.">
+                      comment="The submitSchedule operation allows a consumer to submit a schedule to a provider.&#xA;TODO: The errors need to be specified for schedule fields.">
           <mal:messages>
             <mal:submit>
               <mal:field name="defInstId"
@@ -57,7 +61,6 @@
             </mal:submit>
           </mal:messages>
           <mal:errors>
-			<!--TODO-->
             <mal:errorRef comment="The argument list contains one or more invalid fields.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
@@ -73,7 +76,7 @@
       <mal:capabilitySet number="2" comment="Submit schedule updates for a merge">
 	  <!-- patchSchedule -->
       <mal:submitIP name="patchSchedule" number="2" supportInReplay="false"
-                      comment="The submitSchedule operation allows a consumer to submit a schedule update to a provider. The use case for this operation is merging schedule updates.&#xA;TBD: The errors need to be specified for invalid planning and schedule fields.">
+                      comment="The submitSchedule operation allows a consumer to submit a schedule update to a provider. The use case for this operation is merging schedule updates.&#xA;TODO: The errors need to be specified for invalid planning and schedule fields.">
           <mal:messages>
 			<mal:submit>
               <mal:field name="defInstId"
@@ -99,7 +102,6 @@
             </mal:submit>
           </mal:messages>
           <mal:errors>
-			<!--TODO-->
             <mal:errorRef comment="The argument list contains one or more invalid fields.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
@@ -438,21 +440,17 @@
                      comment="The name of the schedule instance associated with this schedule item. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
+          <mal:field name="argumentValues" canBeNull="true"
+                     comment="The argument values for the delegate item.">
+            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
+          </mal:field>
           <mal:field name="timingConstraints" canBeNull="false"
                      comment="Synchronization constraints for the schedule item.">
             <mal:type name="TriggerDetails" area="PlanningDataTypes"/>
           </mal:field>
-          <mal:field name="delegateItemType" canBeNull="false"
-                     comment="The type of the associated activity or action this schedule item wraps.">
-            <mal:type name="ScheduleItemType" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="delegateItemDefName" canBeNull="false"
-                     comment="The name of the delegate item definition instance associated with this schedule item. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="delegateItemInstName" canBeNull="false"
-                     comment="The name of the delegate item instance associated with this schedule item. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="delegateItem" canBeNull="false"
+                     comment="The type and instance of the associated activity or action this schedule item wraps.">
+            <mal:type name="ObjectId" area="COM"/>
           </mal:field>
         </mal:composite>
 		<!-- ScheduleStatusDetails -->
@@ -467,7 +465,7 @@
           </mal:field>
           <mal:field name="scheduleItemStatus" canBeNull="false"
 					comment="Contains the schedule item details objects, in the order of the schedule items in the schedule.">
-            <mal:type name="ScheduleItemStatusDetails" service="Schedule" area="Automation"/>
+            <mal:type list="true" name="ScheduleItemStatusDetails" service="Schedule" area="Automation"/>
           </mal:field>
           <mal:field name="submitted" canBeNull="true"
                      comment="The schedule has been submitted.">
@@ -513,16 +511,6 @@
             <mal:type name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
-		<!-- ScheduleItemType -->
-		  <mal:enumeration name="ScheduleItemType" shortFormPart="6"
-						   comment="ScheduleItemType is an enumeration holding the types of wrapped schedule items.">
-			<mal:item value="ACTION" nvalue="1"
-					  comment="M&amp;C action"/>
-			<mal:item value="PROCEDURE" nvalue="2"
-					  comment="Automation procedure"/>
-			<mal:item value="SCHEDULE" nvalue="2"
-					  comment="Automation schedule"/>
-		  </mal:enumeration>
 		<!-- SchedulePatchOperations -->
         <mal:composite name="SchedulePatchOperations" shortFormPart="7"
                        comment="The SchedulePatchOperations structure holds the patch operations to be applied to the associated schedule in order to merge the associated schedule.">
@@ -578,7 +566,7 @@
       <mal:error name="SCHEDULE_TERMINATED" number="70103" comment="Schedule has been terminate"/>
     </mal:errors>
       <com:features>
-        <com:objects comment="TODO:The definitions of the schedules shall be represented as ScheduleDefinition COM objects.&#xA;The source link of the ScheduleDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall be represented as ScheduleInstance COM object.&#xA;The object instance identifier for an ScheduleInstance object shall be populated by the consumer.&#xA;The ScheduleInstance object shall use the related link to indicate which ScheduleDefinition object it uses.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall link to the submitSchdedule OperationActivity object using the source link.&#xA;The source link of the submitSchedule OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
+        <com:objects comment="The definitions of the schedules shall be represented as ScheduleDefinition COM objects.&#xA;The source link of the ScheduleDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall be represented as ScheduleInstance COM object.&#xA;The object instance identifier for an ScheduleInstance object shall be populated by the consumer.&#xA;The ScheduleInstance object shall use the related link to indicate which ScheduleDefinition object it uses.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall link to the submitSchdedule OperationActivity object using the source link.&#xA;The source link of the submitSchedule OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
           <com:object name="ScheduleDefinition" number="1">
             <com:objectType>
               <mal:type name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>

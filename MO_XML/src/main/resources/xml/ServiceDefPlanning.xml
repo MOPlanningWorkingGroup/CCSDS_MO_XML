@@ -3,13 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="Planning" number="5" version="1"
-            comment="TODO:This section details the planning services; the structures used by the services are detailed in section 4. Both the services and structures are defined in terms of the MO MAL, which is defined in [2], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [3].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section 1.6.3.2 and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the Planning area, which has a short form number of '5'.">
+            comment="This section details the planning services; the structures used by the services are detailed in section TBD. Both the services and structures are defined in terms of the MO MAL, which is defined in [TBD], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [TBD].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section TBD and are the same as those used for the specification of the MO COM services in [TBD]. &#xA;All service specifications in this document are part of the Planning area, which has a short form number of '5'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="PlanningRequest" number="1"
                  comment="The planning request service allows consumers to submit planning requests to the planning system and to subsequently monitor the status changes of the submitted planning requests.
 				 &#xA;Planning request contains tasks. Tasks is a higher level construct to express what needs to be done. The planning request and task definitions are managed using the operations in the planning request service. The planning request definition specifies the types of task definitions that it is allowed to contain. The submitted planning request contains task instances.
 				 &#xA;A planning request is submitted to the provider using the submitPlanningRequest operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the planning request has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
 				 &#xA;The submitPlanningRequest operation takes the object instance identifier of the submitted planning request. This is required for the potential use of the COM activity tracking service, in order to populate the source fields of the activity tracking events. Coordination may be required between planning request service consumers to ensure the planning request object instance identifiers are unique. How this is done is outside the scope of this specification however a good approach is the use of a central COM archive as that can provide the unique instance identifiers.
-				 &#xA;The nominal sequence of planning requst submission and status monitoring are shown in Figure:&#xA;&lt; TODO: insert sequence diag here &gt;
+				 &#xA;The nominal sequence of planning request submission and status monitoring are shown in Figure:&#xA;&lt; TODO: insert sequence diag here &gt;
 				 &#xA;The consumer is responsible for creating and archiving the planning request instance object and then using the submitPlanningRequest operation to submit it to the planning request service provider. 
 				 &#xA;The planning request and task statuses consist of a set of fields. The fields are related to planning request and task life cycle states (submitted, planned, etc). The planning request and task life cycles are not part of the specification.
 				 &#xA;Consumer may subscribe to the monitoring of planning request and task instances. The notifications contain the planning request and task status objects.
@@ -22,10 +22,10 @@
  &lt;li&gt;the capability for monitoring planning request and task statuses;&lt;/li&gt;
  &lt;li&gt;the capability for setting a task status;&lt;/li&gt;
  &lt;li&gt;the capability for defining a new planning request and task definition;&lt;/li&gt;
- &lt;li&gt;the capability for updating an existing planning requst and task definition;&lt;/li&gt;
+ &lt;li&gt;the capability for updating an existing planning request and task definition;&lt;/li&gt;
  &lt;li&gt;the capability for removing an existing planning request and task definition.&lt;/li&gt;
 &lt;/ol&gt;
-        The list of planning requests and tasks that are supported by the planning request service shall be declared when deploying that service.
+        The list of planning request types and task types that are supported by the planning request service shall be declared when deploying that service.
         Each planning request submission shall include:
 &lt;ol&gt;
  &lt;li&gt;the planning request definition numeric identifier;&lt;/li&gt;
@@ -35,15 +35,16 @@
         The planning request service may use the COM Activity Tracking service to report the delivery of a submitted planning request.
         The submitPlanningRequest operation shall be used to submit a planning request.
       </mal:documentation>
-      <mal:documentation name="Functional Requirements" order="2">The COM activity tracking service may be used to report the transport of the submitPlanningRequest operation.
-	  TODO:
-      </mal:documentation>
-      <mal:documentation name="TODO" order="2">TODO
+<!--       <mal:documentation name="Functional Requirements" order="2"> -->
+<!--       </mal:documentation> -->
+      <mal:documentation name="TODO section (state of this specification)" order="3">
+		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
+		TODO: UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, TBD after the specification is considered more stable
       </mal:documentation>
       <mal:capabilitySet number="1" comment="Submit planning request instance.">
 		<!-- submitPlanningRequest -->
         <mal:submitIP name="submitPlanningRequest" number="1" supportInReplay="false"
-                      comment="The submitPlanningRequest operation allows a consumer to submit a planning request to a provider.&#xA;TBD: The errors need to be specified for invalid planning and task fields.">
+                      comment="The submitPlanningRequest operation allows a consumer to submit a planning request to a provider.&#xA;TODO: The errors need to be specified for invalid planning and task fields.">
           <mal:messages>
             <mal:submit>
               <mal:field name="defInstId"
@@ -69,7 +70,6 @@
             </mal:submit>
           </mal:messages>
           <mal:errors>
-			<!--TODO-->
             <mal:errorRef comment="The argument list contains one or more invalid fields.">
               <mal:type name="INVALID" area="COM"/>
               <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
@@ -428,15 +428,15 @@
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="fields" canBeNull="true"
-                     comment="Definitions of task fields. Task fields are related to the description/classification of a task.">
+                     comment="Definitions of task fields. Task fields are related to the description/classification of a Task.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="arguments" canBeNull="true"
-                     comment="Definitions of task arguments. Task arguments are related to the running of a Task. Example: OBCPID: Long. The difference between the Task arguments and Task attributes is deployment specific.">
+                     comment="Definitions of task arguments. Task arguments are related to the running of a Task. Example: OBCPID: Long.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="attributes" canBeNull="true"
-                     comment="Definitions of task attributes. Task attributes are related to the running of a Task. Example: Orbit_Index: Long. The difference between the Task arguments and attributes is deployment specific.">
+                     comment="Definitions of task attributes. Task attributes are related to the description/classification of a Task. The difference between the Task fields and attributes is deployment specific.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
@@ -446,7 +446,6 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-			<!-- TODO: argumentIds? -->
           <mal:field name="name" canBeNull="false"
                      comment="The unique name of the planning request instance. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>

@@ -3,11 +3,12 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="PlanningDataTypes" number="6" version="1"
-            comment="This section details the data types used in the planning and other planning related services, such as automation. This section does not contain services. The structures are defined in terms of the MO MAL.">
+            comment="This section details the data types used in the planning and other planning related services, such as automation. This section does not contain services. The structures are defined in terms of the MO MAL. The PlanningDataTypes area has a short form number of '6'.">
 	 <mal:dataTypes>
 	 <!-- ArgumentDefinitionDetails -->
       <mal:composite name="ArgumentDefinitionDetails" shortFormPart="1"
-                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes.">
+                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.
+">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
@@ -96,7 +97,7 @@
         </mal:extends>
         <mal:field name="baseEventDefinition" canBeNull="false"
 					comment="The event type to which the trigger is synchronized. The events are not standardized as part of the planning request service.">
-          <mal:type name="Identifier" area="MAL"/>
+          <mal:type name="ObjectType" area="COM"/>
         </mal:field>
         <mal:field name="everyOccurrence" canBeNull="false"
                    comment="If set then the task or activity is started on every occurrence of the event type.">
