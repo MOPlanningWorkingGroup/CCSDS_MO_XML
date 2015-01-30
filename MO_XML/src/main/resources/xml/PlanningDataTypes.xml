@@ -7,8 +7,7 @@
 	 <mal:dataTypes>
 	 <!-- ArgumentDefinitionDetails -->
       <mal:composite name="ArgumentDefinitionDetails" shortFormPart="1"
-                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.
-">
+                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>

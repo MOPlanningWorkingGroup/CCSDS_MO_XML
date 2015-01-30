@@ -37,9 +37,11 @@
       </mal:documentation>
 <!--       <mal:documentation name="Functional Requirements" order="2"> -->
 <!--       </mal:documentation> -->
-      <mal:documentation name="TODO section (state of this specification)" order="3">
+      <mal:documentation name="TODO section" order="3">
+      This section is not part of the specification, it lists the TODOs of this service specification.
 		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
-		TODO: UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, TBD after the specification is considered more stable
+		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
+		TODO: Review the operation errors, when the operation signatures are considered stable.
       </mal:documentation>
       <mal:capabilitySet number="1" comment="Submit planning request instance.">
 		<!-- submitPlanningRequest -->
@@ -435,10 +437,6 @@
                      comment="Definitions of task arguments. Task arguments are related to the running of a Task. Example: OBCPID: Long.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
-          <mal:field name="attributes" canBeNull="true"
-                     comment="Definitions of task attributes. Task attributes are related to the description/classification of a Task. The difference between the Task fields and attributes is deployment specific.">
-            <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
-          </mal:field>
         </mal:composite>
 		<!-- PlanningRequestInstanceDetails -->
         <mal:composite name="PlanningRequestInstanceDetails" shortFormPart="3"
@@ -455,7 +453,7 @@
             <mal:type name="String" area="MAL"/>
           </mal:field>
           <mal:field name="fieldValues" canBeNull="true"
-                     comment="The planning request field values. The order of fields corresponds to the order of field definitions if the planning request definition object.">
+                     comment="The planning request field values. The order of fields corresponds to the order of field definitions in the planning request definition object.">
             <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="tasks" canBeNull="true"
@@ -482,19 +480,15 @@
             <mal:type name="String" area="MAL"/>
           </mal:field>
           <mal:field name="fieldValues" canBeNull="true"
-                     comment="The task field values. The order of fields corresponds to the order of field definitions if the task definition object.">
+                     comment="The task field values. The order of fields corresponds to the order of field definitions in the task definition object.">
             <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
-                     comment="The task argument values. The order of arguments corresponds to the order of argument definitions if the task definition object.">
-            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="attributeValues" canBeNull="true"
-                     comment="The task attribute values. The order of attributes corresponds to the order of attribute definitions if the task definition object.">
+                     comment="The task argument values. The order of arguments corresponds to the order of argument definitions in the task definition object.">
             <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="true"
-                     comment="Task synchronization constraints, such as start time. The synchronization constraints are time or event based, where events are defined by implementations. The order of the elements in the list corresponds to the order of definitions if the task definition object.">
+                     comment="Task synchronization constraints, such as start time. The synchronization constraints are time or event based, where events are defined by implementations. The order of the elements in the list corresponds to the order of definitions in the task definition object.">
             <mal:type list="true" name="TriggerDetails" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
