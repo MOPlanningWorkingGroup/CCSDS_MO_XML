@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
+                   xmlns:svg="http://www.w3.org/2000/svg"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="MC" number="4" version="1"
@@ -15,28 +16,24 @@
  &lt;li&gt;the capability for updating an existing definition;&lt;/li&gt;
  &lt;li&gt;the capability for removing an existing definition.&lt;/li&gt;
 &lt;/ol&gt;
-        The list of actions that are supported by the action service shall be declared when deploying that service.
-        Each action submission shall include:
+The list of actions that are supported by the action service shall be declared when deploying that service.
+Each action submission shall include:
 &lt;ol&gt;
  &lt;li&gt;the action definition numeric identifier;&lt;/li&gt;
  &lt;li&gt;the action instance numeric identifier;&lt;/li&gt;
  &lt;li&gt;the ordered list of action arguments.&lt;/li&gt;
 &lt;/ol&gt;
-        The action service shall use the COM Activity Tracking service to report the execution progress of a submitted action.
-        The submitAction operation shall be used to submit a new action instance for execution.
-      </mal:documentation>
+The action service shall use the COM Activity Tracking service to report the execution progress of a submitted action.
+The submitAction operation shall be used to submit a new action instance for execution.
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The COM activity tracking service shall be used to report the transport and execution progress of the submitAction operation
-        The COM activity tracking service shall be used to report the release, acceptance and execution progress of the contained action instance.
-      </mal:documentation>
+The COM activity tracking service shall be used to report the release, acceptance and execution progress of the contained action instance.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:submitIP name="submitAction" number="1" supportInReplay="false"
                       comment="The submitAction operation allows a consumer to submit an action to a provider for remote execution.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="defInstId"
-                         comment="The defInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ActionDefinition to be used.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="actionInstId"
                          comment="The actionInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ActionInstance to be used for activity tracking events.">
                 <mal:type name="Long" area="MAL"/>
@@ -63,10 +60,6 @@
                        comment="The preCheckAction operation allows a consumer to check that an action would be successfully accepted for execution without actually submitting the action. The operation is expected to be provided by local action proxies rather than the remote system to allow for quick local checks before sending the action over long and slow space links.">
           <mal:messages>
             <mal:request>
-              <mal:field name="defInstId"
-                         comment="The defInstId field shall contain a MAL long that is the object instance identifier of the ActionDefinition to be used.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="actionDetails"
                          comment="The actionDetails part of the submission shall contain the argument values and related information of the action instance to be executed.">
                 <mal:type name="ActionInstanceDetails" service="Action" area="MC"/>
@@ -226,6 +219,10 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
+          <mal:field name="defInstId" canBeNull="false"
+                     comment="The object instance identifier of the ActionDefinition to be used.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
           <mal:field name="stageStartedRequired" canBeNull="false"
                      comment="If TRUE, then an activity event of type Execution is required for the STARTED stage.">
             <mal:type name="Boolean" area="MAL"/>
@@ -253,13 +250,35 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="ActionObjects">
+          <svg:svg width="707" height="370" version="1.1">
+            <svg:rect width="137" height="60" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="137" height="60" x="280" y="290" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="137" height="60" x="550" y="290" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="137" height="60" x="280" y="160" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="137" height="60" x="280" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="The definitions of the actions shall be represented as ActionDefinition COM objects.&#xA;The source link of the ActionDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall be represented as ActionInstance COM object.&#xA;The object instance identifier for an ActionInstance object shall be populated by the consumer.&#xA;The ActionInstance object shall use the related link to indicate which ActionDefinition object it uses.&#xA;Instances of an action that are submitted to a provider using the submitAction operation shall link to the submitAction OperationActivity object using the source link.&#xA;The source link of the submitAction OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
-          <com:object name="ActionDefinition" number="1">
+          <com:object name="ActionIdentify" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ActionDefinition" number="2">
             <com:objectType>
               <mal:type name="ActionDefinitionDetails" service="Action" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Action" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="ActionInstance" number="2">
+          <com:object name="ActionInstance" number="3">
             <com:objectType>
               <mal:type name="ActionInstanceDetails" service="Action" area="MC"/>
             </com:objectType>
@@ -269,13 +288,13 @@
           </com:object>
         </com:objects>
         <com:events comment="Execution progress of an action shall be reported using COM ActivityTracking Execution events.&#xA;The Execution event may be reported many times as it is used to report each stage in the execution of the action.&#xA;If the execution of an action fails with an error code then that error code shall be reported using an ActionFailure COM event.&#xA;The source of the ActionFailure event shall be the ActivityTracking Execution event that represents the final stage of the action execution.&#xA;The related field of the ActionFailure event shall link to the ActionInstance object that failed.&#xA;The body of the event shall hold a numeric failure code that is either a MAL error number or a deployment specific code.&#xA;The specification of the deployment specific failure code is outside the scope of this specification and is expected to be agreed out of band.">
-          <com:event name="ActionFailure" number="3"
+          <com:event name="ActionFailure" number="4"
                      comment="An ActionFailure event is used to hold the error code of the execution failure.">
             <com:objectType>
               <mal:type name="UInteger" area="MAL"/>
             </com:objectType>
             <com:relatedObject>
-              <com:objectType number="2" service="Action" area="MC"/>
+              <com:objectType number="3" service="Action" area="MC"/>
             </com:relatedObject>
             <com:sourceObject>
               <com:objectType number="5" service="ActivityTracking" area="COM"/>
@@ -295,43 +314,43 @@
  &lt;li&gt;the capability for controlling reporting of the parameter values;&lt;/li&gt;
  &lt;li&gt;the capability for maintaining the list of parameter definitions.&lt;/li&gt;
 &lt;/ol&gt;
-        Three modes of generating housekeeping parameter reports shall exist:
+Three modes of generating housekeeping parameter reports shall exist:
 &lt;ol&gt;
  &lt;li&gt;Periodic mode, where a parameter update is generated once for each reporting interval&lt;/li&gt;
  &lt;li&gt;Filtered mode, where a parameter update is only generated at the end of the reporting interval when the value of the parameter has changed by more than a given threshold since the previous interval;&lt;/li&gt;
  &lt;li&gt;AD-HOC, based upon an application-specific logic.&lt;/li&gt;
 &lt;/ol&gt;
-        Each parameter value update shall contain:
+Each parameter value update shall contain:
 &lt;ol&gt;
  &lt;li&gt;The validity of the parameter value;&lt;/li&gt;
  &lt;li&gt;The raw value of the parameter;&lt;/li&gt;
  &lt;li&gt;The converted value of the parameter, if applicable.&lt;/li&gt;
 &lt;/ol&gt;
-        The validity of parameter shall be calculated against validity criteria in the parameter definition.
-        It shall be possible to update, delete, and add parameter definitions.
-        Updating a parameter definition shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
-        By default report generation of newly added parameters should be disabled, until specifically enabled.
-        The list of the parameters definitions may be requested.
-      </mal:documentation>
+The validity of parameter shall be calculated against validity criteria in the parameter definition.
+It shall be possible to update, delete, and add parameter definitions.
+Updating a parameter definition shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
+By default report generation of newly added parameters should be disabled, until specifically enabled.
+The list of the parameters definitions may be requested.
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The generation of updates to the parameter shall be controlled by the generationEnabled Boolean value in the ParameterDefinitionDetails.
-        Setting the generationEnabled field to TRUE shall enable generation of updates for a specific parameter.
-        If a parameter is required to send periodic updates then the time between these updates shall be controlled using the updateInterval Duration value in the ParameterDefinitionDetails.
-        An updateInterval value of '0' shall mean no periodic updates shall be sent; updates must be triggered by another implementation-specific mechanism in this case.
-        The generationEnabled values can be set by using the enableGeneration operation.
-        The generationEnabled and updateInterval values can be set by using the updateDefinition operation.
-        For onboard parameters, the interval should be a multiple of the minimum sampling interval of those parameters.
-        If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change rejected.
-        If the parameter is periodic and reported via a periodic aggregation, and a new update has not been received in the aggregation period, then the validity shall be set to EXPIRED by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '1'.
-        If the parameter raw value cannot be obtained, or calculated for synthetic parameters, then the validity state shall be INVALID_RAW by setting the ParameterValue isValid field to FALSE, the invalidSubState field to '2' and the rawValue set to NULL.
-        If the validityExpression field is NULL, or the validity expression evaluates to TRUE, and the ParameterDefinitionDetails either does not contain a conversion or the conversion is successful, then the validity state shall be set to VALID by setting the ParameterValue isValid field to TRUE and the invalidSubState field to '0'.
-        If the validityExpression field is NULL, or the validity expression evaluates to TRUE, and the conversion of the parameter value fails (for example an unexpected value for a discrete conversion), then the validity state shall be INVALID_CONVERSION by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '3'.
-        If the validityExpression field is not NULL and the parameters used to determine the expression are not VALID, then the validity state shall be set to UNVERIFIED by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '4'.
-        If the validityExpression field is not NULL and the validity expression evaluates to FALSE, then the validity state shall be set to INVALID by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '5'.
-        If the validity of the parameter is INVALID_CONVERSION then the convertedValue of the ParameterValue shall be set to NULL.
-        If the validity of the parameter is either UNVERIFIED or INVALID and the ParameterDefinitionDetails contains a conversion, then the convertedValue of the ParameterValue shall contain the converted value.
-        It is supported that other, implementation specific, mechanisms may be used to determine parameter validity.
-        It is supported that other, deployment specific, invalidSubState values be used however the meaning of those values is deployment specific and outside the scope of this standard. They must use values greater than 127.
-      </mal:documentation>
+Setting the generationEnabled field to TRUE shall enable generation of updates for a specific parameter.
+If a parameter is required to send periodic updates then the time between these updates shall be controlled using the updateInterval Duration value in the ParameterDefinitionDetails.
+An updateInterval value of '0' shall mean no periodic updates shall be sent; updates must be triggered by another implementation-specific mechanism in this case.
+The generationEnabled values can be set by using the enableGeneration operation.
+The generationEnabled and updateInterval values can be set by using the updateDefinition operation.
+For onboard parameters, the interval should be a multiple of the minimum sampling interval of those parameters.
+If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change rejected.
+If the parameter is periodic and reported via a periodic aggregation, and a new update has not been received in the aggregation period, then the validity shall be set to EXPIRED by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '1'.
+If the parameter raw value cannot be obtained, or calculated for synthetic parameters, then the validity state shall be INVALID_RAW by setting the ParameterValue isValid field to FALSE, the invalidSubState field to '2' and the rawValue set to NULL.
+If the validityExpression field is NULL, or the validity expression evaluates to TRUE, and the ParameterDefinitionDetails either does not contain a conversion or the conversion is successful, then the validity state shall be set to VALID by setting the ParameterValue isValid field to TRUE and the invalidSubState field to '0'.
+If the validityExpression field is NULL, or the validity expression evaluates to TRUE, and the conversion of the parameter value fails (for example an unexpected value for a discrete conversion), then the validity state shall be INVALID_CONVERSION by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '3'.
+If the validityExpression field is not NULL and the parameters used to determine the expression are not VALID, then the validity state shall be set to UNVERIFIED by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '4'.
+If the validityExpression field is not NULL and the validity expression evaluates to FALSE, then the validity state shall be set to INVALID by setting the ParameterValue isValid field to FALSE and the invalidSubState field to '5'.
+If the validity of the parameter is INVALID_CONVERSION then the convertedValue of the ParameterValue shall be set to NULL.
+If the validity of the parameter is either UNVERIFIED or INVALID and the ParameterDefinitionDetails contains a conversion, then the convertedValue of the ParameterValue shall contain the converted value.
+It is supported that other, implementation specific, mechanisms may be used to determine parameter validity.
+It is supported that other, deployment specific, invalidSubState values be used however the meaning of those values is deployment specific and outside the scope of this standard. They must use values greater than 127.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="monitorValue" number="1" supportInReplay="true"
                       comment="The monitorValue operation allows a consumer to subscribe for parameter value updates.">
@@ -619,13 +638,31 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="ParameterObjects">
+          <svg:svg width="480" height="330" version="1.1">
+            <svg:rect width="170" height="70" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="170" height="70" x="290" y="240" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="170" height="70" x="290" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="The definitions of the parameters shall be represented as ParameterDefinition COM objects.&#xA;Parameter value updates shall be represented as ParameterValueInstance COM objects.&#xA;The ParameterValueInstance object shall use the related link to indicate which ParameterDefinition object it uses.&#xA;The source link of the ParameterDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;The source link of the ParameterValueInstance object should be the object that caused the update to be generated.&#xA;The source link of the ParameterValueInstance object shall be NULL for periodic updates.">
-          <com:object name="ParameterDefinition" number="1">
+          <com:object name="ParameterIdentity" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ParameterDefinition" number="2">
             <com:objectType>
               <mal:type name="ParameterDefinitionDetails" service="Parameter" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Parameter" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="ParameterValueInstance" number="2">
+          <com:object name="ParameterValueInstance" number="3">
             <com:objectType>
               <mal:type name="ParameterValue" service="Parameter" area="MC"/>
             </com:objectType>
@@ -645,18 +682,18 @@
  &lt;li&gt;the capability for controlling reporting of alerts;&lt;/li&gt;
  &lt;li&gt;the capability for maintaining the list of alert definitions.&lt;/li&gt;
 &lt;/ol&gt;
-        The alert reporting service shall provide the capability to enable and disable the generation of alert reports.
-        It shall be possible to report the alert enabled/disabled status.
-        It shall be possible to update, delete, and add alert definitions.
-        Updating an alert definition shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
-        By default generation of newly added alerts shall be disabled until specifically enabled.
-        The list of the alert definitions may be requested.
-      </mal:documentation>
+The alert reporting service shall provide the capability to enable and disable the generation of alert reports.
+It shall be possible to report the alert enabled/disabled status.
+It shall be possible to update, delete, and add alert definitions.
+Updating an alert definition shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
+By default generation of newly added alerts shall be disabled until specifically enabled.
+The list of the alert definitions may be requested.
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The generation of alerts shall be controlled by the generationEnabled Boolean value in the AlertDefinitionDetails.
-        Setting the generationEnabled field to TRUE shall enable generation of instances of that alert.
-        The generationEnabled value can be set by using either the enableGeneration or updateDefinition operations.
-        The alert instances shall be published as events using the COM event operations.
-      </mal:documentation>
+Setting the generationEnabled field to TRUE shall enable generation of instances of that alert.
+The generationEnabled value can be set by using either the enableGeneration or updateDefinition operations.
+The alert instances shall be published as events using the COM event operations.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:submitIP name="enableGeneration" number="1" supportInReplay="false"
                       comment="The enableGeneration operation allows a consumer to control whether updates for specific alerts are generated or not. The operation allows the consumer to select the alerts directly or indirectly using groups.">
@@ -748,7 +785,7 @@
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
               <mal:field name="alertDefDetails"
-                         comment="The alertDefDetails field shall contain the replacement AlertDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;Only the description, the argument units, of the generationEnabled fields shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.">
+                         comment="The alertDefDetails field shall contain the replacement AlertDefinitionDetails.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;Only the description, the argument units, or the generationEnabled fields shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be updated as a result of this operation call.">
                 <mal:type list="true" name="AlertDefinitionDetails" service="Alert" area="MC"/>
               </mal:field>
             </mal:submit>
@@ -832,15 +869,35 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="AlertObjects">
+          <svg:svg width="740" height="250" version="1.1">
+            <svg:rect width="137" height="60" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="190" height="80" x="530" y="150" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="137" height="60" x="260" y="160" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="137" height="60" x="260" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="The definitions of the alerts shall be represented as AlertDefinition COM objects.&#xA;Instances of an alert shall be represented as an AlertEvent COM event.&#xA;The AlertEvent object shall use the related link to indicate which AlertDefinition object it uses.&#xA;The source link of the AlertDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.">
-          <com:object name="AlertDefinition" number="1">
+          <com:object name="AlertIdentity" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="AlertDefinition" number="2">
             <com:objectType>
               <mal:type name="AlertDefinitionDetails" service="Alert" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Alert" area="MC"/>
+            </com:relatedObject>
           </com:object>
         </com:objects>
         <com:events comment="When an alert is generated it shall be represented as a COM event.&#xA;The event shall be published using the COM event service.&#xA;The source link of the AlertEvent object shall be the object that caused the event to be generated.">
-          <com:event name="AlertEvent" number="2"
+          <com:event name="AlertEvent" number="3"
                      comment="The AlertEvent shall be raised when an enabled alert is published.">
             <com:objectType>
               <mal:type name="AlertEventDetails" service="Alert" area="MC"/>
@@ -869,8 +926,8 @@
  &lt;li&gt;the capability for listing check definitions;&lt;/li&gt;
  &lt;li&gt;the capability for modifying the association of checks to parameters.&lt;/li&gt;
 &lt;/ol&gt;
-        The check service shall use the event service for issuing the corresponding event generated by the check service.
-        The check may support the evaluation of the following check types:
+The check service shall use the event service for issuing the corresponding event generated by the check service.
+The check may support the evaluation of the following check types:
 &lt;ol&gt;
  &lt;li&gt;Constant check;&lt;/li&gt;
  &lt;li&gt;Reference check;&lt;/li&gt;
@@ -878,41 +935,41 @@
  &lt;li&gt;Limit check;&lt;/li&gt;
  &lt;li&gt;Compound check.&lt;/li&gt;
 &lt;/ol&gt;
-        When performing a limit check, the check service shall:
+When performing a limit check, the check service shall:
 &lt;ol&gt;
  &lt;li&gt;check that the value of a parameter lies within a pair of limit values if set to violate in range, or outside a pair of limits if set to violate outside the range;&lt;/li&gt;
  &lt;li&gt;declare the check successful when the expression evaluates to true for the correct number of successive valid samples.&lt;/li&gt;
 &lt;/ol&gt;
-        When performing an constant check, the check service shall:
+When performing an constant check, the check service shall:
 &lt;ol&gt;
  &lt;li&gt;check that the parameter value evaluates to one of the expected values;&lt;/li&gt;
  &lt;li&gt;declare the check successful when the expression evaluates to true for the correct number of successive valid samples.&lt;/li&gt;
 &lt;/ol&gt;
-        When performing a referenced check, the check service shall:
+When performing a referenced check, the check service shall:
 &lt;ol&gt;
  &lt;li&gt;check that the parameter value evaluates to the referenced value;&lt;/li&gt;
  &lt;li&gt;declare the check successful when the expression evaluates to true for the correct number of successive valid samples.&lt;/li&gt;
 &lt;/ol&gt;
-        When performing a delta check, the check service shall:
+When performing a delta check, the check service shall:
 &lt;ol&gt;
  &lt;li&gt;calculate the difference, i.e., the delta value, as either an absolute or percentage depending on the check definition between two parameter values;&lt;/li&gt;
  &lt;li&gt;check that the difference lies within a pair of threshold values if set to violate in range, or outside a pair of thresholds if set to violate outside the range;&lt;/li&gt;
  &lt;li&gt;declare the check successful when the expression evaluates to true for the correct number of successive valid samples.&lt;/li&gt;
 &lt;/ol&gt;
-        When performing a compound check, the check service shall:
+When performing a compound check, the check service shall:
 &lt;ol&gt;
  &lt;li&gt;monitor the check links referenced by the compound check definition and count the number of referenced checks in violation;&lt;/li&gt;
  &lt;li&gt;declare the compound check violated when the number of referenced checks in violation equals or exceeds the defined count value.&lt;/li&gt;
 &lt;/ol&gt;
-        The check service shall provide the capability to process several check definitions for the same parameter.
-        Each check definition shall contain:
+The check service shall provide the capability to process several check definitions for the same parameter.
+Each check definition shall contain:
 &lt;ol&gt;
  &lt;li&gt;the identifier of the check definition;&lt;/li&gt;
  &lt;li&gt;the description of the check definition;&lt;/li&gt;
  &lt;li&gt;the details specific to that check type.&lt;/li&gt;
 &lt;/ol&gt;
-        A check definition shall be applied to a specific parameter using a check link.
-        Each check link shall contain:
+A check definition shall be applied to a specific parameter using a check link.
+Each check link shall contain:
 &lt;ol&gt;
  &lt;li&gt;the identifier of the check definition to use;&lt;/li&gt;
  &lt;li&gt;the identifier of the parameter to monitor;&lt;/li&gt;
@@ -922,7 +979,7 @@
  &lt;li&gt;the checking interval;&lt;/li&gt;
  &lt;li&gt;an optional check validity condition that yielding false prevents the check being performed.&lt;/li&gt;
 &lt;/ol&gt;
-        Each check validity condition shall contain:
+Each check validity condition shall contain:
 &lt;ol&gt;
  &lt;li&gt;the identifier of a parameter to use as a validity parameter;&lt;/li&gt;
  &lt;li&gt;an expression operator;&lt;/li&gt;
@@ -930,43 +987,43 @@
  &lt;li&gt;a value to evaluate against.&lt;/li&gt;
 &lt;/ol&gt;
 
-      </mal:documentation>
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">Global check evaluation shall be controlled by the enableService operation.
-        Disabling the check service globally shall pause all check evaluations.
-        Enabling the check service globally shall resume all check evaluations as they were when they were paused.
-        The addParameterCheck operation shall be used to create a link between a check definition and the parameter to be checked.
-        Individual check evaluation shall be controlled by the checkEnabled Boolean value in the CheckLink object.
-        Setting the checkEnabled field to TRUE shall enable check evaluation for a specific CheckLink object.
-        The checkEnabled value may be set by using the enableCheck operation.
-        If the checkOnChange value is TRUE, any change in the state (such as validity becoming VALID) or value of a parameter shall cause an evaluation of the parameter value against the check.
-        If the checkOnChange value is TRUE, any change in the state (such as validity becoming VALID) or the value of the parameter referenced by a check condition shall cause an evaluation of the parameter value against the check.
-        If a check is required to be evaluated periodically, then the time between these evaluations shall be controlled using the checkInterval Duration value in the CheckLink object.
-        For periodic check evaluations to occur the checkOnChange value must be FALSE, it is not possible to request periodic and change based checking concurrently.
-        A checkInterval value of '0' shall mean that no periodic check evaluation shall be performed, and checks will be triggered by another mechanism in this case.
-        The checkInterval value shall only be set when the CheckLink object is created.
-        If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change shall be rejected.
-        The check shall be evaluated if the CheckLink object is enabled, the check condition as defined in the check link evaluates to TRUE, and the checked parameter is in a valid state.
-        The check execution may also be triggered by the triggerCheck operation.
-        If there is a change in the result of the check evaluation then a CheckTransition event shall be published.
-        If the check result cannot be determined, for example a getSummaryReport operation call for a CheckLink object that has not been evaluated yet, the associated CheckResult shall contain UNCHECKED for the check states and a checked value of NULL.
-        In a CheckDefinitionDetails only one of nominalTime and nominalCount is permitted to be zero, an INVALID error shall be returned from the addDefinition operation if this is not the case.
-        In a CheckDefinitionDetails only one of violationTime and violationCount is permitted to be zero, an INVALID error shall be returned from the addDefinition operation if this is not the case.
-        Only when the nominalCount number of successive valid samples including the current one over a nominalTime time period of the checked parameter have consistently passed the check shall a new check result be calculated.
-        Only when the violationCount number of successive valid samples including the current one over a violationTime time period of the checked parameter have consistently failed the check shall a new check result be calculated.
-        For reference and delta checks it shall be possible to define the check to compare against a reference value.
-        The reference value checked against shall be updated once validCount samples of that referenced parameter exist at deltaTime in the past from time now.
-        For a delta check, the delta value shall be calculated as the difference between the reference value and the check parameter.
-        For percentage based delta thresholds, the percentage is calculated as the arithmetic difference between the reference value and the parameter value, as a percentage of the first valid sample where the value 1.0 is 100 per cent. For example, if the reference value is 8 and the parameter value is 14 then the calculation is (14 - 8) / 8 or 0.75 or 75%.
-        For a constant check, the result of the constant check shall be declared successful only if the parameter value passes evaluation against the complete set of constant values in the definition.
-        The result of constant or reference check evaluation shall be used to populate the checkEvaluation fields of the CheckResult.
-        For a limit or delta check, if violateInRange is FALSE, the result shall be set to FALSE if the lower limit is violated or TRUE if the upper limited is violated and used to populate the checkEvaluation fields of the CheckResult.
-        For a limit or delta check, if violateInRange is TRUE, the result shall be set to TRUE if either limit is violated and used to populate the checkEvaluation fields of the CheckResult.
-        For a compound check, if the minimumChecksInViolation field is not set to '0', the result of the compound check shall be declared successful only if the count of referenced CheckLink objects currently in violation is less than the minimumChecksInViolation field.
-        For a compound check, if the minimumChecksInViolation field is set to '0', the result of the compound check shall be declared successful if any of referenced CheckLink objects is not currently in violation.
-        If the maxReportingInterval is not zero and if a CheckResult has not been generated in that time a CheckResult with the current check states shall be generated.
-        The maxReportingInterval value shall be set by using the updateDefinition operation.
-        Each transition in the state of a check shall cause the generation of a CheckResult and a CheckTransition event.
-      </mal:documentation>
+Disabling the check service globally shall pause all check evaluations.
+Enabling the check service globally shall resume all check evaluations as they were when they were paused.
+The addParameterCheck operation shall be used to create a link between a check definition and the parameter to be checked.
+Individual check evaluation shall be controlled by the checkEnabled Boolean value in the CheckLink object.
+Setting the checkEnabled field to TRUE shall enable check evaluation for a specific CheckLink object.
+The checkEnabled value may be set by using the enableCheck operation.
+If the checkOnChange value is TRUE, any change in the state (such as validity becoming VALID) or value of a parameter shall cause an evaluation of the parameter value against the check.
+If the checkOnChange value is TRUE, any change in the state (such as validity becoming VALID) or the value of the parameter referenced by a check condition shall cause an evaluation of the parameter value against the check.
+If a check is required to be evaluated periodically, then the time between these evaluations shall be controlled using the checkInterval Duration value in the CheckLink object.
+For periodic check evaluations to occur the checkOnChange value must be FALSE, it is not possible to request periodic and change based checking concurrently.
+A checkInterval value of '0' shall mean that no periodic check evaluation shall be performed, and checks will be triggered by another mechanism in this case.
+The checkInterval value shall only be set when the CheckLink object is created.
+If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change shall be rejected.
+The check shall be evaluated if the CheckLink object is enabled, the check condition as defined in the check link evaluates to TRUE, and the checked parameter is in a valid state.
+The check execution may also be triggered by the triggerCheck operation.
+If there is a change in the result of the check evaluation then a CheckTransition event shall be published.
+If the check result cannot be determined, for example a getSummaryReport operation call for a CheckLink object that has not been evaluated yet, the associated CheckResult shall contain UNCHECKED for the check states and a checked value of NULL.
+In a CheckDefinitionDetails only one of nominalTime and nominalCount is permitted to be zero, an INVALID error shall be returned from the addDefinition operation if this is not the case.
+In a CheckDefinitionDetails only one of violationTime and violationCount is permitted to be zero, an INVALID error shall be returned from the addDefinition operation if this is not the case.
+Only when the nominalCount number of successive valid samples including the current one over a nominalTime time period of the checked parameter have consistently passed the check shall a new check result be calculated.
+Only when the violationCount number of successive valid samples including the current one over a violationTime time period of the checked parameter have consistently failed the check shall a new check result be calculated.
+For reference and delta checks it shall be possible to define the check to compare against a reference value.
+The reference value checked against shall be updated once validCount samples of that referenced parameter exist at deltaTime in the past from time now.
+For a delta check, the delta value shall be calculated as the difference between the reference value and the check parameter.
+For percentage based delta thresholds, the percentage is calculated as the arithmetic difference between the reference value and the parameter value, as a percentage of the first valid sample where the value 1.0 is 100 per cent. For example, if the reference value is 8 and the parameter value is 14 then the calculation is (14 - 8) / 8 or 0.75 or 75%.
+For a constant check, the result of the constant check shall be declared successful only if the parameter value passes evaluation against the complete set of constant values in the definition.
+The result of constant or reference check evaluation shall be used to populate the checkEvaluation fields of the CheckResult.
+For a limit or delta check, if violateInRange is FALSE, the result shall be set to FALSE if the lower limit is violated or TRUE if the upper limited is violated and used to populate the checkEvaluation fields of the CheckResult.
+For a limit or delta check, if violateInRange is TRUE, the result shall be set to TRUE if either limit is violated and used to populate the checkEvaluation fields of the CheckResult.
+For a compound check, if the minimumChecksInViolation field is not set to '0', the result of the compound check shall be declared successful only if the count of referenced CheckLink objects currently in violation is less than the minimumChecksInViolation field.
+For a compound check, if the minimumChecksInViolation field is set to '0', the result of the compound check shall be declared successful if any of referenced CheckLink objects is not currently in violation.
+If the maxReportingInterval is not zero and if a CheckResult has not been generated in that time a CheckResult with the current check states shall be generated.
+The maxReportingInterval value shall be set by using the updateDefinition operation.
+Each transition in the state of a check shall cause the generation of a CheckResult and a CheckTransition event.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:progressIP name="getCurrentTransitionList" number="1" supportInReplay="true"
                         comment="The getCurrentTransitionList operation allows a consumer to obtain the current result of a number of checks filtering on check state.">
@@ -1494,17 +1551,39 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="CheckObjects">
+          <svg:svg width="695" height="740" version="1.1">
+            <svg:rect width="150" height="70" x="20" y="460" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="20" y="340" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="160" height="70" x="250" y="190" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="160" height="70" x="510" y="460" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="70" x="240" y="650" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="20" y="260" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="20" y="180" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="20" y="100" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="70" x="240" y="460" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="160" height="70" x="515" y="650" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="Two COM objects shall be used to hold the check definition details, the first is a CheckDefinition COM object that holds the name of the check definition and a second COM object that holds the actual definition of the check.&#xA;The actual check definition details shall be represented as one of the specific check definition COM objects (ConstantCheck, ReferenceCheck, DeltaCheck, LimitCheck, CompoundCheck).&#xA;The CheckDefinition object shall use the source link to indicate which actual COM definition object (ConstantCheck, ReferenceCheck, DeltaCheck, LimitCheck, CompoundCheck) it uses.&#xA;The link between which parameters are being evaluated for each check shall be represented as CheckLink COM objects.&#xA;The CheckLink object shall use the related link to indicate which CheckDefinition object it uses.&#xA;The CheckLink object shall use the source link to indicate which ParameterDefinition object it is checking.&#xA;Violations of a check evaluation or the maximum reporting interval expiring shall be represented as CheckTransition COM events.&#xA;The CheckTransition event objects shall use the related link to indicate which CheckLink object it uses.&#xA;The CheckTransition event objects shall use the source link to indicate what object (if any) caused it to be evaluated, most likely the relevant ParameterValueInstance object or the COM OperationActivity object of a triggerCheck operation.&#xA;In the case of the maximum reporting interval expiring the source link of the CheckTransition event object shall be set to NULL.">
-          <com:object name="CheckDefinition" number="1">
+          <com:object name="CheckIdentity" number="1">
             <com:objectType>
               <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
-            <com:sourceObject comment="Links to the actual check definition object such as ConstantCheck"/>
           </com:object>
           <com:object name="CheckLink" number="2">
-            <com:objectType>
-              <mal:type name="CheckLinkDetails" service="Check" area="MC"/>
-            </com:objectType>
             <com:relatedObject>
               <com:objectType number="1" service="Check" area="MC"/>
             </com:relatedObject>
@@ -1512,34 +1591,57 @@
               <com:objectType number="1" service="Parameter" area="MC"/>
             </com:sourceObject>
           </com:object>
-          <com:object name="ConstantCheck" number="4">
+          <com:object name="CheckLinkSettings" number="3">
+            <com:objectType>
+              <mal:type name="CheckLinkDetails" service="Check" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Check" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="ConstantCheck" number="5">
             <com:objectType>
               <mal:type name="ConstantCheckDefinition" service="Check" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Check" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="ReferenceCheck" number="5">
+          <com:object name="ReferenceCheck" number="6">
             <com:objectType>
               <mal:type name="ReferenceCheckDefinition" service="Check" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Check" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="DeltaCheck" number="6">
+          <com:object name="DeltaCheck" number="7">
             <com:objectType>
               <mal:type name="DeltaCheckDefinition" service="Check" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Check" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="LimitCheck" number="7">
+          <com:object name="LimitCheck" number="8">
             <com:objectType>
               <mal:type name="LimitCheckDefinition" service="Check" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Check" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="CompoundCheck" number="8">
+          <com:object name="CompoundCheck" number="9">
             <com:objectType>
               <mal:type name="CompoundCheckDefinition" service="Check" area="MC"/>
             </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Check" area="MC"/>
+            </com:relatedObject>
           </com:object>
         </com:objects>
         <com:events comment="When a check is evaluated and its state changes, the change in state shall be represented as CheckTransition COM events.">
-          <com:event name="CheckTransition" number="3">
+          <com:event name="CheckTransition" number="4">
             <com:objectType>
               <mal:type name="CheckResult" service="Check" area="MC"/>
             </com:objectType>
@@ -1562,16 +1664,16 @@
  &lt;li&gt;the capability to control generation of periodic statistics reporting;&lt;/li&gt;
  &lt;li&gt;the capability for maintaining the list of evaluated parameters.&lt;/li&gt;
 &lt;/ol&gt;
-        The statistics service may support the evaluation of the following set of statistic functions:
+The statistics service may support the evaluation of the following set of statistic functions:
 &lt;ol&gt;
  &lt;li&gt;the maximum value;&lt;/li&gt;
  &lt;li&gt;the minimum value;&lt;/li&gt;
  &lt;li&gt;the mean value;&lt;/li&gt;
  &lt;li&gt;the standard deviation.&lt;/li&gt;
 &lt;/ol&gt;
-        Whether the statistics reporting service supports a specific statistic function shall be declared when implementing that service.
-        The statistic service shall maintain a set of links between the statistic function and the parameter that shall be evaluated.
-        Each statistics link shall contain:
+Whether the statistics reporting service supports a specific statistic function shall be declared when implementing that service.
+The statistic service shall maintain a set of links between the statistic function and the parameter that shall be evaluated.
+Each statistics link shall contain:
 &lt;ol&gt;
  &lt;li&gt;the identification of the parameter for which statistics are evaluated;&lt;/li&gt;
  &lt;li&gt;the related collection interval;&lt;/li&gt;
@@ -1579,10 +1681,10 @@
  &lt;li&gt;the related reporting interval;&lt;/li&gt;
  &lt;li&gt;the related sampling interval.&lt;/li&gt;
 &lt;/ol&gt;
-        The evaluation of a specific statistic shall be reset every collection interval if the reset on collection interval Boolean is TRUE.
-        The parameter referenced by a statistic link shall be sampled every sampling interval.
-        The current statistics value shall be reported every reporting interval if generation is enabled.
-        Each statistics value update shall contain:
+The evaluation of a specific statistic shall be reset every collection interval if the reset on collection interval Boolean is TRUE.
+The parameter referenced by a statistic link shall be sampled every sampling interval.
+The current statistics value shall be reported every reporting interval if generation is enabled.
+Each statistics value update shall contain:
 &lt;ol&gt;
  &lt;li&gt;the start time of the evaluation;&lt;/li&gt;
  &lt;li&gt;the end time of the evaluation;&lt;/li&gt;
@@ -1590,28 +1692,28 @@
  &lt;li&gt;the evaluated value;&lt;/li&gt;
  &lt;li&gt;the number of samples that contributed to the evaluation.&lt;/li&gt;
 &lt;/ol&gt;
-        When resetting the statistics, the statistics service shall, in sequence:
+When resetting the statistics, the statistics service shall, in sequence:
 &lt;ol&gt;
  &lt;li&gt;stop the evaluation of the statistics;&lt;/li&gt;
  &lt;li&gt;clear any results accumulated;&lt;/li&gt;
  &lt;li&gt;restart the evaluation process.&lt;/li&gt;
 &lt;/ol&gt;
-        The statistics service shall provide the capability to enable periodic statistics reporting.
-        For each valid instruction to enable periodic statistics reporting, the statistics service shall set the statistics link status to enabled.
-        The statistics service shall provide the capability to disable the periodic statistics reporting.
-        For each valid instruction to disable periodic statistics reporting, the statistics service shall:
+The statistics service shall provide the capability to enable periodic statistics reporting.
+For each valid instruction to enable periodic statistics reporting, the statistics service shall set the statistics link status to enabled.
+The statistics service shall provide the capability to disable the periodic statistics reporting.
+For each valid instruction to disable periodic statistics reporting, the statistics service shall:
 &lt;ol&gt;
  &lt;li&gt;set the statistics link status to disabled;&lt;/li&gt;
  &lt;li&gt;continue evaluating the parameter statistics.&lt;/li&gt;
 &lt;/ol&gt;</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">A consumer may request the current status of the statistical evaluations using the getStatistics operation.
-        If a StatisticLink is required to send periodic updates, then the time between these updates shall be controlled using the reportingInterval duration value.
-        A reportingInterval value of '0' shall mean no periodic updates shall be sent; updates are required to be triggered by another mechanism in this case.
-        The reportingInterval value shall be modified using the updateParameterEvaluation operation.
-        If the reporting interval and the collection intervals align, for example report every minute with a five minute collection interval the fifth minute will align, then only a single report shall be generated in this case.
-        For onboard parameters the link sampling interval should be a multiple of the minimum sampling interval of those parameters.
-        If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change rejected.
-      </mal:documentation>
+If a StatisticLink is required to send periodic updates, then the time between these updates shall be controlled using the reportingInterval duration value.
+A reportingInterval value of '0' shall mean no periodic updates shall be sent; updates are required to be triggered by another mechanism in this case.
+The reportingInterval value shall be modified using the updateParameterEvaluation operation.
+If the reporting interval and the collection intervals align, for example report every minute with a five minute collection interval the fifth minute will align, then only a single report shall be generated in this case.
+For onboard parameters the link sampling interval should be a multiple of the minimum sampling interval of those parameters.
+If an interval that is not supported by the provider is requested, then an INVALID error shall be returned, and the change rejected.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:requestIP name="getStatistics" number="1" supportInReplay="true"
                        comment="The getStatistics operation returns the current value for a requested set of statistic evaluations.">
@@ -1924,6 +2026,22 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="StatisticObjects">
+          <svg:svg width="710" height="460" version="1.1">
+            <svg:rect width="150" height="70" x="20" y="190" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="540" y="370" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="270" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="270" y="190" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="540" y="190" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="150" height="70" x="270" y="370" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="The statistic functions shall be represented as StatisticFunction COM objects.&#xA;For a 'Maximum' statistics function, the object instance identifier of '1' shall be used.&#xA;For a 'Minimum' statistics function, the object instance identifier of '2' shall be used.&#xA;For a 'Mean average' statistics function, the object instance identifier of '3' shall be used.&#xA;For a 'Standard deviation' statistics function, the object instance identifier of '4' shall be used.&#xA;For non-standard statistics functions, i.e. ones not listed here, the name and object instance identifier shall be communicated through an out-of-band agreement.&#xA;The link between which parameters are being evaluated for each function shall be represented as StatisticLink COM objects.&#xA;Statistic evaluations for a specific parameter and statistic function shall be represented as StatisticValueInstance COM objects.&#xA;The StatisticLink object shall use the related link to indicate which StatisticFunction object it uses.&#xA;The StatisticLink object shall use the source link to indicate which ParameterDefinition object it uses.&#xA;The StatisticValueInstance object shall use the related link to indicate which StatisticLink object it uses.&#xA;The StatisticValueInstance object shall use the source link to indicate what object (if any) caused it to be evaluated.&#xA;If the StatisticValueInstance object was a result of either a resetEvaluation or getStatistics operation call then the source link shall be the COM OperationActivity object of the operation.">
           <com:object name="StatisticFunction" number="1">
             <com:objectType>
@@ -1931,9 +2049,6 @@
             </com:objectType>
           </com:object>
           <com:object name="StatisticLink" number="2">
-            <com:objectType>
-              <mal:type name="StatisticLinkDetails" service="Statistic" area="MC"/>
-            </com:objectType>
             <com:relatedObject>
               <com:objectType number="1" service="Statistic" area="MC"/>
             </com:relatedObject>
@@ -1941,7 +2056,15 @@
               <com:objectType number="1" service="Parameter" area="MC"/>
             </com:sourceObject>
           </com:object>
-          <com:object name="StatisticValueInstance" number="3">
+          <com:object name="StatisticLinkSpecification" number="3">
+            <com:objectType>
+              <mal:type name="StatisticLinkDetails" service="Statistic" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Statistic" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="StatisticValueInstance" number="4">
             <com:objectType>
               <mal:type name="StatisticValue" service="Statistic" area="MC"/>
             </com:objectType>
@@ -1963,28 +2086,28 @@
  &lt;li&gt;the capability for controlling reporting of the aggregation values;&lt;/li&gt;
  &lt;li&gt;the capability for maintaining the list of aggregation definitions.&lt;/li&gt;
 &lt;/ol&gt;
-        Three modes of generating an aggregation value shall exist: periodic, ad-hoc, and filtered:
+Three modes of generating an aggregation value shall exist: periodic, ad-hoc, and filtered:
 &lt;ol&gt;
  &lt;li&gt;Periodic updates for aggregations shall be generated once for each cycle of a specified interval.&lt;/li&gt;
  &lt;li&gt;Ad-hoc updates for aggregations shall be triggered by some other deployment-specific means.&lt;/li&gt;
  &lt;li&gt;Filtered updates for aggregations shall be generated only when the value of one or more parameters in the aggregation has changed by more than a given threshold since the previous generation or when a timeout expires.&lt;/li&gt;
 &lt;/ol&gt;
 
-      </mal:documentation>
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The generation of updates for an aggregation shall be controlled by the generationEnabled Boolean value in the AggregationDefinitionDetails structure.
-        Setting the generationEnabled field to TRUE shall enable generation of updates for a specific aggregation.
-        If an aggregation is required to send periodic updates, then the time between these updates shall be controlled using the updateInterval Duration value in the AggregationDefinitionDetails structure.
-        Periodic updates for aggregations shall set the generationMode field of the AggregationValueInstance to PERIODIC.
-        No periodic updates shall be generated when the updateInterval field is set to '0' and updates will be triggered by another ad-hoc implementation-specific mechanism in this case.
-        Ad-hoc updates for aggregations shall set the generationMode field of the AggregationValueInstance to ADHOC.
-        Filtered updates for aggregations shall be generated only when the value of one or more parameters in the aggregation has changed by more than a given threshold since the previous generation or when the filtered timeout expires.
-        The threshold for the filter shall be defined, on a per-parameter basis, either as a percentage or an (absolute) delta change in value.
-        Parameters in an aggregation that do not have a filter specified in the aggregation definition shall be ignored by the filter comparison process.
-        If filtering is enabled and a filtered timeout has been set for that aggregation, if no change has been detected in that time-out period, an aggregation value shall be generated with a generation mode of FILTERED_TIMEOUT. This measure ensures that extensive periods of time do not elapse without updates of an enabled aggregation.
-        The generationEnabled, filteredTimeout and updateInterval values of an AggregationDefinition object can be set by using the updateDefinition operation.
-        If the interval requested is not supported by the provider then an INVALID error shall be returned and the change rejected.
-        The ordering of the values in the AggregationValueInstance object shall match the ordering of parameters in the AggregationDefinitionDetails structure.
-      </mal:documentation>
+Setting the generationEnabled field to TRUE shall enable generation of updates for a specific aggregation.
+If an aggregation is required to send periodic updates, then the time between these updates shall be controlled using the updateInterval Duration value in the AggregationDefinitionDetails structure.
+Periodic updates for aggregations shall set the generationMode field of the AggregationValueInstance to PERIODIC.
+No periodic updates shall be generated when the updateInterval field is set to '0' and updates will be triggered by another ad-hoc implementation-specific mechanism in this case.
+Ad-hoc updates for aggregations shall set the generationMode field of the AggregationValueInstance to ADHOC.
+Filtered updates for aggregations shall be generated only when the value of one or more parameters in the aggregation has changed by more than a given threshold since the previous generation or when the filtered timeout expires.
+The threshold for the filter shall be defined, on a per-parameter basis, either as a percentage or an (absolute) delta change in value.
+Parameters in an aggregation that do not have a filter specified in the aggregation definition shall be ignored by the filter comparison process.
+If filtering is enabled and a filtered timeout has been set for that aggregation, if no change has been detected in that time-out period, an aggregation value shall be generated with a generation mode of FILTERED_TIMEOUT. This measure ensures that extensive periods of time do not elapse without updates of an enabled aggregation.
+The generationEnabled, filteredTimeout and updateInterval values of an AggregationDefinition object can be set by using the updateDefinition operation.
+If the interval requested is not supported by the provider then an INVALID error shall be returned and the change rejected.
+The ordering of the values in the AggregationValueInstance object shall match the ordering of parameters in the AggregationDefinitionDetails structure.
+</mal:documentation>
       <mal:capabilitySet number="1">
         <mal:pubsubIP name="monitorValue" number="1" supportInReplay="true"
                       comment="The monitorValue operation allows a consumer to subscribe for aggregation value updates.">
@@ -2320,14 +2443,34 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="AggregationObjects">
+          <svg:svg width="820" height="240" version="1.1">
+            <svg:rect width="180" height="60" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="190" height="80" x="610" y="70" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="290" y="160" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="290" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="The definitions of the aggregations shall be represented as AggregationDefinition COM objects.&#xA;Aggregation value updates shall be represented as AggregationValueInstance COM objects.&#xA;The AggregationValueInstance object shall use the related link to indicate which AggregationDefinition object it uses.&#xA;The source link of the AggregationDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;The source link of the AggregationValueInstance object should be the object that caused the update to be generated.&#xA;The source link of the AggregationValueInstance object shall be NULL for periodic updates.">
-          <com:object name="AggregationDefinition" number="1">
+          <com:object name="AggregationIdentity" number="1">
             <com:objectType>
-              <mal:type name="AggregationDefinitionDetails" service="Aggregation" area="MC"/>
+              <mal:type name="Identifier" area="MAL"/>
             </com:objectType>
             <com:sourceObject/>
           </com:object>
-          <com:object name="AggregationValueInstance" number="2">
+          <com:object name="AggregationDefinition" number="2">
+            <com:objectType>
+              <mal:type name="AggregationDefinitionDetails" service="Aggregation" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Aggregation" area="MC"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="AggregationValueInstance" number="3">
             <com:objectType>
               <mal:type name="AggregationValue" service="Aggregation" area="MC"/>
             </com:objectType>
@@ -2343,11 +2486,11 @@
     <mal:service xsi:type="com:ExtendedServiceType" name="Conversion" number="7"
                  comment="The conversion service provides a set of basic conversion definition types that allows the specification of a conversion between two representations. These conversions are used by the other M&amp;C services (such as Action, Alert, and Parameter) to define conversions from raw field representations to some engineering representation.&#xA;Conversions are associated with other entities such as parameters or action/alert arguments through the configuration of the relevant service (action/alert/parameter).&#xA;The conversion service does not provide any operations directly, but allows consumers to add, remove, and modify conversion definitions via the COM archive.">
       <mal:documentation name="High Level Requirements" order="1">The conversion service shall provide the capability for maintaining the list of conversion definitions.
-      </mal:documentation>
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The conversion service shall use the COM archive operations for maintaining the conversion definitions.
-        Updating a conversion definition shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
-        The list of the conversion definitions may be requested.
-      </mal:documentation>
+Updating a conversion definition shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
+The list of the conversion definitions may be requested.
+</mal:documentation>
       <mal:dataTypes>
         <mal:composite name="DiscreteConversionDetails" shortFormPart="1"
                        comment="The DiscreteConversionDetails structure holds a bidirectional conversion between raw and converted values. The first element of the pair is the raw value and the second is the converted value. Both sets of values must be unique.">
@@ -2395,30 +2538,60 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="ConversionObjects">
+          <svg:svg width="790" height="370" version="1.1">
+            <svg:rect width="180" height="60" x="320" y="150" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="590" y="150" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="20" y="290" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="20" y="200" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="20" y="110" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="Each type of conversion shall be represented by a COM object type.&#xA;Other service objects shall reference instances of a conversion using the object instance identifier of the conversion.&#xA;The source link of the conversion objects should be the object that caused them to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.">
-          <com:object name="DiscreteConversion" number="1">
+          <com:object name="ConversionIdentity" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+            <com:sourceObject/>
+          </com:object>
+          <com:object name="DiscreteConversion" number="2">
             <com:objectType>
               <mal:type name="DiscreteConversionDetails" service="Conversion" area="MC"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:relatedObject>
+              <com:objectType number="1" service="Conversion" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="LineConversion" number="2">
+          <com:object name="LineConversion" number="3">
             <com:objectType>
               <mal:type name="LineConversionDetails" service="Conversion" area="MC"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:relatedObject>
+              <com:objectType number="1" service="Conversion" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="PolyConversion" number="3">
+          <com:object name="PolyConversion" number="4">
             <com:objectType>
               <mal:type name="PolyConversionDetails" service="Conversion" area="MC"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:relatedObject>
+              <com:objectType number="1" service="Conversion" area="MC"/>
+            </com:relatedObject>
           </com:object>
-          <com:object name="RangeConversion" number="4">
+          <com:object name="RangeConversion" number="5">
             <com:objectType>
               <mal:type name="RangeConversionDetails" service="Conversion" area="MC"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:relatedObject>
+              <com:objectType number="1" service="Conversion" area="MC"/>
+            </com:relatedObject>
           </com:object>
         </com:objects>
         <com:archiveUsage comment="The COM archive shall be used to store conversion objects.&#xA;Each instance of a conversion definition shall be represented by an object instance held in the COM archive.&#xA;The COM archive service operations shall be used to add, update and remove conversions.&#xA;Other services should monitor the archive service for changes to conversions they reference."/>
@@ -2427,11 +2600,11 @@
     <mal:service xsi:type="com:ExtendedServiceType" name="Group" number="8"
                  comment="The group service provides a mechanism for other services to reference sets of their own objects using a single group reference. These groups are used by the other M&amp;C services (such as Action, Alert, Check, Aggregation and Parameter) to reduce the complexity of operations by allowing consumers to reference groups of objects (such as parameters) in operations rather than having to supply large lists of object references.&#xA;The group service does not provide any operations directly, but allows consumers to add, remove, and modify groups via the COM archive.">
       <mal:documentation name="High Level Requirements" order="1">The group service shall provide the capability for maintaining the list of groups.
-      </mal:documentation>
+</mal:documentation>
       <mal:documentation name="Functional Requirements" order="2">The group service shall use the COM archive operations for maintaining the groups.
-        Updating a Group object shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
-        The list of the group details may be requested.
-      </mal:documentation>
+Updating a Group object shall be limited to minor changes only, such as description update. More substantial changes require the delete and add operations.
+The list of the group details may be requested.
+</mal:documentation>
       <mal:dataTypes>
         <mal:composite name="GroupDetails" shortFormPart="1"
                        comment="The GroupDetails structure holds the object type, domain, and set of object instance identifiers for a set of objects from another service.">
@@ -2459,12 +2632,30 @@
         </mal:composite>
       </mal:dataTypes>
       <com:features>
+        <mal:diagram name="GroupObjects">
+          <svg:svg width="760" height="100" version="1.1">
+            <svg:rect width="180" height="60" x="20" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="560" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+            <svg:rect width="180" height="60" x="290" y="20" fill="#FCF2E3" stroke="black"
+                      stroke-width="2"/>
+          </svg:svg>
+        </mal:diagram>
         <com:objects comment="The definitions of the groups shall be represented as Group COM objects.&#xA;Other service objects shall reference instances of a Group object using its object instance identifier.&#xA;The Group object shall not use the related link and NULL be used in places where the related link is required.&#xA;The source link of the Group object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.">
-          <com:object name="Group" number="1">
+          <com:object name="GroupIdentity" number="1">
+            <com:objectType>
+              <mal:type name="Identifier" area="MAL"/>
+            </com:objectType>
+            <com:sourceObject/>
+          </com:object>
+          <com:object name="GroupDefinition" number="2">
             <com:objectType>
               <mal:type name="GroupDetails" service="Group" area="MC"/>
             </com:objectType>
-            <com:sourceObject/>
+            <com:relatedObject>
+              <com:objectType number="1" service="Group" area="MC"/>
+            </com:relatedObject>
           </com:object>
         </com:objects>
         <com:archiveUsage comment="The COM archive shall be used to store Group objects.&#xA;Each instance of a Group object shall be represented by an object instance held in the COM archive.&#xA;The COM archive service operations shall be used to add, update and remove groups.&#xA;Other services should monitor the archive service for changes to groups they reference."/>
