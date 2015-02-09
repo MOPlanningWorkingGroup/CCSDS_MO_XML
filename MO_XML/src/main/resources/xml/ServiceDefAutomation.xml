@@ -15,6 +15,7 @@
       <mal:documentation name="High Level Requirements" order="1">The schedule service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for submitting schedules;&lt;/li&gt;
+ &lt;li&gt;the capability for updating and removing already submitted schedules;&lt;/li&gt;
  &lt;li&gt;the capability for submitting schedule patches for making a batch of changes to the schedule;&lt;/li&gt;
  &lt;li&gt;the capability for getting a schedule status;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring schedule status;&lt;/li&gt;
@@ -75,9 +76,47 @@
           </mal:errors>
         </mal:submitIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="2" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
+      <mal:capabilitySet number="2" comment="Update and remove schedule instance">
+	  <!-- updateSchedule -->
+      <mal:submitIP name="updateSchedule" number="2" supportInReplay="false"
+                      comment="The updateSchedule operation allows a consumer to update a schedule by essentially replacing it. The difference between updateSchedule() and calling removeSchedule() + submitSchedule() is that in the latter case the ID of the schedule will change. The difference between updateSchedule() and patchSchedul() is that updateSchedule() will replace the whole schedule, while patchSchedule() will replace parts of a schedule. &#xA;TODO: The errors need to be specified for schedule fields.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance that is going to be updated.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="schDetails"
+                         comment="The schDetails part of the submission shall contain the information of the updated schedule instance. The schDetails instance will become the schedule instance on the provider referenced by schInstId.&#xA;The operation shall return once the schedule has been accepted by the provider.">
+                <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="The argument list contains one or more invalid fields.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- removeSchedule -->
+      <mal:submitIP name="removeSchedule" number="3" supportInReplay="false"
+                      comment="The removeSchedule operation allows a consumer to remove an already submitted schedule. &#xA;TODO: The errors need to be specified.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="schInstId"
+                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance that is going to be removed.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- patchSchedule -->
-      <mal:submitIP name="patchSchedule" number="2" supportInReplay="false"
+      <mal:submitIP name="patchSchedule" number="4" supportInReplay="false"
                       comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The patch consists of two structures: 1) the schedule instance containing the updates (ScheduleInstanceDetails), and 2) the associated patch operations (SchedulePatchOperations) to be applied to the fields of fragment schedule instance. The fields of SchedulePatchOperations correspond to the fields of ScheduleInstanceDetails.&#xA;Example: if a schedule item is to be added, then the schedule item is specified in ScheduleInstanceDetails::scheduleItems[0], if it is a first item. The corresponding SchedulePatchOperations::scheduleItems[0] contains the value of PatchOperations::ADD.&#xA;TODO: error specification.">
           <mal:messages>
 			<mal:submit>
@@ -116,9 +155,9 @@
           </mal:errors>
         </mal:submitIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="3" comment="Get schedule status">
+      <mal:capabilitySet number="4" comment="Get schedule status">
 	  <!-- getScheduleStatus -->
-        <mal:requestIP name="getScheduleStatus" number="3" supportInReplay="true"
+        <mal:requestIP name="getScheduleStatus" number="5" supportInReplay="true"
                        comment="The getScheduleStatus operation allows a consumer to get a schedule status.">
           <mal:messages>
             <mal:request>
@@ -136,9 +175,9 @@
           </mal:messages>
         </mal:requestIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="4" comment="Monitor schedule status">
+      <mal:capabilitySet number="5" comment="Monitor schedule status">
 	  <!-- monitorSchedules -->
-		<mal:pubsubIP name="monitorSchedules" number="4" supportInReplay="true"
+		<mal:pubsubIP name="monitorSchedules" number="6" supportInReplay="true"
                       comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;TBD: How to specify the schedule ids that we wish to monitor. The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
@@ -154,9 +193,9 @@
           </mal:messages>
         </mal:pubsubIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="5" comment="Control schedule">
+      <mal:capabilitySet number="6" comment="Control schedule">
 	  <!-- start -->
-      <mal:submitIP name="start" number="5" supportInReplay="false"
+      <mal:submitIP name="start" number="7" supportInReplay="false"
                       comment="The start operation allows a consumer to start executing a submitted or a paused schedule.">
           <mal:messages>
             <mal:submit>
@@ -182,7 +221,7 @@
           </mal:errors>
         </mal:submitIP>
 	  <!-- pause -->
-      <mal:submitIP name="pause" number="6" supportInReplay="false"
+      <mal:submitIP name="pause" number="8" supportInReplay="false"
                       comment="The pause operation allows a consumer to pause an executing schedule. Non-running schedules may not be paused and will return an error.">
           <mal:messages>
             <mal:submit>
@@ -214,7 +253,7 @@
           </mal:errors>
         </mal:submitIP>
 	  <!-- resume -->
-      <mal:submitIP name="resume" number="7" supportInReplay="false"
+      <mal:submitIP name="resume" number="9" supportInReplay="false"
                       comment="The resume operation allows a consumer to resume a paused schedule. Non-paused schedules may not be resumed and will return an error.">
           <mal:messages>
             <mal:submit>
@@ -246,7 +285,7 @@
           </mal:errors>
         </mal:submitIP>
 	  <!-- terminate -->
-      <mal:submitIP name="terminate" number="8" supportInReplay="false"
+      <mal:submitIP name="terminate" number="10" supportInReplay="false"
                       comment="The terminate operation allows a consumer to terminate a running or paused schedule. Non-running or terminated schedules will return an error.">
           <mal:messages>
             <mal:submit>
@@ -272,9 +311,9 @@
           </mal:errors>
         </mal:submitIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="6" comment="List schedule definition">
+      <mal:capabilitySet number="7" comment="List schedule definition">
 	  <!-- listDefinition -->
-	          <mal:requestIP name="listDefinition" number="9" supportInReplay="true"
+	          <mal:requestIP name="listDefinition" number="11" supportInReplay="true"
                        comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ScheduleDefinition objects for the supported types of schedule of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ScheduleDefinition objects.">
           <mal:messages>
             <mal:request>
@@ -293,9 +332,9 @@
         </mal:requestIP>
 
       </mal:capabilitySet>
-      <mal:capabilitySet number="7" comment="Add, update, remove schedule definition">
+      <mal:capabilitySet number="8" comment="Add, update, remove schedule definition">
 		<!-- addDefinition -->
-        <mal:requestIP name="addDefinition" number="10" supportInReplay="false"
+        <mal:requestIP name="addDefinition" number="12" supportInReplay="false"
                        comment="The addDefinition operation allows a consumer to define one or more schedule types that do not currently exist. The new ScheduleDefinition object is expected to be stored in the COM archive by the provider of the schedule service.">
           <mal:messages>
             <mal:request>
@@ -327,7 +366,7 @@
           </mal:errors>
         </mal:requestIP>
 		<!-- updateDefinition -->
-        <mal:submitIP name="updateDefinition" number="11" supportInReplay="false"
+        <mal:submitIP name="updateDefinition" number="13" supportInReplay="false"
                       comment="The updateDefinition operation allows a consumer to modify a definition for one or more schedules without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same schedule name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing schedule definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
@@ -357,7 +396,7 @@
           </mal:errors>
         </mal:submitIP>
 		<!-- removeDefinition -->
-        <mal:submitIP name="removeDefinition" number="12" supportInReplay="false"
+        <mal:submitIP name="removeDefinition" number="14" supportInReplay="false"
                       comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request types supported by the schedule provider.&#xA;The operation does not remove the ScheduleDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ScheduleInstance objects to continue to reference the correct ScheduleDefinition object in the COM archive.">
           <mal:messages>
             <mal:submit>

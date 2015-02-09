@@ -17,6 +17,7 @@
       <mal:documentation name="High Level Requirements" order="1">The planning request service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for submitting planning requests;&lt;/li&gt;
+ &lt;li&gt;the capability for updating and removing already submitted planning requests;&lt;/li&gt;
  &lt;li&gt;the capability for aggregating tasks within a planning request;&lt;/li&gt;
  &lt;li&gt;the capability for getting a planning request and task statuses;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring planning request and task statuses;&lt;/li&gt;
@@ -61,14 +62,6 @@
                          comment="The prDetails part of the submission shall contain the information of the planning request instance.&#xA;The operation shall return once the planning request has been accepted by the provider.">
                 <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
-              <mal:field name="taskDefInstIds"
-                         comment="The taskDefInstIds field of the submission shall contain a list of MAL::Long that are the object instance identifiers of the TaskDefinition objects contained within the planning request instance.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="taskInstIds"
-                         comment="The taskInstIds field of the submission shall contain a list of MAL::Long that are the object instance identifier of the TaskInstance objects to be used for the optional activity tracking events.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
             </mal:submit>
           </mal:messages>
           <mal:errors>
@@ -84,9 +77,47 @@
           </mal:errors>
         </mal:submitIP>
       </mal:capabilitySet>
-     <mal:capabilitySet number="2" comment="Get planning request status.">
+      <mal:capabilitySet number="2" comment="Update and remove planning request instance.">
+		<!-- updatePlanningRequest -->
+        <mal:submitIP name="updatePlanningRequest" number="2" supportInReplay="false"
+                      comment="The updatePlanningRequest operation allows a consumer to update an already submitted planning request by essentially replacing the existing planning request with the provided planning request. The primary goal of this operation is to support the approach of long, medium and short term planning where some details of the planning request only become clear as the execution phase comes closer. The difference between this operation and calling removePlanningRequest() + submitPlanningRequest() is that in the latter case the Identifier will change. Also, when removePlanningRequest() is executed the provider does not know that the intention is to actually update the request and may take wrong actions. There are no methods to update individual properties of a planning request for the interface stability reasons.&#xA;TODO: The errors need to be specified for invalid planning and task fields.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="prInstId"
+                         comment="The prInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestInstance that is going to be updated.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="prDetails"
+                         comment="The prDetails part of the submission shall contain the information of the updated planning request instance. The prDetails instance will become the planning request instance on the provider referenced by prInstId.&#xA;The operation shall return once the planning request has been accepted by the provider.">
+                <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="The argument list contains one or more invalid fields.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+		<!-- removePlanningRequest -->
+        <mal:submitIP name="removePlanningRequest" number="3" supportInReplay="false"
+                      comment="The removePlanningRequest operation allows a consumer to remove an already submitted planning request. NB! This operations removes all tasks that are part of the planning request. &#xA;TODO: The errors need to be specified.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="prInstId"
+                         comment="The prInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestInstance that is going to be removed.">
+                <mal:type name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+        </mal:submitIP>
+      </mal:capabilitySet>
+     <mal:capabilitySet number="3" comment="Get planning request status.">
 		<!-- getPlanningRequestStatus -->
-        <mal:requestIP name="getPlanningRequestStatus" number="2" supportInReplay="true"
+        <mal:requestIP name="getPlanningRequestStatus" number="4" supportInReplay="true"
                        comment="The getPlanningRequestStatus operation allows a consumer to get a planning request status.">
           <mal:messages>
             <mal:request>
@@ -104,9 +135,9 @@
           </mal:messages>
         </mal:requestIP>
 	 </mal:capabilitySet>
-     <mal:capabilitySet number="3" comment="Monitor planning requests.">
+     <mal:capabilitySet number="4" comment="Monitor planning requests.">
 	<!-- monitorPlanningRequests -->
-		<mal:pubsubIP name="monitorPlanningRequests" number="3" supportInReplay="true"
+		<mal:pubsubIP name="monitorPlanningRequests" number="5" supportInReplay="true"
                       comment="The monitorPlanningRequests operation allows a consumer to subscribe for planning request status updates.&#xA;TBD: How to specify the planning request ids that we wish to monitor. The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
@@ -122,9 +153,9 @@
           </mal:messages>
         </mal:pubsubIP>
 	</mal:capabilitySet>
-    <mal:capabilitySet number="4" comment="List planning request definition.">
+    <mal:capabilitySet number="5" comment="List planning request definition.">
 		<!-- listDefinition -->
-        <mal:requestIP name="listDefinition" number="4" supportInReplay="true"
+        <mal:requestIP name="listDefinition" number="6" supportInReplay="true"
                        comment="The listDefinition operation allows a consumer to request the object instance identifiers of the PlanningRequestDefinition objects for the supported types of planning request of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual PlanningRequestDefinition objects.">
           <mal:messages>
             <mal:request>
@@ -142,9 +173,9 @@
           </mal:messages>
         </mal:requestIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="5" comment="Add, update, remove planning request definition.">
+      <mal:capabilitySet number="6" comment="Add, update, remove planning request definition.">
 		<!-- addDefinition -->
-        <mal:requestIP name="addDefinition" number="5" supportInReplay="false"
+        <mal:requestIP name="addDefinition" number="7" supportInReplay="false"
                        comment="The addDefinition operation allows a consumer to define one or more planning request types that do not currently exist. The new PlanningRequestDefinition object is expected to be stored in the COM archive by the provider of the planning request service.">
           <mal:messages>
             <mal:request>
@@ -176,7 +207,7 @@
           </mal:errors>
         </mal:requestIP>
 		<!-- updateDefinition -->
-        <mal:submitIP name="updateDefinition" number="6" supportInReplay="false"
+        <mal:submitIP name="updateDefinition" number="8" supportInReplay="false"
                       comment="The updateDefinition operation allows a consumer to modify a definition for one or more planning requests without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same planning request name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing planning request definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
@@ -206,7 +237,7 @@
           </mal:errors>
         </mal:submitIP>
 		<!-- removeDefinition -->
-        <mal:submitIP name="removeDefinition" number="7" supportInReplay="false"
+        <mal:submitIP name="removeDefinition" number="9" supportInReplay="false"
                       comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request types supported by the planning request provider.&#xA;The operation does not remove the PlanningRequestDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, PlanningRequestInstance objects to continue to reference the correct PlanningRequestDefinition object in the COM archive.">
           <mal:messages>
             <mal:submit>
@@ -226,9 +257,9 @@
           </mal:errors>
         </mal:submitIP>
       </mal:capabilitySet>
-		<mal:capabilitySet number="6" comment="Get task status.">
+		<mal:capabilitySet number="7" comment="Get task status.">
 		<!-- getTaskStatus -->
-        <mal:requestIP name="getTaskStatus" number="8" supportInReplay="true"
+        <mal:requestIP name="getTaskStatus" number="10" supportInReplay="true"
                        comment="The getTaskStatus operation allows a consumer to get a task status.">
           <mal:messages>
             <mal:request>
@@ -246,9 +277,9 @@
           </mal:messages>
         </mal:requestIP>
 		</mal:capabilitySet>
-		<mal:capabilitySet number="7" comment="Set task status.">
+		<mal:capabilitySet number="8" comment="Set task status.">
 		<!-- setTaskStatus -->
-        <mal:submitIP name="setTaskStatus" number="9" supportInReplay="true"
+        <mal:submitIP name="setTaskStatus" number="11" supportInReplay="true"
                        comment="The setTaskStatus operation allows a consumer to set a task status. The intended client is schedule execution, that reports on changes in the task life cycle. TBD: the applicability of this operation.">
           <mal:messages>
             <mal:submit>
@@ -264,9 +295,9 @@
           </mal:messages>
         </mal:submitIP>
 		</mal:capabilitySet>
-		<mal:capabilitySet number="8" comment="Monitor tasks.">
+		<mal:capabilitySet number="9" comment="Monitor tasks.">
 		<!-- monitorTasks -->
-		<mal:pubsubIP name="monitorTasks" number="10" supportInReplay="true"
+		<mal:pubsubIP name="monitorTasks" number="12" supportInReplay="true"
                       comment="The monitorTasks operation allows a consumer to subscribe for task status updates.&#xA;TBD: How to specify the task ids that we wish to monitor. The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
@@ -282,9 +313,9 @@
           </mal:messages>
         </mal:pubsubIP>
 		</mal:capabilitySet>
-		<mal:capabilitySet number="9" comment="List task definition.">
+		<mal:capabilitySet number="10" comment="List task definition.">
 		<!-- listTaskDefinition -->
-        <mal:requestIP name="listTaskDefinition" number="11" supportInReplay="true"
+        <mal:requestIP name="listTaskDefinition" number="13" supportInReplay="true"
                        comment="The listTaskDefinition operation allows a consumer to request the object instance identifiers of the TaskDefinition objects for the supported types of tasks of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual TaskDefinition objects.">
           <mal:messages>
             <mal:request>
@@ -302,9 +333,9 @@
           </mal:messages>
         </mal:requestIP>
 		</mal:capabilitySet>
-		<mal:capabilitySet number="10" comment="Add, update, remove task definition.">
+		<mal:capabilitySet number="11" comment="Add, update, remove task definition.">
 		  <!-- addTaskDefinition -->
-        <mal:requestIP name="addTaskDefinition" number="12" supportInReplay="false"
+        <mal:requestIP name="addTaskDefinition" number="14" supportInReplay="false"
                        comment="The addTaskDefinition operation allows a consumer to define one or more task types that do not currently exist. The new TaskDefinition object is expected to be stored in the COM archive by the provider of the planning request service.">
           <mal:messages>
             <mal:request>
@@ -336,7 +367,7 @@
           </mal:errors>
         </mal:requestIP>
 		  <!-- updateTaskDefinition -->
-        <mal:submitIP name="updateTaskDefinition" number="13" supportInReplay="false"
+        <mal:submitIP name="updateTaskDefinition" number="15" supportInReplay="false"
                       comment="The updateTaskDefinition operation allows a consumer to modify a definition for one or more tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same task name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing task definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
@@ -366,7 +397,7 @@
           </mal:errors>
         </mal:submitIP>
 		  <!-- removeTaskDefinition -->
-        <mal:submitIP name="removeTaskDefinition" number="14" supportInReplay="false"
+        <mal:submitIP name="removeTaskDefinition" number="16" supportInReplay="false"
                       comment="The removeTaskDefinition operation allows a consumer to remove one or more definitions from the list of task types supported by the planning request provider.&#xA;The operation does not remove the TaskDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, TaskInstance objects to continue to reference the correct TaskDefinition object in the COM archive.">
           <mal:messages>
             <mal:submit>
