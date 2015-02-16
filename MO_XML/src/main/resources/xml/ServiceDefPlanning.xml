@@ -438,7 +438,7 @@
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="taskDefNames" canBeNull="true"
-                     comment="The names of the permitted task definitions for this planning request. Must not be empty or the wildcard value.">
+                     comment="The names of the permitted task definitions for this planning request.">
             <mal:type list="true" name="Identifier" area="MAL"/>
           </mal:field>
         </mal:composite>
