@@ -481,6 +481,10 @@
                      comment="The name of the schedule instance associated with this schedule item. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
+          <mal:field name="argumentTypes" canBeNull="true"
+                     comment="The argument types of argument values for the delegate item.">
+            <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
+          </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The argument values for the delegate item.">
             <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
@@ -584,6 +588,10 @@
           <mal:field name="scheduleItemInstName" canBeNull="false"
                      comment="The name of the schedule item instance associated with this schedule item patch. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentTypes" canBeNull="true"
+                     comment="The patch operations to be applied to the argument types of  the associated schedule item.">
+            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The patch operations to be applied to the argument values of  the associated schedule item.">
