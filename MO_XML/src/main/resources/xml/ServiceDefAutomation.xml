@@ -491,7 +491,7 @@
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="false"
                      comment="Synchronization constraints for the schedule item.">
-            <mal:type name="TriggerDetails" area="PlanningDataTypes"/>
+            <mal:type list="true" name="TriggerDetails" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="delegateItem" canBeNull="false"
                      comment="The type and instance of the associated activity or action this schedule item wraps.">
