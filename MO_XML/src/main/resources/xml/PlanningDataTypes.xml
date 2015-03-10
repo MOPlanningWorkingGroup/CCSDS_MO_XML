@@ -15,13 +15,13 @@
 					comment="The name of the argument definition. Must not be empty or the wildcard value.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
-        <mal:field name="description" canBeNull="true"
-					comment="The description of the argument definition.">
-          <mal:type name="String" area="MAL"/>
-        </mal:field>
         <mal:field name="attributeType" canBeNull="false"
                    comment="Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.">
           <mal:type name="Octet" area="MAL"/>
+        </mal:field>
+        <mal:field name="area" canBeNull="false"
+                   comment="Area number where the Element is declared. If null then the area is MAL.">
+          <mal:type name="Short" area="MAL"/>
         </mal:field>
       </mal:composite>
 	  <!-- AttributeValue -->
@@ -124,8 +124,10 @@
                   comment="The release of a task or activity."/>
         <mal:item value="UPLINK" nvalue="7"
                   comment="The uplink of a task or activity."/>
-        <mal:item value="TBD" nvalue="8"
-                  comment="TBD: more types to add to the enumeration"/>
+        <mal:item value="VALIDITY_START" nvalue="8"
+                  comment="The start of a validity window."/>
+        <mal:item value="VALIDITY_END" nvalue="9"
+                  comment="The end of a validity window."/>
       </mal:enumeration>
 	  <!-- TriggerType -->
       <mal:enumeration name="TriggerType" shortFormPart="5"
