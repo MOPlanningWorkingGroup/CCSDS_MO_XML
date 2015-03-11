@@ -35,12 +35,44 @@
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
       </mal:composite>
+	  <!-- InstanceState -->
+      <mal:enumeration name="InstanceState" shortFormPart="5"
+                       comment="Status constants that may be used for planning requests, tasks, schedules, procedures.">
+        <mal:item value="SUBMITTED" nvalue="1"
+                  comment=""/>
+        <mal:item value="LAST_MODIFIED" nvalue="2"
+                  comment=""/>
+        <mal:item value="VALIDATED" nvalue="3"
+                  comment=""/>
+        <mal:item value="INVALID" nvalue="4"
+                  comment=""/>
+        <mal:item value="ACCEPTED" nvalue="5"
+                  comment=""/>
+        <mal:item value="REJECTED" nvalue="6"
+                  comment=""/>
+        <mal:item value="PLANNED" nvalue="7"
+                  comment=""/>
+        <mal:item value="PLAN_CONFLICT" nvalue="8"
+                  comment=""/>
+        <mal:item value="SCHEDULED" nvalue="9"
+                  comment=""/>
+        <mal:item value="DISTRIBUTED_FOR_EXECUTION" nvalue="10"
+                  comment=""/>
+        <mal:item value="EXECUTE_COMPLETED" nvalue="11"
+                  comment=""/>
+        <mal:item value="EXECUTE_FAILED" nvalue="12"
+                  comment=""/>
+      </mal:enumeration>
 	 <!-- StatusRecord -->
       <mal:composite name="StatusRecord" shortFormPart="3"
                      comment="The StatusRecord structure holds information related to a field in a status object. Example status object is a planning request status.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
+        <mal:field name="state" canBeNull="false"
+					comment="The state name for which this record is applicable.">
+          <mal:type name="InstanceState" area="PlanningDataTypes"/>
+        </mal:field>
         <mal:field name="date" canBeNull="false"
 					comment="The date of the record.">
           <mal:type name="Time" area="MAL"/>
@@ -102,8 +134,16 @@
                    comment="If set then the task or activity is started on every occurrence of the event type.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>
-        <mal:field name="eventCount" canBeNull="true"
+        <mal:field name="startEventCount" canBeNull="true"
                    comment="The task or activity is started on the specified count of the event occurrence.">
+          <mal:type name="Long" area="MAL"/>
+        </mal:field>
+        <mal:field name="endEventCount" canBeNull="true"
+                   comment="The task or activity is ended on the specified count of the event occurrence.">
+          <mal:type name="Long" area="MAL"/>
+        </mal:field>
+        <mal:field name="eventCount" canBeNull="true"
+                   comment="The task or activity is repeated for the specified count after startEventCount.">
           <mal:type name="Long" area="MAL"/>
         </mal:field>
       </mal:composite>
