@@ -508,29 +508,13 @@
                      comment="The name of the schedule instance associated with this schedule status. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="scheduleItemStatus" canBeNull="false"
+          <mal:field name="status" canBeNull="true"
+                     comment="Contains the schedule status details objects, eg SUBMITTED, EXECUTE_STARTED.">
+            <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+          <mal:field name="scheduleItemStatuses" canBeNull="false"
 					comment="Contains the schedule item details objects, in the order of the schedule items in the schedule.">
             <mal:type list="true" name="ScheduleItemStatusDetails" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="submitted" canBeNull="true"
-                     comment="The schedule has been submitted.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="uplinked" canBeNull="true"
-                     comment="The schedule has been uplinked.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="started" canBeNull="true"
-                     comment="The schedule has started execution.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="finished" canBeNull="true"
-                     comment="The schedule has finished execution.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="failed" canBeNull="true"
-                     comment="The schedule execution failed.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
 		<!-- ScheduleItemStatusDetails -->
@@ -543,17 +527,9 @@
                      comment="The name of the schedule item instance associated with this schedule item status. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="started" canBeNull="true"
-                     comment="The schedule item has started execution.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="finished" canBeNull="true"
-                     comment="The schedule item has finished execution.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
-          </mal:field>
-          <mal:field name="failed" canBeNull="true"
-                     comment="The schedule item execution failed.">
-            <mal:type name="StatusRecord" area="PlanningDataTypes"/>
+          <mal:field name="status" canBeNull="true"
+                     comment="Contains the schedule item status details objects, eg EXECUTE_STARTED.">
+            <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
 		<!-- SchedulePatchOperations -->

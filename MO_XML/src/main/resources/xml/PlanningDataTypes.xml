@@ -21,7 +21,7 @@
         </mal:field>
         <mal:field name="area" canBeNull="false"
                    comment="Area number where the Element is declared. If null then the area is MAL.">
-          <mal:type name="Short" area="MAL"/>
+          <mal:type name="UShort" area="MAL"/>
         </mal:field>
       </mal:composite>
 	  <!-- AttributeValue -->
