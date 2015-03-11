@@ -431,7 +431,7 @@
 					comment="The description of the schedule definition.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
-          <mal:field name="arguments" canBeNull="true"
+          <mal:field name="argumentDefs" canBeNull="true"
                      comment="Definitions of schedule arguments.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
@@ -453,6 +453,10 @@
           <mal:field name="description" canBeNull="false"
 					comment="Comment for the schedule instance.">
             <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentDefNames" canBeNull="true"
+                     comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name  in ScheduleDefinitionDetails:argumentDefs.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The argument values. The order of arguments corresponds to the order of argument definitions if the schedule definition object.">

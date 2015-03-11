@@ -434,13 +434,13 @@
 					comment="Comment for the planning request instance.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
-          <mal:field name="argumentValues" canBeNull="true"
-                     comment="The planning request argument values.">
-            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
-          </mal:field>
           <mal:field name="argumentDefNames" canBeNull="true"
                      comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name  in PlanningRequestDefinitionDetails:argumentDefs.">
             <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentValues" canBeNull="true"
+                     comment="The planning request argument values.">
+            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="true"
                      comment="Planning request synchronization constraints, such as planning request validity window. The synchronization constraints are time or event based, where events are defined by implementations.">
@@ -470,13 +470,13 @@
 					comment="Comment for the task instance.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
-          <mal:field name="argumentValues" canBeNull="true"
-                     comment="The task argument values.">
-            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
-          </mal:field>
           <mal:field name="argumentDefNames" canBeNull="true"
                      comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name in TaskDefinitionDetails:argumentDefs.">
             <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentValues" canBeNull="true"
+                     comment="The task argument values.">
+            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="true"
                      comment="Task synchronization constraints, such as start time. The synchronization constraints are time or event based, where events are defined by implementations.">
