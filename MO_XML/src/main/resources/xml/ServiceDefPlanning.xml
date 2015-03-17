@@ -21,7 +21,6 @@
  &lt;li&gt;the capability for aggregating tasks within a planning request;&lt;/li&gt;
  &lt;li&gt;the capability for getting a planning request and task statuses;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring planning request and task statuses;&lt;/li&gt;
- &lt;li&gt;the capability for setting a task status;&lt;/li&gt;
  &lt;li&gt;the capability for defining a new planning request and task definition;&lt;/li&gt;
  &lt;li&gt;the capability for updating an existing planning request and task definition;&lt;/li&gt;
  &lt;li&gt;the capability for removing an existing planning request and task definition.&lt;/li&gt;
@@ -186,7 +185,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definitin, etc. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
+                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="prNames"
@@ -210,7 +209,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definitin, etc. NB! The operation works for exactly one type of definitions. It is not possible to add both planning request and task definitions in one operation call.">
+                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to add both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="prDefDetails"
@@ -246,7 +245,7 @@
           <mal:messages>
             <mal:submit>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definitin, etc. NB! The operation works for exactly one type of definitions. It is not possible to update both planning request and task definitions in one operation call.">
+                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to update both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="prDefInstIds"
@@ -280,7 +279,7 @@
           <mal:messages>
             <mal:submit>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definitin, etc. NB! The operation works for exactly one type of definitions. It is not possible to remove both planning request and task definitions in one operation call.">
+                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to remove both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="prDefInstIds"
@@ -319,27 +318,9 @@
           </mal:messages>
         </mal:requestIP>
 		</mal:capabilitySet>
-		<mal:capabilitySet number="8" comment="Set task status.">
-		<!-- setTaskStatus -->
-        <mal:submitIP name="setTaskStatus" number="11" supportInReplay="true"
-                       comment="The setTaskStatus operation allows a consumer to set a task status. The intended client is schedule execution, that reports on changes in the task life cycle. TBD: the applicability of this operation.">
-          <mal:messages>
-            <mal:submit>
-              <mal:field name="taskIds"
-                         comment="The taskIds field shall contain a list of task ids to set the task statuses for.&#xA;The request may contain the wildcard value of '*'.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="taskStatus"
-                         comment="Task status objects. TBD: full task status object is not required, perhaps only indication of executed, failed, errors.">
-                <mal:type list="true" name="TaskStatusDetails" service="PlanningRequest" area="Planning"/>
-              </mal:field>
-            </mal:submit>
-          </mal:messages>
-        </mal:submitIP>
-		</mal:capabilitySet>
-		<mal:capabilitySet number="9" comment="Monitor tasks.">
+		<mal:capabilitySet number="8" comment="Monitor tasks.">
 		<!-- monitorTasks -->
-		<mal:pubsubIP name="monitorTasks" number="12" supportInReplay="true"
+		<mal:pubsubIP name="monitorTasks" number="11" supportInReplay="true"
                       comment="The monitorTasks operation allows a consumer to subscribe for task status updates.&#xA;TBD: How to specify the task ids that we wish to monitor. The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
@@ -518,7 +499,7 @@
           </mal:field>
         </mal:composite>
 		<!-- PlanningRequestResponseDefinitionDetails -->
-        <mal:composite name="PlanningRequestResponseDefinitionDetails" shortFormPart="6"
+        <mal:composite name="PlanningRequestResponseDefinitionDetails" shortFormPart="7"
                        comment="The PlanningRequestResponseDefinitionDetails structure holds the definition information of a planning request response.">
           <mal:extends>
             <mal:type name="BaseDefinition" service="PlanningRequest" area="Planning"/>
@@ -533,7 +514,7 @@
           </mal:field>
         </mal:composite>
 		<!-- PlanningRequestResponseInstanceDetails -->
-        <mal:composite name="PlanningRequestResponseInstanceDetails" shortFormPart="6"
+        <mal:composite name="PlanningRequestResponseInstanceDetails" shortFormPart="8"
                        comment="TODO">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>

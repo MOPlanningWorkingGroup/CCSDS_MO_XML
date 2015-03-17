@@ -19,7 +19,7 @@
                    comment="Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.">
           <mal:type name="Octet" area="MAL"/>
         </mal:field>
-        <mal:field name="area" canBeNull="false"
+        <mal:field name="area" canBeNull="true"
                    comment="Area number where the Element is declared. If null then the area is MAL.">
           <mal:type name="UShort" area="MAL"/>
         </mal:field>
