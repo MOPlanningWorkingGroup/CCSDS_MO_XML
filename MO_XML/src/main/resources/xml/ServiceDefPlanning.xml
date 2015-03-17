@@ -43,6 +43,17 @@
 		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
 		TODO: Review the operation errors, when the operation signatures are considered stable.
       </mal:documentation>
+
+<!--         <mal:enumeration name="DefinitionType" shortFormPart="9" -->
+<!--         <mal:composite name="PlanningRequestDefinitionDetails" shortFormPart="1" -->
+<!--         <mal:composite name="TaskDefinitionDetails" shortFormPart="2" -->
+<!--         <mal:composite name="PlanningRequestInstanceDetails" shortFormPart="3" -->
+<!--         <mal:composite name="TaskInstanceDetails" shortFormPart="4" -->
+<!--         <mal:composite name="PlanningRequestStatusDetails" shortFormPart="5" -->
+<!--         <mal:composite name="TaskStatusDetails" shortFormPart="6" -->
+<!--         <mal:composite name="PlanningRequestResponseDefinitionDetails" shortFormPart="7" -->
+<!--         <mal:composite name="PlanningRequestResponseInstanceDetails" shortFormPart="8" -->
+
       <mal:capabilitySet number="1" comment="Submit planning request instance.">
 		<!-- submitPlanningRequest -->
         <mal:requestIP name="submitPlanningRequest" number="1" supportInReplay="false"
@@ -339,7 +350,7 @@
 		<!-- data types-->
       <mal:dataTypes>
       	  <!-- DefinitionType -->
-	      <mal:enumeration name="DefinitionType" shortFormPart="5"
+	      <mal:enumeration name="DefinitionType" shortFormPart="9"
 	                       comment="Constants for the possible definition objects in the planning request service.">
 	        <mal:item value="PLANNING_REQUEST_DEF" nvalue="1"
 	                  comment="PlanningRequestDefinition"/>
