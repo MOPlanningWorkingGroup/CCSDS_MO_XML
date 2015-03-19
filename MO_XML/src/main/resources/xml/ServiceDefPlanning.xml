@@ -41,7 +41,6 @@
       This section is not part of the specification, it lists the TODOs of this service specification.
 		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
 		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
-		TODO: Review the operation errors, when the operation signatures are considered stable.
       </mal:documentation>
 
 <!--         <mal:enumeration name="DefinitionType" shortFormPart="9" -->
@@ -57,7 +56,7 @@
       <mal:capabilitySet number="1" comment="Submit planning request instance.">
 		<!-- submitPlanningRequest -->
         <mal:requestIP name="submitPlanningRequest" number="1" supportInReplay="false"
-                      comment="The submitPlanningRequest operation allows a consumer to submit a planning request to a provider.&#xA;TODO: The errors need to be specified for invalid planning and task fields.">
+                      comment="The submitPlanningRequest operation allows a consumer to submit a planning request to a provider.">
           <mal:messages>
             <mal:request>
               <mal:field name="prDefInstId"
@@ -89,14 +88,17 @@
             </mal:response>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="The argument list contains one or more invalid fields.">
-              <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+            <mal:errorRef comment="Submitted planning request or task definition is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
+                <mal:type list="true" name="String" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="Submitted planning request definition is unknown.">
-              <mal:type name="UNKNOWN" area="MAL"/>
+            <mal:errorRef comment="Submitted planning request or task instance contains invalid data.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
+                <mal:type list="true" name="String" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:requestIP>
@@ -104,7 +106,7 @@
       <mal:capabilitySet number="2" comment="Update and remove planning request instance.">
 		<!-- updatePlanningRequest -->
         <mal:submitIP name="updatePlanningRequest" number="2" supportInReplay="false"
-                      comment="The updatePlanningRequest operation allows a consumer to update an already submitted planning request by essentially replacing the existing planning request with the provided planning request. The primary goal of this operation is to support the approach of long, medium and short term planning where some details of the planning request only become clear as the execution phase comes closer. The difference between this operation and calling removePlanningRequest() + submitPlanningRequest() is that in the latter case the Identifier will change. Also, when removePlanningRequest() is executed the provider does not know that the intention is to actually update the request and may take wrong actions. There are no methods to update individual properties of a planning request for the interface stability reasons.&#xA;TODO: The errors need to be specified for invalid planning and task fields.">
+                      comment="The updatePlanningRequest operation allows a consumer to update an already submitted planning request by essentially replacing the existing planning request with the provided planning request. The primary goal of this operation is to support the approach of long, medium and short term planning where some details of the planning request only become clear as the execution phase comes closer. The difference between this operation and calling removePlanningRequest() + submitPlanningRequest() is that in the latter case the Identifier will change. Also, when removePlanningRequest() is executed the provider does not know that the intention is to actually update the request and may take wrong actions. There are no methods to update individual properties of a planning request for the interface stability reasons.">
           <mal:messages>
             <mal:submit>
               <mal:field name="prDefInstId"
@@ -130,17 +132,23 @@
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="The argument list contains one or more invalid fields.">
+            <mal:errorRef comment="Planning request or task definition is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
+                <mal:type list="true" name="String" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="Planning request or task instance does not exist or contains invalid data.">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
+                <mal:type list="true" name="String" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
 		<!-- removePlanningRequest -->
         <mal:submitIP name="removePlanningRequest" number="3" supportInReplay="false"
-                      comment="The removePlanningRequest operation allows a consumer to remove an already submitted planning request. NB! This operations removes all tasks that are part of the planning request. &#xA;TODO: The errors need to be specified.">
+                      comment="The removePlanningRequest operation allows a consumer to remove an already submitted planning request. NB! This operations removes all tasks that are part of the planning request.">
           <mal:messages>
             <mal:submit>
               <mal:field name="prInstId"
@@ -526,7 +534,7 @@
         </mal:composite>
 		<!-- PlanningRequestResponseInstanceDetails -->
         <mal:composite name="PlanningRequestResponseInstanceDetails" shortFormPart="8"
-                       comment="TODO">
+                       comment="The PlanningRequestResponseInstanceDetails structure holds the information required for an instance of a planning request response such as the argument values to use. The PlanningRequestResponse differs from the PlanningRequestStatus: the response object gives feedback to the planning request submission, while the status is a feedback relating to the planning request life cycle. NB! This is a placeholder structure, until the need for it becomes more clear after reviewing more mission data.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
