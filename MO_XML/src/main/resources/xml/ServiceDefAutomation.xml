@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="Automation" number="7" version="1"
-            comment="This section details the automation services; the structures used by the services are detailed in section TBD. Both the services and structures are defined in terms of the MO MAL, which is defined in [TBD], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [TBD].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section TBD and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '7'.">
+            comment="This section details the automation services. Both the services and structures are defined in terms of the MO MAL, which is defined in [TBD], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [TBD].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section TBD and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '7'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
                  comment="The schedule service has tree main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
 				 &#xA;A schedule is submitted to the provider using the submitSchedule operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the schedule has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
@@ -32,7 +32,7 @@
  &lt;li&gt;the schedule instance numeric identifier;&lt;/li&gt;
  &lt;li&gt;the schedule instance object.&lt;/li&gt;
 &lt;/ol&gt;
-        The schedule request service may use the COM Activity Tracking service to report the delivery of a submitted schedules.
+        The schedule service may use the COM Activity Tracking service to report the delivery of a submitted schedules.
         The submitSchedule operation shall be used to submit a schedule.
       </mal:documentation>
 <!--       <mal:documentation name="Functional Requirements" order="2"> -->
@@ -180,7 +180,7 @@
       <mal:capabilitySet number="5" comment="Monitor schedule status">
 	  <!-- monitorSchedules -->
 		<mal:pubsubIP name="monitorSchedules" number="6" supportInReplay="true"
-                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;TBD: How to specify the schedule ids that we wish to monitor. The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;How to specify the schedule ids that we wish to monitor? The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
@@ -195,7 +195,7 @@
           </mal:messages>
         </mal:pubsubIP>
       </mal:capabilitySet>
-      <mal:capabilitySet number="6" comment="Control schedule">
+      <mal:capabilitySet number="6" comment="Control schedule execution">
 	  <!-- start -->
       <mal:submitIP name="start" number="7" supportInReplay="false"
                       comment="The start operation allows a consumer to start executing a submitted or a paused schedule.">
@@ -210,9 +210,15 @@
           <mal:errors>
             <mal:errorRef comment="There is no schedule associated with the schedule instance id.">
               <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="The schedule has been terminated and may not be started.">
               <mal:type name="SCHEDULE_TERMINATED" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
@@ -230,12 +236,21 @@
           <mal:errors>
             <mal:errorRef comment="There is no schedule associated with the schedule instance id">
               <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="The schedule is not running.">
               <mal:type name="SCHEDULE_NOT_RUNNING" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="The schedule has been terminated and may not be started.">
               <mal:type name="SCHEDULE_TERMINATED" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
@@ -253,12 +268,21 @@
           <mal:errors>
             <mal:errorRef comment="There is no schedule associated with the schedule instance id">
               <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="The schedule is already running.">
               <mal:type name="SCHEDULE_RUNNING" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="The schedule has been terminated and may not be started.">
               <mal:type name="SCHEDULE_TERMINATED" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
@@ -276,9 +300,15 @@
           <mal:errors>
             <mal:errorRef comment="There is no schedule associated with the schedule instance id">
               <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="The schedule is not running.">
               <mal:type name="SCHEDULE_NOT_RUNNING" service="Schedule" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
@@ -289,20 +319,19 @@
                        comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ScheduleDefinition objects for the supported types of schedule of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ScheduleDefinition objects.">
           <mal:messages>
             <mal:request>
-              <mal:field name="prNames"
-                         comment="The prNames field shall contain a list of schedule definition names to retrieve the ScheduleDefinition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported ScheduleDefinition objects.">
+              <mal:field name="schNames"
+                         comment="The schNames field shall contain a list of schedule definition names to retrieve the ScheduleDefinition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported ScheduleDefinition objects.">
                 <mal:type list="true" name="Identifier" area="MAL"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name="prDefInstIds"
+              <mal:field name="schDefInstIds"
                          comment="The response shall contain a list of matching ScheduleDefinition object instance ids.&#xA;The returned list shall maintain the same order as the submitted list unless the wildcard value was included in the request.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:response>
           </mal:messages>
         </mal:requestIP>
-
       </mal:capabilitySet>
       <mal:capabilitySet number="8" comment="Add, update, remove schedule definition">
 		<!-- addDefinition -->
@@ -310,13 +339,13 @@
                        comment="The addDefinition operation allows a consumer to define one or more schedule types that do not currently exist. The new ScheduleDefinition object is expected to be stored in the COM archive by the provider of the schedule service.">
           <mal:messages>
             <mal:request>
-              <mal:field name="prDefDetails"
-                         comment="The prDefDetails field shall hold the list of definitions to be added.&#xA;The name field of the supplied ScheduleDefinitionDetails structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ScheduleDefinition objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.">
+              <mal:field name="schDefDetails"
+                         comment="The schDefDetails field shall hold the list of definitions to be added.&#xA;The name field of the supplied ScheduleDefinitionDetails structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ScheduleDefinition objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.">
                 <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:request>
             <mal:response>
-              <mal:field name="prDefInstIds"
+              <mal:field name="schDefInstIds"
                          comment="The response shall contain the list of object instance identifiers for the new definitions.&#xA;The returned list shall maintain the same order as the submitted definitions.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
@@ -342,12 +371,12 @@
                       comment="The updateDefinition operation allows a consumer to modify a definition for one or more schedules without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same schedule name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing schedule definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="prDefInstIds"
-                         comment="The prDefInstIds field shall contain the list of object instance identifiers of the ScheduleDefinition objects to be updated.">
+              <mal:field name="schDefInstIds"
+                         comment="The schDefInstIds field shall contain the list of object instance identifiers of the ScheduleDefinition objects to be updated.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
-              <mal:field name="prDefDetails"
-                         comment="The prDefDetails field shall contain the list of replacement details for the matched ScheduleDefinition objects.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;Only the description or the unit fields of the arguments shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be modified as a result of this operation call.">
+              <mal:field name="schDefDetails"
+                         comment="The schDefDetails field shall contain the list of replacement details for the matched ScheduleDefinition objects.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;Only the description or the unit fields of the arguments shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be modified as a result of this operation call.">
                 <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:submit>
@@ -372,8 +401,8 @@
                       comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request types supported by the schedule provider.&#xA;The operation does not remove the ScheduleDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ScheduleInstance objects to continue to reference the correct ScheduleDefinition object in the COM archive.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="prDefInstIds"
-                         comment="The prDefInstIds field holds the list of ScheduleDefinition object instance identifiers of the definitions to be removed from the provider.&#xA;The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all definitions of the provider.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an active schedule instance then this operation shall not fail because of this reason.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new schedule instances.&#xA;If an error is raised then no definitions shall be removed as a result of this operation call.">
+              <mal:field name="schDefInstIds"
+                         comment="The schDefInstIds field holds the list of ScheduleDefinition object instance identifiers of the definitions to be removed from the provider.&#xA;The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all definitions of the provider.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing definition then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an active schedule instance then this operation shall not fail because of this reason.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new schedule instances.&#xA;If an error is raised then no definitions shall be removed as a result of this operation call.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:submit>
@@ -407,7 +436,7 @@
                      comment="Definitions of schedule arguments.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
-          <mal:field name="eventTypes" canBeNull="false"
+          <mal:field name="eventTypes" canBeNull="true"
                      comment="Types of permitted events for this schedule. The event is a COM object. The events are not standardized as part of the planning request service.">
             <mal:type list="true" name="ObjectType" area="COM"/>
           </mal:field>
@@ -605,9 +634,388 @@
       </com:features>
     </mal:service>
     <mal:service xsi:type="com:ExtendedServiceType" name="Procedure" number="2"
-                 comment="TODO: The procedure service is a lower priority.">
-    </mal:service>
-	 <mal:dataTypes>
-    </mal:dataTypes>
+                 comment="The procedure service has three main functions: distribute procedures, invoke and control procedure execution, and report execution feedback.
+                 &#xA;A procedure is distributed and managed (update, remove) using the addDefinitin, updateDefinitin, and removeDefinition operations.
+                 &#xA;A procedure is invoked using the invoke operations, which refers to respective procedure definition and takes arguments.
+                 &#xA;The procedure status consist of a set of fields. The fields are related to procedure life cycle states (started, terminated, etc). The procedure life cycle is not part of the specification.
+                 &#xA;Consumer may subscribe to the monitoring of procedure instances. The notifications contain the procedure status objects.">
+      <mal:documentation name="High Level Requirements" order="1">The schedule service shall provide:
+&lt;ol&gt;
+ &lt;li&gt;the capability for listing the numeric identifiers for the procedure definitions;&lt;/li&gt;
+ &lt;li&gt;the capability for defining a new procedure definition;&lt;/li&gt;
+ &lt;li&gt;the capability for updating an existing procedure definition;&lt;/li&gt;
+ &lt;li&gt;the capability for removing an existing procedure definition.&lt;/li&gt;
+ &lt;li&gt;the capability for getting a procedure status;&lt;/li&gt;
+ &lt;li&gt;the capability for monitoring procedure status;&lt;/li&gt;
+ &lt;li&gt;the capability for controlling a procedure execution.&lt;/li&gt;
+&lt;/ol&gt;
+      </mal:documentation>
+<!--       <mal:documentation name="Functional Requirements" order="2"> -->
+<!--       </mal:documentation> -->
+      <mal:documentation name="TODO section" order="3">
+      This section is not part of the specification, it lists the TODOs of this service specification.
+		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
+		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
+		</mal:documentation>
+	</mal:service>
+<!-- 	OPERATIONS -->
+      <mal:capabilitySet number="1" comment="List procedure definition">
+	  <!-- listProcedure -->
+	          <mal:requestIP name="listProcedure" number="1" supportInReplay="true"
+                       comment="The listProcedure operation allows a consumer to request the object instance identifiers of the ProcedureDetails objects for the existing procedures of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ProcedureDefinition objects.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="procNames"
+                         comment="The procNames field shall contain a list of procedure names to retrieve the ProcedureDefinition object instance identifiers for.&#xA;The request may contain the wildcard value of '*' to return all supported ProcedureDefinition objects.">
+                <mal:type list="true" name="Identifier" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="procIds"
+                         comment="The response shall contain a list of matching ProcedureDefinition object instance ids.&#xA;The returned list shall maintain the same order as the submitted list unless the wildcard value was included in the request.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="2" comment="Add, update, remove procedure definition">
+		<!-- addProcedure -->
+        <mal:requestIP name="addProcedure" number="2" supportInReplay="false"
+                       comment="The addProcedure operation allows a consumer to define add or more procedures that do not currently exist. The new ProcedureDefinition object is expected to be stored in the COM archive by the provider of the procedure service.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="procDetails"
+                         comment="The procDetails field shall hold the list of procedures to be added.&#xA;The name field of the supplied ProcedureDetails structures must not be NULL, the wildcard '*', or empty (an INVALID error shall be returned in this case).&#xA;The supplied name must be unique among all ProcedureDefinition objects for the domain of the provider otherwise a DUPLICATE error shall be raised.&#xA;If an error is raised then no new definitions shall be added as a result of this operation call.">
+                <mal:type list="true" name="ProcedureDetails" service="Procedure" area="Automation"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="procIds"
+                         comment="The response shall contain the list of object instance identifiers for the new procedures.&#xA;The returned list shall maintain the same order as the submitted procedures.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One of the supplied procedures contains an invalid procedure name.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="One or more of the procedure definitions being added has supplied a procedure name that is already in use in the domain.">
+              <mal:type name="DUPLICATE" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:requestIP>
+		<!-- updateProcedure -->
+        <mal:submitIP name="updateProcedure" number="3" supportInReplay="false"
+                      comment="The updateProcedure operation allows a consumer to modify a procedure without needing to delete the existing procedure first.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="procIds"
+                         comment="The procIds field shall contain the list of object instance identifiers of the ProcedureDefinition objects to be updated.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="procDetails"
+                         comment="The procDetails field shall contain the list of replacement details for the matched ProcedureDefinition objects.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing proceduers, an UNKNOWN error shall be raised if this is not the case.&#xA;If an error is raised then no procedures shall be modified as a result of this operation call.">
+                <mal:type list="true" name="ProcedureDetails" service="Procedure" area="Automation"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One of the supplied procedure definitions is trying to change its procedure definition name.">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="One of the supplied ProcedureDefinition object instance identifiers is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+		<!-- removeProcedure -->
+        <mal:submitIP name="removeProcedure" number="4" supportInReplay="false"
+                      comment="The removeProcedure operation allows a consumer to remove one or more procedures from provider.&#xA;The operation does not remove the ProcedureDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ProcedureInvocations continue to reference the correct ProcedureDefinition object in the COM archive.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="procIds"
+                         comment="The procIds field holds the list of ProcedureDefinition object instance identifiers of the procedures to be removed from the provider.&#xA;The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all definitions of the provider.&#xA;If a provided definition object instance identifier does not include a wildcard and does not match an existing procedure then this operation shall fail with an UNKNOWN error.&#xA;If a matched definition is still being used by an active procedure instance then this operation shall not fail because of this reason.&#xA;Removed definitions still exist in the COM archive but shall not be allowed to be referenced by new procedure instances.&#xA;If an error is raised then no procedures shall be removed as a result of this operation call.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="One of the supplied ProcedureDefinition object instance identifiers is unknown.">
+              <mal:type name="UNKNOWN" area="MAL"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+<!-- control -->
+      <mal:capabilitySet number="3" comment="Control procedure execution">
+	  <!-- invoke -->
+      <mal:submitIP name="invoke" number="5" supportInReplay="false"
+                      comment="Invokes procedure execution. In schedule service this is equivalent to submit + start.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="procIds"
+                         comment="The procIds field of the submission shall contain a MAL::Long that is the object instance identifier of the ProcedureDefinition this procedure invocation refers to.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="procInvocIds"
+                         comment="The procInvocIds field of the submission shall contain a MAL::Long that is the object instance identifier of the ProcedureInvocationDetails to be invoked.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+              <mal:field name="procIncvcDetails"
+                         comment="The procInvocDetails field of the submission shall contain the procedure invocation arguments.">
+                <mal:type list="true" name="ProcedureInvocationDetails" service="Procedure" area="Automation"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="The procedure has been terminated and may not be started.">
+              <mal:type name="PROCEDURE_TERMINATED" service="Procedure" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- pause -->
+      <mal:submitIP name="pause" number="6" supportInReplay="false"
+                      comment="The pause operation allows a consumer to pause an executing procedure. Non-running procedures may not be paused and will return an error.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="procInvocIds"
+                         comment="The procInvocIds field of the submission shall contain a MAL::Long that is the object instance identifier of the procedure invocation to be paused.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no procedure associated with the procedure instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The procedure is not running.">
+              <mal:type name="PROCEDURE_NOT_RUNNING" service="Procedure" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The procedure has been terminated and may not be started.">
+              <mal:type name="PROCEDURE_TERMINATED" service="Procedure" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- resume -->
+      <mal:submitIP name="resume" number="7" supportInReplay="false"
+                      comment="The resume operation allows a consumer to resume a paused procedure. Non-paused procedures may not be resumed and will return an error.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="procInvocIds"
+                         comment="The procInvocIds field of the submission shall contain a MAL::Long that is the object instance identifier of the procedure invocation to be resumed.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no procedure associated with the procedure instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The procedure is already running.">
+              <mal:type name="PROCEDURE_RUNNING" service="Procedure" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The procedure has been terminated and may not be started.">
+              <mal:type name="PROCEDURE_TERMINATED" service="Procedure" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+	  <!-- terminate -->
+      <mal:submitIP name="terminate" number="8" supportInReplay="false"
+                      comment="The terminate operation allows a consumer to terminate a running or paused procedure. Non-running or terminated procedures will return an error.">
+          <mal:messages>
+            <mal:submit>
+              <mal:field name="procInvocIds"
+                         comment="The procInvocIds field of the submission shall contain a MAL::Long that is the object instance identifier of the procedure invocation to be terminated.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:submit>
+          </mal:messages>
+          <mal:errors>
+            <mal:errorRef comment="There is no procedure associated with the procedure instance id">
+              <mal:type name="INVALID" area="COM"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+            <mal:errorRef comment="The procedure is not running.">
+              <mal:type name="PROCEDURE_NOT_RUNNING" service="Procedure" area="Automation"/>
+              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
+                <mal:type list="true" name="UInteger" area="MAL"/>
+              </mal:extraInformation>
+            </mal:errorRef>
+          </mal:errors>
+        </mal:submitIP>
+      </mal:capabilitySet>
+<!-- getstatus, monitor -->
+      <mal:capabilitySet number="4" comment="Get procedure status">
+	  <!-- getProcedureStatus -->
+        <mal:requestIP name="getProcedureStatus" number="9" supportInReplay="true"
+                       comment="The getProcedureStatus operation allows a consumer to get a procedure status.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="procInvocIds"
+                         comment="The procInvocIds field shall contain a list of procedure ids to retrieve the procedure statuses for.&#xA;The request may contain the wildcard value of '*' to return statuses for all submitted procedures.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="procStatus"
+                         comment="The operation shall return ProcedureStatusDetails objects. The order of the procedure status objects corresponds to the order of the submitted procedure instance ids. If a procedure instance id does not exist, then the corresponding procedure status object is null.">
+                <mal:type list="true" name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+      </mal:capabilitySet>
+      <mal:capabilitySet number="5" comment="Monitor procedure status">
+	  <!-- monitorProcedures -->
+		<mal:pubsubIP name="monitorProcedures" number="10" supportInReplay="true"
+                      comment="The monitorProcedures operation allows a consumer to subscribe for procedure status updates.&#xA;How to specify the procedure ids that we wish to monitor? The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+          <mal:messages>
+            <mal:publishNotify>
+              <mal:field name="objId"
+                         comment="The MAL EntityKey.firstSubKey shall contain the procedure name.&#xA;The MAL EntityKey.secondSubKey shall contain the ProcedureDefinition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the ProcedureInstance object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the ProcedureInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
+                <mal:type name="ObjectId" area="COM"/>
+              </mal:field>
+              <mal:field name="status"
+                         comment="The second part of the publish message shall be the ProcedureInstance object value.">
+                <mal:type name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
+              </mal:field>
+            </mal:publishNotify>
+          </mal:messages>
+        </mal:pubsubIP>
+      </mal:capabilitySet>
+<!-- 	DATA TYPES -->
+      <mal:dataTypes>
+		<!-- ProcedureDetails -->
+        <mal:composite name="ProcedureDetails" shortFormPart="1"
+                       comment="The procedure definition is the signature and the body of a Procedure.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="name" canBeNull="false"
+                     comment="The unique name of the procedure definition. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="content" canBeNull="false"
+                     comment="Procedure signature and body.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentDefs" canBeNull="true"
+                     comment="The argument definitions. The argument definitions specify the type of arguments.">
+            <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ProcedureInvocationDetails -->
+        <mal:composite name="ProcedureInvocationDetails" shortFormPart="2"
+                       comment="The procedure invocation contains the invocation details of a procedure, which is the argument values according to the procedure definition.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the procedure instance. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="procedureName" canBeNull="false"
+                     comment="The name of the procedure definition.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentDefNames" canBeNull="true"
+                     comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name  in ProcedureDetails:argumentDefs.">
+            <mal:type list="true" name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="argumentValues" canBeNull="true"
+                     comment="The argument values. The arguments are in the order of argument definitions in the procedure definition object.">
+            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
+          </mal:field>
+        </mal:composite>
+		<!-- ProcedureStatusDetails -->
+        <mal:composite name="ProcedureStatusDetails" shortFormPart="4"
+                       comment="The ProcedureStatusDetails structure holds the information related to the procedure status.">
+          <mal:extends>
+            <mal:type name="Composite" area="MAL"/>
+          </mal:extends>
+          <mal:field name="procedureInvocId" canBeNull="false"
+                     comment="The name of the procedure invocation associated with this procedure status. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="status" canBeNull="true"
+                     comment="Contains the procedure status details objects, eg EXECUTE_STARTED.">
+            <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
+          </mal:field>
+        </mal:composite>
+      </mal:dataTypes>
+	<mal:errors>
+      <mal:error name="PROCEDURE_RUNNING" number="70201" comment="Procedure is running"/>
+      <mal:error name="PROCEDURE_NOT_RUNNING" number="70202" comment="Procedure is not running"/>
+      <mal:error name="PROCEDURE_TERMINATED" number="70203" comment="Procedure has been terminated"/>
+    </mal:errors>
+      <com:features>
+        <com:objects comment="TODO: review: The definitions of the procedures shall be represented as ProcedureDefinition COM objects.&#xA;The source link of the ProcedureDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a procedure that are invoked on a provider using the invoke operation shall be represented as ProcedureInvocation COM object.&#xA;The object instance identifier for an ProcedureInvocation object shall be populated by the consumer.&#xA;The ProcedureInvocation object shall use the related link to indicate which ProcedureDefinition object it uses.&#xA;Instances of a procedure that are submitted to a provider using the invoke operation shall link to the invoke OperationActivity object using the source link.&#xA;The source link of the invoke OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
+          <com:object name="ProcedureDefinition" number="1">
+            <com:objectType>
+              <mal:type name="ProcedureDetails" service="Procedure" area="Automation"/>
+            </com:objectType>
+          </com:object>
+          <com:object name="ProcedureInvocation" number="2">
+            <com:objectType>
+              <mal:type name="ProcedureInvocationDetails" service="Procedure" area="MC"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="1" service="Procedure" area="Automation"/>
+            </com:relatedObject>
+          </com:object>
+          <com:object name="ProcedureStatus" number="3">
+            <com:objectType>
+              <mal:type name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
+            </com:objectType>
+            <com:relatedObject>
+              <com:objectType number="2" service="Procedure" area="Automation"/>
+            </com:relatedObject>
+          </com:object>
+        </com:objects>
+		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the procedure service.">
+        </com:events>
+        <com:archiveUsage comment="ProcedureDefinition, ProcedureInstance, and ProcedureStatus objects may be stored in the COM archive by the service provider or service consumner."/>
+        <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the invoke operation.&#xA;The COM Activity service can be used to monitor the transfer of ProcedureInstance objects."/>
+      </com:features>
   </mal:area>
 </mal:specification>
