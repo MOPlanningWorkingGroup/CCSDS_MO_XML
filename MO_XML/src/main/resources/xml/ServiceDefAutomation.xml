@@ -3,14 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="Automation" number="7" version="1"
-            comment="This section details the automation services. Both the services and structures are defined in terms of the MO MAL, which is defined in [TBD], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [TBD].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section TBD and are the same as those used for the specification of the MO COM services in [3]. &#xA;All service specifications in this document are part of the M&amp;C area, which has a short form number of '7'.">
+            comment="This section details the automation services. Both the services and structures are defined in terms of the MO MAL, which is defined in Message Abstraction Layer, Recommended Standard (Blue Book), CCSDS 521.0-B-2, so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in Mission Operations Common Object Model, Recommended Standard (Blue Book), CCSDS 521.1-B-1.&#xA;All service specifications in this document are part of the Automation area, which has a short form number of '7'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
-                 comment="The schedule service has tree main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
+                 comment="The schedule service has three main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
 				 &#xA;A schedule is submitted to the provider using the submitSchedule operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the schedule has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
 				 &#xA;The submitSchedule operation takes the object instance identifier of the submitted schedule. This is required for the potential use of the COM activity tracking service, in order to populate the source fields of the activity tracking events. Coordination may be required between schedule service consumers to ensure the schedule object instance identifiers are unique. How this is done is outside the scope of this specification however a good approach is the use of a central COM archive as that can provide the unique instance identifiers.
-				 &#xA;The nominal sequence of schedule distribution and status monitoring are shown in Figure:&#xA;&lt; TODO: insert sequence diag here &gt;
 				 &#xA;The consumer is responsible for creating and archiving the schedule instance object and then using the submitSchedule operation to submit it to the schedule service provider.
-				 &#xA;The schedule status consist of a set of fields. The fields are related to schedule life cycle states (submitted, started, etc). The schedule life cycle is not part of the specification.
+				 &#xA;The schedule status consists of a set of fields. The fields are related to schedule life cycle states (submitted, started, etc). The schedule life cycle is not part of the specification.
 				 &#xA;Consumer may subscribe to the monitoring of schedule instances. The notifications contain the schedule status objects.">
       <mal:documentation name="High Level Requirements" order="1">The schedule service shall provide:
 &lt;ol&gt;
@@ -37,11 +36,6 @@
       </mal:documentation>
 <!--       <mal:documentation name="Functional Requirements" order="2"> -->
 <!--       </mal:documentation> -->
-      <mal:documentation name="TODO section" order="3">
-      This section is not part of the specification, it lists the TODOs of this service specification.
-		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
-		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
-		</mal:documentation>
       <mal:capabilitySet number="1" comment="Submit schedule instance">
 	  <!-- submitSchedule -->
       <mal:submitIP name="submitSchedule" number="1" supportInReplay="false"
@@ -180,7 +174,7 @@
       <mal:capabilitySet number="5" comment="Monitor schedule status">
 	  <!-- monitorSchedules -->
 		<mal:pubsubIP name="monitorSchedules" number="6" supportInReplay="true"
-                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;How to specify the schedule ids that we wish to monitor? The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;How to specify the schedule ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
@@ -612,7 +606,7 @@
           </com:object>
           <com:object name="ScheduleInstance" number="2">
             <com:objectType>
-              <mal:type name="ScheduleInstanceDetails" service="Schedule" area="MC"/>
+              <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
             </com:objectType>
             <com:relatedObject>
               <com:objectType number="1" service="Schedule" area="Automation"/>
@@ -635,29 +629,24 @@
     </mal:service>
     <mal:service xsi:type="com:ExtendedServiceType" name="Procedure" number="2"
                  comment="The procedure service has three main functions: distribute procedures, invoke and control procedure execution, and report execution feedback.
-                 &#xA;A procedure is distributed and managed (update, remove) using the addDefinitin, updateDefinitin, and removeDefinition operations.
-                 &#xA;A procedure is invoked using the invoke operations, which refers to respective procedure definition and takes arguments.
-                 &#xA;The procedure status consist of a set of fields. The fields are related to procedure life cycle states (started, terminated, etc). The procedure life cycle is not part of the specification.
+                 &#xA;A procedure definition is distributed and managed (update, remove) using the addProcedure, updateProcedure, and removeProcedure operations.
+                 &#xA;A procedure is started using the invoke operation, which refers to respective procedure definition and takes arguments according to the procedure definition. The progress of procedure invocation may optionally be monitored using the COM activity tracking pattern, which completes when the procedure has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
+                 &#xA;The procedure status consists of a set of fields. The fields are related to procedure life cycle states (started, terminated, etc). The procedure life cycle is not part of the specification.
                  &#xA;Consumer may subscribe to the monitoring of procedure instances. The notifications contain the procedure status objects.">
-      <mal:documentation name="High Level Requirements" order="1">The schedule service shall provide:
+      <mal:documentation name="High Level Requirements" order="1">The procedure service shall provide:
 &lt;ol&gt;
- &lt;li&gt;the capability for listing the numeric identifiers for the procedure definitions;&lt;/li&gt;
- &lt;li&gt;the capability for defining a new procedure definition;&lt;/li&gt;
- &lt;li&gt;the capability for updating an existing procedure definition;&lt;/li&gt;
- &lt;li&gt;the capability for removing an existing procedure definition.&lt;/li&gt;
+ &lt;li&gt;the capability for listing the numeric identifiers for the procedures;&lt;/li&gt;
+ &lt;li&gt;the capability for adding a new procedure definition;&lt;/li&gt;
+ &lt;li&gt;the capability for updating an existing procedures;&lt;/li&gt;
+ &lt;li&gt;the capability for removing an existing procedure;&lt;/li&gt;
  &lt;li&gt;the capability for getting a procedure status;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring procedure status;&lt;/li&gt;
- &lt;li&gt;the capability for controlling a procedure execution.&lt;/li&gt;
+ &lt;li&gt;the capability for controlling procedure execution.&lt;/li&gt;
 &lt;/ol&gt;
+        The procedure service may use the COM Activity Tracking service to report the delivery of added procedures.
       </mal:documentation>
 <!--       <mal:documentation name="Functional Requirements" order="2"> -->
 <!--       </mal:documentation> -->
-      <mal:documentation name="TODO section" order="3">
-      This section is not part of the specification, it lists the TODOs of this service specification.
-		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
-		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
-		</mal:documentation>
-	</mal:service>
 <!-- 	OPERATIONS -->
       <mal:capabilitySet number="1" comment="List procedure definition">
 	  <!-- listProcedure -->
@@ -908,7 +897,7 @@
       <mal:capabilitySet number="5" comment="Monitor procedure status">
 	  <!-- monitorProcedures -->
 		<mal:pubsubIP name="monitorProcedures" number="10" supportInReplay="true"
-                      comment="The monitorProcedures operation allows a consumer to subscribe for procedure status updates.&#xA;How to specify the procedure ids that we wish to monitor? The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorProcedures operation allows a consumer to subscribe for procedure status updates.&#xA;How to specify the procedure ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
@@ -989,15 +978,15 @@
       <mal:error name="PROCEDURE_TERMINATED" number="70203" comment="Procedure has been terminated"/>
     </mal:errors>
       <com:features>
-        <com:objects comment="TODO: review: The definitions of the procedures shall be represented as ProcedureDefinition COM objects.&#xA;The source link of the ProcedureDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a procedure that are invoked on a provider using the invoke operation shall be represented as ProcedureInvocation COM object.&#xA;The object instance identifier for an ProcedureInvocation object shall be populated by the consumer.&#xA;The ProcedureInvocation object shall use the related link to indicate which ProcedureDefinition object it uses.&#xA;Instances of a procedure that are submitted to a provider using the invoke operation shall link to the invoke OperationActivity object using the source link.&#xA;The source link of the invoke OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
-          <com:object name="ProcedureDefinition" number="1">
+        <com:objects comment="The definitions of the procedures shall be represented as Procedure COM objects.&#xA;The source link of the Procedure object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Invocations of a procedure that are invoked on a provider using the invoke operation shall be represented as ProcedureInvocation COM object.&#xA;The object instance identifier for an ProcedureInvocation object shall be populated by the consumer.&#xA;The ProcedureInvocation object shall use the related link to indicate which Procedure object it uses.&#xA;Instances of a procedure that are submitted to a provider using the invoke operation shall link to the invoke OperationActivity object using the source link.&#xA;The source link of the invoke OperationActivity object should be the object that caused it to be created, most likely an operator login.">
+          <com:object name="Procedure" number="1">
             <com:objectType>
               <mal:type name="ProcedureDetails" service="Procedure" area="Automation"/>
             </com:objectType>
           </com:object>
           <com:object name="ProcedureInvocation" number="2">
             <com:objectType>
-              <mal:type name="ProcedureInvocationDetails" service="Procedure" area="MC"/>
+              <mal:type name="ProcedureInvocationDetails" service="Procedure" area="Automation"/>
             </com:objectType>
             <com:relatedObject>
               <com:objectType number="1" service="Procedure" area="Automation"/>
@@ -1015,7 +1004,8 @@
 		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the procedure service.">
         </com:events>
         <com:archiveUsage comment="ProcedureDefinition, ProcedureInstance, and ProcedureStatus objects may be stored in the COM archive by the service provider or service consumner."/>
-        <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the invoke operation.&#xA;The COM Activity service can be used to monitor the transfer of ProcedureInstance objects."/>
+        <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the invoke operation.&#xA;"/>
       </com:features>
+	</mal:service>
   </mal:area>
 </mal:specification>

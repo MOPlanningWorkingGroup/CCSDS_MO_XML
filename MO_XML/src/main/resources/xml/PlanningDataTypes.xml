@@ -62,6 +62,10 @@
                   comment=""/>
         <mal:item value="EXECUTE_FAILED" nvalue="12"
                   comment=""/>
+        <mal:item value="EXECUTE_PAUSED" nvalue="13"
+                  comment=""/>
+        <mal:item value="EXECUTE_RESUMED" nvalue="14"
+                  comment=""/>
       </mal:enumeration>
 	 <!-- StatusRecord -->
       <mal:composite name="StatusRecord" shortFormPart="3"
@@ -122,7 +126,7 @@
       </mal:composite>
   	  <!-- EventTrigger -->
       <mal:composite name="EventTrigger" shortFormPart="8"
-                     comment="The EventTrigger structure holds the event based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence.&#xA;TBD: a list of event arguments may be required">
+                     comment="The EventTrigger structure holds the event-based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>

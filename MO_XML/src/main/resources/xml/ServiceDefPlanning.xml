@@ -3,17 +3,15 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
   <mal:area name="Planning" number="5" version="1"
-            comment="This section details the planning services. Both the services and structures are defined in terms of the MO MAL, which is defined in [TBD], so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in [TBD].&#xA;To aid comprehension, several tables are included for each service and operation definition. The table formats are briefly described in section TBD and are the same as those used for the specification of the MO COM services in [TBD]. &#xA;All service specifications in this document are part of the Planning area, which has a short form number of '5'.">
+            comment="This section details the planning services. Both the services and structures are defined in terms of the MO MAL, which is defined in Message Abstraction Layer, Recommended Standard (Blue Book), CCSDS 521.0-B-2, so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in Mission Operations Common Object Model, Recommended Standard (Blue Book), CCSDS 521.1-B-1.&#xA;All service specifications in this document are part of the Planning area, which has a short form number of '5'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="PlanningRequest" number="1"
                  comment="The planning request service allows consumers to submit planning requests to the planning system and to subsequently monitor the status changes of the submitted planning requests.
-				 &#xA;Planning request contains tasks. Tasks is a higher level construct to express what needs to be done. The planning request and task definitions are managed using the operations in the planning request service. The planning request definition specifies the types of task definitions that it is allowed to contain. The submitted planning request contains task instances.
+				 &#xA;Planning request contains tasks. Task is a higher level construct to express what needs to be done. The planning request and task definitions are managed using the operations in the planning request service. The planning request definition specifies the types of task definitions that it is allowed to contain. The submitted planning request contains task instances.
 				 &#xA;A planning request is submitted to the provider using the submitPlanningRequest operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the planning request has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
 				 &#xA;The submitPlanningRequest operation takes the object instance identifier of the submitted planning request. This is required for the potential use of the COM activity tracking service, in order to populate the source fields of the activity tracking events. Coordination may be required between planning request service consumers to ensure the planning request object instance identifiers are unique. How this is done is outside the scope of this specification however a good approach is the use of a central COM archive as that can provide the unique instance identifiers.
-				 &#xA;The nominal sequence of planning request submission and status monitoring are shown in Figure:&#xA;&lt; TODO: insert sequence diag here &gt;
 				 &#xA;The consumer is responsible for creating and archiving the planning request instance object and then using the submitPlanningRequest operation to submit it to the planning request service provider. 
 				 &#xA;The planning request and task statuses consist of a set of fields. The fields are related to planning request and task life cycle states (submitted, planned, etc). The planning request and task life cycles are not part of the specification.
-				 &#xA;Consumer may subscribe to the monitoring of planning request and task instances. The notifications contain the planning request and task status objects.
-				 &#xA;">
+				 &#xA;Consumer may subscribe to the monitoring of planning request and task instances. The notifications contain the planning request and task status objects.">
       <mal:documentation name="High Level Requirements" order="1">The planning request service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for submitting planning requests;&lt;/li&gt;
@@ -35,24 +33,6 @@
         The planning request service may use the COM Activity Tracking service to report the delivery of a submitted planning request.
         The submitPlanningRequest operation shall be used to submit a planning request.
       </mal:documentation>
-<!--       <mal:documentation name="Functional Requirements" order="2"> -->
-<!--       </mal:documentation> -->
-      <mal:documentation name="TODO section" order="3">
-      This section is not part of the specification, it lists the TODOs of this service specification.
-		TODO: Add Functional Requirements, when the service operations, structures, errors, and COM usage has passed more reviews.      
-		TODO: Produce UML diagrams that are pasted into generated Word documentation, similar to M&amp;C Action service, after the specification is considered more stable.
-      </mal:documentation>
-
-<!--         <mal:enumeration name="DefinitionType" shortFormPart="9" -->
-<!--         <mal:composite name="PlanningRequestDefinitionDetails" shortFormPart="1" -->
-<!--         <mal:composite name="TaskDefinitionDetails" shortFormPart="2" -->
-<!--         <mal:composite name="PlanningRequestInstanceDetails" shortFormPart="3" -->
-<!--         <mal:composite name="TaskInstanceDetails" shortFormPart="4" -->
-<!--         <mal:composite name="PlanningRequestStatusDetails" shortFormPart="5" -->
-<!--         <mal:composite name="TaskStatusDetails" shortFormPart="6" -->
-<!--         <mal:composite name="PlanningRequestResponseDefinitionDetails" shortFormPart="7" -->
-<!--         <mal:composite name="PlanningRequestResponseInstanceDetails" shortFormPart="8" -->
-
       <mal:capabilitySet number="1" comment="Submit planning request instance.">
 		<!-- submitPlanningRequest -->
         <mal:requestIP name="submitPlanningRequest" number="1" supportInReplay="false"
@@ -182,7 +162,7 @@
      <mal:capabilitySet number="4" comment="Monitor planning requests.">
 	<!-- monitorPlanningRequests -->
 		<mal:pubsubIP name="monitorPlanningRequests" number="5" supportInReplay="true"
-                      comment="The monitorPlanningRequests operation allows a consumer to subscribe for planning request status updates.&#xA;How to specify the planning request ids that we wish to monitor? The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorPlanningRequests operation allows a consumer to subscribe for planning request status updates.&#xA;How to specify the planning request ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
@@ -340,7 +320,7 @@
 		<mal:capabilitySet number="8" comment="Monitor tasks.">
 		<!-- monitorTasks -->
 		<mal:pubsubIP name="monitorTasks" number="11" supportInReplay="true"
-                      comment="The monitorTasks operation allows a consumer to subscribe for task status updates.&#xA;How to specify the task ids that we wish to monitor? The problem is similar to the MC Parameter service. There is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorTasks operation allows a consumer to subscribe for task status updates.&#xA;How to specify the task ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
