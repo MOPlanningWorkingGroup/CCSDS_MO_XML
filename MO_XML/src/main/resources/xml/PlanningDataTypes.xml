@@ -7,7 +7,8 @@
 	 <mal:dataTypes>
 	 <!-- ArgumentDefinitionDetails -->
       <mal:composite name="ArgumentDefinitionDetails" shortFormPart="1"
-                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.">
+                     comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.
+The 'value' of an argument is in AttributeValue. The value is expected to be one of MAL:Attribute primitive data types. Structures as values are not supported, although a workaround is to encode the value in a string, delimited with '|' (pipes), for example.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
@@ -15,13 +16,26 @@
 					comment="The name of the argument definition. Must not be empty or the wildcard value.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
+        <mal:field name="description" canBeNull="true"
+					comment="This field may be used to add remarks about the argument.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
         <mal:field name="attributeType" canBeNull="false"
-                   comment="Holds the attribute short form part of the raw type of the argument, e.g., for a MAL::String argument it shall hold 15.">
+                   comment="Holds the attribute short form part of the type of the argument, e.g., for a MAL::String argument it shall hold 15.
+May be used for checking the attribute type.">
           <mal:type name="Octet" area="MAL"/>
         </mal:field>
-        <mal:field name="area" canBeNull="true"
-                   comment="Area number where the Element is declared. If null then the area is MAL.">
-          <mal:type name="UShort" area="MAL"/>
+        <mal:field name="unit" canBeNull="true"
+					comment="The unit of an argument, if applicable.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+        <mal:field name="representation" canBeNull="true"
+					comment="The representation of an argument, if applicable. Possible values may be 'Raw', 'Converted'.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+        <mal:field name="radix" canBeNull="true"
+					comment="Radix for argument value, if applicable. Possible values may be 'Decimal', 'Hexadecimal', 'Octal'.">
+          <mal:type name="String" area="MAL"/>
         </mal:field>
       </mal:composite>
 	  <!-- AttributeValue -->
@@ -77,8 +91,8 @@
 					comment="The state name for which this record is applicable.">
           <mal:type name="InstanceState" area="PlanningDataTypes"/>
         </mal:field>
-        <mal:field name="date" canBeNull="false"
-					comment="The date of the record.">
+        <mal:field name="timeStamp" canBeNull="false"
+					comment="Absolute date and time of the record.">
           <mal:type name="Time" area="MAL"/>
         </mal:field>
         <mal:field name="comment" canBeNull="true"
@@ -96,59 +110,79 @@
                    comment="The name of the synchronization. A start time or event, for example.">
           <mal:type name="TriggerName" area="PlanningDataTypes"/>
         </mal:field>
-        <mal:field name="triggerType" canBeNull="false"
-                   comment="The type of synchronization. The possibilities are time or event based synchonization. Depending on the value of triggerType, only one of timeTrigger or eventTrigger is relevant. The other is null.">
-          <mal:type name="TriggerType" area="PlanningDataTypes"/>
-        </mal:field>
         <mal:field name="timeTrigger" canBeNull="true"
-                   comment="Time related synchronization structure.">
+                   comment="Time related synchronization structure. Exactly one of 'timeTrigger' or 'eventTrigger' may be specified, the other is null.">
           <mal:type name="TimeTrigger" area="PlanningDataTypes"/>
         </mal:field>
         <mal:field name="eventTrigger" canBeNull="true"
-                   comment="Event related synchronization structure.">
+                   comment="Event related synchronization structure. Exactly one of 'timeTrigger' or 'eventTrigger' may be specified, the other is null.">
           <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="repeat" canBeNull="true"
+                   comment="The number of times the trigger is repeated, if applicable. If unspecified, the value is assumed to be 1.  0 is not allowed.  It can be specified for any start time specification. If specified the operation will be created first at the start time and then (repeat - 1) times separated by the 'separation' time.">
+          <mal:type name="ULong" area="MAL"/>
+        </mal:field>
+        <mal:field name="separation" canBeNull="true"
+                   comment="This is mandatory only if the value in the 'repeat' field is specified. This is used to specify the separation between repeated occurrences of a triggered operation.">
+          <mal:type name="Time" area="MAL"/>
         </mal:field>
       </mal:composite>
  	  <!-- TimeTrigger -->
       <mal:composite name="TimeTrigger" shortFormPart="7"
-                     comment="The TimeTrigger structure holds the time based synchronization information related to tasks and activities.  An example is a task or activity start time.">
+                     comment="The TimeTrigger structure holds the time based synchronization information related to tasks and activities. An example is a task or activity start time.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
         <mal:field name="timeValue"
-					comment="Time of the Event, millisecond precision.">
+					comment="Absolute or relative time of the trigger in millisecond precision.">
           <mal:type name="Time" area="MAL"/>
         </mal:field>
         <mal:field name="isAbsoluteTime" canBeNull="false"
-                   comment="If set then absolute time, else relative time.">
+                   comment="If 'true' then absolute time, else relative time.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>
       </mal:composite>
   	  <!-- EventTrigger -->
       <mal:composite name="EventTrigger" shortFormPart="8"
-                     comment="The EventTrigger structure holds the event-based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence.">
+                     comment="The EventTrigger structure holds the event based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence. An example start time could be T(start) = T(eventId, eventCount) + delta + (propagationFactor x propagation delay).">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
+        <mal:field name="eventId" canBeNull="true"
+                   comment="An alphanumeric event mnemonic relative to which the event trigger is specified. If the eventCount field is specified, it will be combined with the eventId to identify a single instance of an event. If startEventCount and endEventCount are not specified then all events with the eventId will be referenced - an operation will be triggered at the event time + specified delta for every occurrence of this event. If 'repeat' is specified in TriggerDetails, then repeat operations will be created for each occurrence of the event.">
+          <mal:type name="Identifier" area="MAL"/>
+        </mal:field>
         <mal:field name="baseEventDefinition" canBeNull="false"
-					comment="The event type to which the trigger is synchronized. The events are not standardized as part of the planning request service.">
+					comment="The event type relative to which the event trigger is synchronized. The event is a COM object. The events are not standardized as part of the planning request service.">
           <mal:type name="ObjectType" area="COM"/>
         </mal:field>
         <mal:field name="everyOccurrence" canBeNull="false"
-                   comment="If set then the task or activity is started on every occurrence of the event type.">
+                   comment="If 'true' the is started on every occurrence of the event type.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>
         <mal:field name="startEventCount" canBeNull="true"
-                   comment="The task or activity is started on the specified count of the event occurrence.">
-          <mal:type name="Long" area="MAL"/>
+                   comment="The trigger is started on the specified count of the event occurrence.">
+          <mal:type name="ULong" area="MAL"/>
         </mal:field>
         <mal:field name="endEventCount" canBeNull="true"
-                   comment="The task or activity is ended on the specified count of the event occurrence.">
-          <mal:type name="Long" area="MAL"/>
+                   comment="The trigger is ended on the specified count of the event occurrence.">
+          <mal:type name="ULong" area="MAL"/>
         </mal:field>
         <mal:field name="eventCount" canBeNull="true"
-                   comment="The task or activity is repeated for the specified count after startEventCount.">
-          <mal:type name="Long" area="MAL"/>
+                   comment="The trigger is repeated for the specified count after startEventCount.">
+          <mal:type name="ULong" area="MAL"/>
+        </mal:field>
+        <mal:field name="delta" canBeNull="true"
+                   comment="An offset time to the event. The default value is 0. May be positive or negative, which is specified in 'deltaPositive'.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="deltaPositive" canBeNull="true"
+                   comment="Sign (+/-) of the offset time to the event.">
+          <mal:type name="Boolean" area="MAL"/>
+        </mal:field>
+        <mal:field name="propagationFactor" canBeNull="true"
+                   comment="The value of a factor by which to multiply the propagation delay. A positive number will add multiples of the delay to the time, a negative number will subtract. The default value is 0.">
+          <mal:type name="Float" area="MAL"/>
         </mal:field>
       </mal:composite>
 	 <!-- TriggerName -->
@@ -172,14 +206,6 @@
                   comment="The start of a validity window."/>
         <mal:item value="VALIDITY_END" nvalue="9"
                   comment="The end of a validity window."/>
-      </mal:enumeration>
-	  <!-- TriggerType -->
-      <mal:enumeration name="TriggerType" shortFormPart="5"
-                       comment="TriggerType is an enumeration holding the synchronization types. The possibilities are time and event based synchronization.">
-        <mal:item value="TIME" nvalue="1"
-                  comment="An absolute or relative time."/>
-        <mal:item value="EVENT" nvalue="2"
-                  comment="Event. Encompasses all kinds of events: originating from FD and from the implementing system. "/>
       </mal:enumeration>
     </mal:dataTypes>
   </mal:area>
