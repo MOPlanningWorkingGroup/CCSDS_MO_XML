@@ -410,7 +410,7 @@
                      comment="The unique name of the planning request instance. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="description" canBeNull="true"
+          <mal:field name="comment" canBeNull="true"
 					comment="Comment for the planning request instance.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
@@ -446,7 +446,7 @@
                      comment="The name of the planning request instance associated with this task. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="description" canBeNull="true"
+          <mal:field name="comment" canBeNull="true"
 					comment="Comment for the task instance.">
             <mal:type name="String" area="MAL"/>
           </mal:field>

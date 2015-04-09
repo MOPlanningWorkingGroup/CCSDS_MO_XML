@@ -37,6 +37,10 @@ May be used for checking the attribute type.">
 					comment="Radix for argument value, if applicable. Possible values may be 'Decimal', 'Hexadecimal', 'Octal'.">
           <mal:type name="String" area="MAL"/>
         </mal:field>
+        <mal:field name="defaultValue" canBeNull="false"
+                   comment="Default value of an argument.">
+          <mal:type name="Attribute" area="MAL"/>
+        </mal:field>
       </mal:composite>
 	  <!-- AttributeValue -->
       <mal:composite name="AttributeValue" shortFormPart="2"
@@ -45,7 +49,7 @@ May be used for checking the attribute type.">
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
         <mal:field name="value" canBeNull="false"
-                   comment="TThe argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete AttributeValue composite. The structure is identical to the MC AttributeValue.">
+                   comment="The argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete AttributeValue composite. The structure is identical to the MC AttributeValue.">
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
       </mal:composite>

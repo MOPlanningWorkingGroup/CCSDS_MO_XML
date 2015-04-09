@@ -445,7 +445,7 @@
                      comment="The unique name of the schedule instance. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
-          <mal:field name="description" canBeNull="false"
+          <mal:field name="comment" canBeNull="false"
 					comment="Comment for the schedule instance.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
