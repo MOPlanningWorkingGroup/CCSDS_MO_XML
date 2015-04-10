@@ -84,6 +84,12 @@ May be used for checking the attribute type.">
                   comment=""/>
         <mal:item value="EXECUTE_RESUMED" nvalue="14"
                   comment=""/>
+        <mal:item value="ENABLED" nvalue="15"
+                  comment=""/>
+        <mal:item value="DISABLED" nvalue="16"
+                  comment=""/>
+        <mal:item value="GENERATED" nvalue="17"
+                  comment=""/>
       </mal:enumeration>
 	 <!-- StatusRecord -->
       <mal:composite name="StatusRecord" shortFormPart="3"
