@@ -37,7 +37,7 @@ May be used for checking the attribute type.">
 					comment="Radix for argument value, if applicable. Possible values may be 'Decimal', 'Hexadecimal', 'Octal'.">
           <mal:type name="String" area="MAL"/>
         </mal:field>
-        <mal:field name="defaultValue" canBeNull="false"
+        <mal:field name="defaultValue" canBeNull="true"
                    comment="Default value of an argument.">
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
@@ -53,8 +53,150 @@ May be used for checking the attribute type.">
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
       </mal:composite>
+	 <!-- StatusRecord -->
+      <mal:composite name="StatusRecord" shortFormPart="3"
+                     comment="The StatusRecord structure holds information related to a field in a status object. Example status object is a planning request status.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="state" canBeNull="false"
+					comment="The state name for which this record is applicable.">
+          <mal:type name="InstanceState" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="timeStamp" canBeNull="false"
+					comment="Absolute date and time of the record.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="comment" canBeNull="true"
+                   comment="Comment for the record.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+	  <!-- TriggerDetails -->
+      <mal:composite name="TriggerDetails" shortFormPart="4"
+                     comment="The TriggerDetails structure holds the synchronization information related to tasks and activities.  An example is a task or activity start time. There are two types of task/activity synchronization: based on time and based on event.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="triggerName" canBeNull="false"
+                   comment="The name of the synchronization. A start time or event, for example.">
+          <mal:type name="TriggerName" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="timeTrigger" canBeNull="true"
+                   comment="Time related synchronization structure. Exactly one of 'timeTrigger' or 'eventTrigger' may be specified, the other is null.">
+          <mal:type name="TimeTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="eventTrigger" canBeNull="true"
+                   comment="Event related synchronization structure. Exactly one of 'timeTrigger' or 'eventTrigger' may be specified, the other is null.">
+          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="repeat" canBeNull="true"
+                   comment="The number of times the trigger is repeated, if applicable. If unspecified, the value is assumed to be 1.  0 is not allowed.  It can be specified for any start time specification. If specified the operation will be created first at the start time and then (repeat - 1) times separated by the 'separation' time.">
+          <mal:type name="ULong" area="MAL"/>
+        </mal:field>
+        <mal:field name="separation" canBeNull="true"
+                   comment="This is mandatory only if the value in the 'repeat' field is specified. This is used to specify the separation between repeated occurrences of a triggered operation.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="earliestOffset" canBeNull="true"
+                   comment="The offset of the start of the time window for the operation. This field is mandatory if a latestOffset is provide and if specified, its value must be zero or negative.">
+          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="latestOffset" canBeNull="true"
+                   comment="The offset of the end of the time window for the operation. This field is mandatory if an earliestOffset is provided and if specified, its value must be zero or positive.">
+          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+        </mal:field>
+      </mal:composite>
+ 	  <!-- TimeTrigger -->
+      <mal:composite name="TimeTrigger" shortFormPart="5"
+                     comment="The TimeTrigger structure holds the time based synchronization information related to tasks and activities. An example is a task or activity start time.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="absoluteTime"
+					comment="Absolute time of the trigger in millisecond precision.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="relativeTime" canBeNull="false"
+                   comment="Relative time of the trigger in millisecond precision.">
+          <mal:type name="RelativeTime" area="PlanningDataTypes"/>
+        </mal:field>
+      </mal:composite>
+  	  <!-- EventTrigger -->
+      <mal:composite name="EventTrigger" shortFormPart="6"
+                     comment="The EventTrigger structure holds the event based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence. An example start time could be T(start) = T(eventId, eventCount) + delta + (propagationFactor x propagation delay).">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="eventId" canBeNull="true"
+                   comment="An alphanumeric event mnemonic relative to which the event trigger is specified. If the eventCount field is specified, it will be combined with the eventId to identify a single instance of an event. If startEventCount and endEventCount are not specified then all events with the eventId will be referenced - an operation will be triggered at the event time + specified delta for every occurrence of this event. If 'repeat' is specified in TriggerDetails, then repeat operations will be created for each occurrence of the event.">
+          <mal:type name="Identifier" area="MAL"/>
+        </mal:field>
+        <mal:field name="baseEventDefinition" canBeNull="false"
+					comment="The event type relative to which the event trigger is synchronized. The event is a COM object. The events are not standardized as part of the planning request service.">
+          <mal:type name="ObjectType" area="COM"/>
+        </mal:field>
+        <mal:field name="everyOccurrence" canBeNull="false"
+                   comment="If 'true' the is started on every occurrence of the event type.">
+          <mal:type name="Boolean" area="MAL"/>
+        </mal:field>
+        <mal:field name="startEventCount" canBeNull="true"
+                   comment="The trigger is started on the specified count of the event occurrence.">
+          <mal:type name="ULong" area="MAL"/>
+        </mal:field>
+        <mal:field name="endEventCount" canBeNull="true"
+                   comment="The trigger is ended on the specified count of the event occurrence.">
+          <mal:type name="ULong" area="MAL"/>
+        </mal:field>
+        <mal:field name="eventCount" canBeNull="true"
+                   comment="The trigger is repeated for the specified count after startEventCount.">
+          <mal:type name="ULong" area="MAL"/>
+        </mal:field>
+        <mal:field name="delta" canBeNull="true"
+                   comment="An offset time to the event. The default value is 0.">
+          <mal:type name="RelativeTime" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="propagationFactor" canBeNull="true"
+                   comment="The value of a factor by which to multiply the propagation delay. A positive number will add multiples of the delay to the time, a negative number will subtract. The default value is 0.">
+          <mal:type name="Float" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+      <!-- RelativeTime -->
+      <mal:composite name="RelativeTime" shortFormPart="7"
+                     comment="The RelativeTime structure is used to store relative time attributes. It represents a relative date and time to millisecond resolution. This structure wraps MAL:Time, which represents absolute date and time.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="relativeTime" canBeNull="false"
+					comment="The absolute value of the relative time.">
+          <mal:type name="Time" area="MAL"/>
+        </mal:field>
+        <mal:field name="sign" canBeNull="false"
+					comment="The sign of the relative time. If true then positive, if false then negative.">
+          <mal:type name="Boolean" area="MAL"/>
+        </mal:field>
+      </mal:composite>
+      <!-- SequenceProfile -->
+      <mal:composite name="SequenceProfile" shortFormPart="8"
+                     comment="SequenceProfile is a 'Profile' element from MPSF, previously referred to as Z-record. It is associated with command sequences. Basically it supplies a value at a certain timeOffset.">
+        <mal:extends>
+          <mal:type name="Composite" area="MAL"/>
+        </mal:extends>
+        <mal:field name="type" canBeNull="false"
+					comment="An enumeration identifying the type of profile (e.g. data or power). The values allowed are mission specific.">
+          <mal:type name="String" area="MAL"/>
+        </mal:field>
+        <mal:field name="timeOffset" canBeNull="false"
+					comment="The offset time is relative to the event defined in the respective eventID of the sequence. The time offset of the first profile associated to a sequence shall be 1) Non-negative in case the sequence has an actionTime specified (providing an absolute time value for the execution time). 2) Not lower than the field delta in case the sequence has an execution time relative to an event. The time offset of profiles associated to a sequence shall be strictly monotonically increasing (i.e. no profiles shall have the same time offset value).">
+          <mal:type name="RelativeTime" area="PlanningDataTypes"/>
+        </mal:field>
+        <mal:field name="value" canBeNull="false"
+					comment="A generic field whose format is mission specific and dependent on the value of the type attribute.">
+          <mal:type name="Attribute" area="MAL"/>
+        </mal:field>
+      </mal:composite>
 	  <!-- InstanceState -->
-      <mal:enumeration name="InstanceState" shortFormPart="5"
+      <mal:enumeration name="InstanceState" shortFormPart="9"
                        comment="Status constants that may be used for planning requests, tasks, schedules, procedures.">
         <mal:item value="SUBMITTED" nvalue="1"
                   comment=""/>
@@ -91,112 +233,8 @@ May be used for checking the attribute type.">
         <mal:item value="GENERATED" nvalue="17"
                   comment=""/>
       </mal:enumeration>
-	 <!-- StatusRecord -->
-      <mal:composite name="StatusRecord" shortFormPart="3"
-                     comment="The StatusRecord structure holds information related to a field in a status object. Example status object is a planning request status.">
-        <mal:extends>
-          <mal:type name="Composite" area="MAL"/>
-        </mal:extends>
-        <mal:field name="state" canBeNull="false"
-					comment="The state name for which this record is applicable.">
-          <mal:type name="InstanceState" area="PlanningDataTypes"/>
-        </mal:field>
-        <mal:field name="timeStamp" canBeNull="false"
-					comment="Absolute date and time of the record.">
-          <mal:type name="Time" area="MAL"/>
-        </mal:field>
-        <mal:field name="comment" canBeNull="true"
-                   comment="Comment for the record.">
-          <mal:type name="String" area="MAL"/>
-        </mal:field>
-      </mal:composite>
-	  <!-- TriggerDetails -->
-      <mal:composite name="TriggerDetails" shortFormPart="6"
-                     comment="The TriggerDetails structure holds the synchronization information related to tasks and activities.  An example is a task or activity start time. There are two types of task/activity synchronization: based on time and based on event.">
-        <mal:extends>
-          <mal:type name="Composite" area="MAL"/>
-        </mal:extends>
-        <mal:field name="triggerName" canBeNull="false"
-                   comment="The name of the synchronization. A start time or event, for example.">
-          <mal:type name="TriggerName" area="PlanningDataTypes"/>
-        </mal:field>
-        <mal:field name="timeTrigger" canBeNull="true"
-                   comment="Time related synchronization structure. Exactly one of 'timeTrigger' or 'eventTrigger' may be specified, the other is null.">
-          <mal:type name="TimeTrigger" area="PlanningDataTypes"/>
-        </mal:field>
-        <mal:field name="eventTrigger" canBeNull="true"
-                   comment="Event related synchronization structure. Exactly one of 'timeTrigger' or 'eventTrigger' may be specified, the other is null.">
-          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
-        </mal:field>
-        <mal:field name="repeat" canBeNull="true"
-                   comment="The number of times the trigger is repeated, if applicable. If unspecified, the value is assumed to be 1.  0 is not allowed.  It can be specified for any start time specification. If specified the operation will be created first at the start time and then (repeat - 1) times separated by the 'separation' time.">
-          <mal:type name="ULong" area="MAL"/>
-        </mal:field>
-        <mal:field name="separation" canBeNull="true"
-                   comment="This is mandatory only if the value in the 'repeat' field is specified. This is used to specify the separation between repeated occurrences of a triggered operation.">
-          <mal:type name="Time" area="MAL"/>
-        </mal:field>
-      </mal:composite>
- 	  <!-- TimeTrigger -->
-      <mal:composite name="TimeTrigger" shortFormPart="7"
-                     comment="The TimeTrigger structure holds the time based synchronization information related to tasks and activities. An example is a task or activity start time.">
-        <mal:extends>
-          <mal:type name="Composite" area="MAL"/>
-        </mal:extends>
-        <mal:field name="timeValue"
-					comment="Absolute or relative time of the trigger in millisecond precision.">
-          <mal:type name="Time" area="MAL"/>
-        </mal:field>
-        <mal:field name="isAbsoluteTime" canBeNull="false"
-                   comment="If 'true' then absolute time, else relative time.">
-          <mal:type name="Boolean" area="MAL"/>
-        </mal:field>
-      </mal:composite>
-  	  <!-- EventTrigger -->
-      <mal:composite name="EventTrigger" shortFormPart="8"
-                     comment="The EventTrigger structure holds the event based synchronization information related to tasks and activities.  An example is a task or activity start, that is bound to some event occurrence. An example start time could be T(start) = T(eventId, eventCount) + delta + (propagationFactor x propagation delay).">
-        <mal:extends>
-          <mal:type name="Composite" area="MAL"/>
-        </mal:extends>
-        <mal:field name="eventId" canBeNull="true"
-                   comment="An alphanumeric event mnemonic relative to which the event trigger is specified. If the eventCount field is specified, it will be combined with the eventId to identify a single instance of an event. If startEventCount and endEventCount are not specified then all events with the eventId will be referenced - an operation will be triggered at the event time + specified delta for every occurrence of this event. If 'repeat' is specified in TriggerDetails, then repeat operations will be created for each occurrence of the event.">
-          <mal:type name="Identifier" area="MAL"/>
-        </mal:field>
-        <mal:field name="baseEventDefinition" canBeNull="false"
-					comment="The event type relative to which the event trigger is synchronized. The event is a COM object. The events are not standardized as part of the planning request service.">
-          <mal:type name="ObjectType" area="COM"/>
-        </mal:field>
-        <mal:field name="everyOccurrence" canBeNull="false"
-                   comment="If 'true' the is started on every occurrence of the event type.">
-          <mal:type name="Boolean" area="MAL"/>
-        </mal:field>
-        <mal:field name="startEventCount" canBeNull="true"
-                   comment="The trigger is started on the specified count of the event occurrence.">
-          <mal:type name="ULong" area="MAL"/>
-        </mal:field>
-        <mal:field name="endEventCount" canBeNull="true"
-                   comment="The trigger is ended on the specified count of the event occurrence.">
-          <mal:type name="ULong" area="MAL"/>
-        </mal:field>
-        <mal:field name="eventCount" canBeNull="true"
-                   comment="The trigger is repeated for the specified count after startEventCount.">
-          <mal:type name="ULong" area="MAL"/>
-        </mal:field>
-        <mal:field name="delta" canBeNull="true"
-                   comment="An offset time to the event. The default value is 0. May be positive or negative, which is specified in 'deltaPositive'.">
-          <mal:type name="Time" area="MAL"/>
-        </mal:field>
-        <mal:field name="deltaPositive" canBeNull="true"
-                   comment="Sign (+/-) of the offset time to the event.">
-          <mal:type name="Boolean" area="MAL"/>
-        </mal:field>
-        <mal:field name="propagationFactor" canBeNull="true"
-                   comment="The value of a factor by which to multiply the propagation delay. A positive number will add multiples of the delay to the time, a negative number will subtract. The default value is 0.">
-          <mal:type name="Float" area="MAL"/>
-        </mal:field>
-      </mal:composite>
 	 <!-- TriggerName -->
-      <mal:enumeration name="TriggerName" shortFormPart="4"
+      <mal:enumeration name="TriggerName" shortFormPart="10"
                        comment="TriggerName is an enumeration holding the names of task or activity synchronization. Examples are start, uplink. The synchronization names in the example may be time or event based.">
         <mal:item value="START" nvalue="1"
                   comment="The start of a task or activity."/>
