@@ -503,6 +503,14 @@
                      comment="The unique name of the planning request response definition instance. Must not be empty or the wildcard value.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
+          <mal:field name="prDefName" canBeNull="false"
+                     comment="The name of the planning request definition instance associated with this planning request response. Must not be empty or the wildcard value.">
+            <mal:type name="Identifier" area="MAL"/>
+          </mal:field>
+          <mal:field name="description" canBeNull="false"
+                     comment="The description of the planning request response definition.">
+            <mal:type name="String" area="MAL"/>
+          </mal:field>
           <mal:field name="argumentDefs" canBeNull="true"
                      comment="Definitions of planning request response arguments. Arguments are specific to the planning system.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>

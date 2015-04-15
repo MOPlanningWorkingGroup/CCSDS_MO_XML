@@ -113,11 +113,11 @@ May be used for checking the attribute type.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
-        <mal:field name="absoluteTime"
+        <mal:field name="absoluteTime" canBeNull="true"
 					comment="Absolute time of the trigger in millisecond precision.">
           <mal:type name="Time" area="MAL"/>
         </mal:field>
-        <mal:field name="relativeTime" canBeNull="false"
+        <mal:field name="relativeTime" canBeNull="true"
                    comment="Relative time of the trigger in millisecond precision.">
           <mal:type name="RelativeTime" area="PlanningDataTypes"/>
         </mal:field>
@@ -176,27 +176,8 @@ May be used for checking the attribute type.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>
       </mal:composite>
-      <!-- SequenceProfile -->
-      <mal:composite name="SequenceProfile" shortFormPart="8"
-                     comment="SequenceProfile is a 'Profile' element from MPSF, previously referred to as Z-record. It is associated with command sequences. Basically it supplies a value at a certain timeOffset.">
-        <mal:extends>
-          <mal:type name="Composite" area="MAL"/>
-        </mal:extends>
-        <mal:field name="type" canBeNull="false"
-					comment="An enumeration identifying the type of profile (e.g. data or power). The values allowed are mission specific.">
-          <mal:type name="String" area="MAL"/>
-        </mal:field>
-        <mal:field name="timeOffset" canBeNull="false"
-					comment="The offset time is relative to the event defined in the respective eventID of the sequence. The time offset of the first profile associated to a sequence shall be 1) Non-negative in case the sequence has an actionTime specified (providing an absolute time value for the execution time). 2) Not lower than the field delta in case the sequence has an execution time relative to an event. The time offset of profiles associated to a sequence shall be strictly monotonically increasing (i.e. no profiles shall have the same time offset value).">
-          <mal:type name="RelativeTime" area="PlanningDataTypes"/>
-        </mal:field>
-        <mal:field name="value" canBeNull="false"
-					comment="A generic field whose format is mission specific and dependent on the value of the type attribute.">
-          <mal:type name="Attribute" area="MAL"/>
-        </mal:field>
-      </mal:composite>
 	  <!-- InstanceState -->
-      <mal:enumeration name="InstanceState" shortFormPart="9"
+      <mal:enumeration name="InstanceState" shortFormPart="8"
                        comment="Status constants that may be used for planning requests, tasks, schedules, procedures.">
         <mal:item value="SUBMITTED" nvalue="1"
                   comment=""/>
