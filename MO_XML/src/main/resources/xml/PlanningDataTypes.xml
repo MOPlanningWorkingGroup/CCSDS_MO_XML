@@ -158,7 +158,7 @@ May be used for checking the attribute type.">
         </mal:field>
         <mal:field name="propagationFactor" canBeNull="true"
                    comment="The value of a factor by which to multiply the propagation delay. A positive number will add multiples of the delay to the time, a negative number will subtract. The default value is 0.">
-          <mal:type name="Float" area="MAL"/>
+          <mal:type name="Integer" area="MAL"/>
         </mal:field>
       </mal:composite>
       <!-- RelativeTime -->
@@ -171,7 +171,7 @@ May be used for checking the attribute type.">
 					comment="The absolute value of the relative time.">
           <mal:type name="Time" area="MAL"/>
         </mal:field>
-        <mal:field name="sign" canBeNull="false"
+        <mal:field name="signPositive" canBeNull="false"
 					comment="The sign of the relative time. If true then positive, if false then negative.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>
