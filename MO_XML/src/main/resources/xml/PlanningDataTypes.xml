@@ -132,11 +132,11 @@ May be used for checking the attribute type.">
                    comment="An alphanumeric event mnemonic relative to which the event trigger is specified. If the eventCount field is specified, it will be combined with the eventId to identify a single instance of an event. If startEventCount and endEventCount are not specified then all events with the eventId will be referenced - an operation will be triggered at the event time + specified delta for every occurrence of this event. If 'repeat' is specified in TriggerDetails, then repeat operations will be created for each occurrence of the event.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
-        <mal:field name="baseEventDefinition" canBeNull="false"
+        <mal:field name="baseEventDefinition" canBeNull="true"
 					comment="The event type relative to which the event trigger is synchronized. The event is a COM object. The events are not standardized as part of the planning request service.">
           <mal:type name="ObjectType" area="COM"/>
         </mal:field>
-        <mal:field name="everyOccurrence" canBeNull="false"
+        <mal:field name="everyOccurrence" canBeNull="true"
                    comment="If 'true' the is started on every occurrence of the event type.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>

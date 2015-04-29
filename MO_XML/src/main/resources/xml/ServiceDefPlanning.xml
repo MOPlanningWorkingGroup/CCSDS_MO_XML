@@ -501,7 +501,7 @@
           </mal:extends>
           <mal:field name="name" canBeNull="false"
                      comment="The unique name of the planning request response definition instance. Must not be empty or the wildcard value.">
-            <mal:type name="String" area="MAL"/>
+            <mal:type name="Identifer" area="MAL"/>
           </mal:field>
           <mal:field name="prDefName" canBeNull="false"
                      comment="The name of the planning request definition instance associated with this planning request response. Must not be empty or the wildcard value.">
@@ -528,7 +528,7 @@
           </mal:field>
           <mal:field name="timestamp" canBeNull="false"
                      comment="The date and time when the planning request response was generated.">
-            <mal:type name="String" area="MAL"/>
+            <mal:type name="Time" area="MAL"/>
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The planning request response argument values.">
