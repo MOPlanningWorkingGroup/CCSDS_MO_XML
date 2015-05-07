@@ -2,7 +2,7 @@
 <mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
-  <mal:area name="PlanningDataTypes" number="6" version="1"
+  <mal:area name="PlanningDataTypes" number="6" version="2"
             comment="This section details the data types used in the planning and other planning related services, such as automation. This section does not contain services. The structures are defined in terms of the MO MAL. The PlanningDataTypes area has a short form number of '6'.">
 	 <mal:dataTypes>
 	 <!-- ArgumentDefinitionDetails -->

@@ -2,7 +2,7 @@
 <mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
-  <mal:area name="Automation" number="7" version="1"
+  <mal:area name="Automation" number="7" version="2"
             comment="This section details the automation services. Both the services and structures are defined in terms of the MO MAL, which is defined in Message Abstraction Layer, Recommended Standard (Blue Book), CCSDS 521.0-B-2, so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in Mission Operations Common Object Model, Recommended Standard (Blue Book), CCSDS 521.1-B-1.&#xA;All service specifications in this document are part of the Automation area, which has a short form number of '7'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
                  comment="The schedule service has three main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
@@ -541,6 +541,10 @@
                      comment="The name of the schedule instance associated with this schedule patch. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
+          <mal:field name="argumentDefNames" canBeNull="true"
+                     comment="The patch operations to be applied to the argument definition names of  the associated schedule.">
+            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
+          </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The patch operations to be applied to the argument values of  the associated schedule.">
             <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
@@ -550,35 +554,8 @@
             <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
           </mal:field>
           <mal:field name="scheduleItems" canBeNull="true"
-                     comment="The schedule item patch operations correspond to the schedule items.">
-            <mal:type list="true" name="ScheduleItemPatchOperations" service="Schedule" area="Automation"/>
-          </mal:field>
-        </mal:composite>
-		<!-- ScheduleItemPatchOperations -->
-        <mal:composite name="ScheduleItemPatchOperations" shortFormPart="8"
-                       comment="The ScheduleItemPatchOperations structure holds the patch operations to be applied to the associated schedule item in order to merge the associated schedule item. See SchedulePatchOperations for more details.">
-          <mal:extends>
-            <mal:type name="Composite" area="MAL"/>
-          </mal:extends>
-          <mal:field name="scheduleItemInstName" canBeNull="false"
-                     comment="The name of the schedule item instance associated with this schedule item patch. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="argumentTypes" canBeNull="true"
-                     comment="The patch operations to be applied to the argument types of  the associated schedule item.">
+                     comment="The patch operations to be applied to the schedule items of  the associated schedule.">
             <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="argumentValues" canBeNull="true"
-                     comment="The patch operations to be applied to the argument values of  the associated schedule item.">
-            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="timingConstraints" canBeNull="true"
-                     comment="The patch operations to be applied to the timing constraints of the associated schedule item.">
-            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="delegateItem" canBeNull="true"
-                     comment="The patch operation to be applied to the delegate item of  the associated schedule item.">
-            <mal:type name="PatchOperation" service="Schedule" area="Automation"/>
           </mal:field>
         </mal:composite>
 		<!-- PatchOperation -->
