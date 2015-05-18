@@ -451,7 +451,7 @@
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="true"
                      comment="Synchronization constraints for the schedule.">
-            <mal:type list="true" name="TriggerDetails" area="PlanningDataTypes"/>
+            <mal:type list="true" name="TimingDetails" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="scheduleItems" canBeNull="true"
                      comment="The schedule items.">
@@ -482,7 +482,7 @@
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="false"
                      comment="Synchronization constraints for the schedule item.">
-            <mal:type list="true" name="TriggerDetails" area="PlanningDataTypes"/>
+            <mal:type list="true" name="TimingDetails" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="delegateItem" canBeNull="true"
                      comment="The type and instance of the associated activity or action this schedule item wraps.">
@@ -514,9 +514,9 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="scheduleItemInstName" canBeNull="false"
-                     comment="The name of the schedule item instance associated with this schedule item status. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="schItemInstId" canBeNull="false"
+                     comment="Reference to the schedule instance associated with this schedule item status.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="status" canBeNull="true"
                      comment="Contains the schedule item status details objects, eg EXECUTE_STARTED.">

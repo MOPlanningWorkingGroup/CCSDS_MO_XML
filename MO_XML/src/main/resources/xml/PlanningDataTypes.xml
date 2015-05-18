@@ -76,9 +76,9 @@ May be used for checking the attribute type.">
           <mal:type name="String" area="MAL"/>
         </mal:field>
       </mal:composite>
-	  <!-- TriggerDetails -->
-      <mal:composite name="TriggerDetails" shortFormPart="4"
-                     comment="The TriggerDetails structure holds the synchronization information related to tasks and activities.  An example is a task or activity start time. There are two types of task/activity synchronization: based on time and based on event.">
+	  <!-- TimingDetails -->
+      <mal:composite name="TimingDetails" shortFormPart="4"
+                     comment="The TimingDetails structure holds the synchronization information related to tasks and activities.  An example is a task or activity start time. There are two types of task/activity synchronization: based on time and based on event.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
@@ -133,7 +133,7 @@ May be used for checking the attribute type.">
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
         <mal:field name="eventId" canBeNull="true"
-                   comment="An alphanumeric event mnemonic relative to which the event trigger is specified. If the eventCount field is specified, it will be combined with the eventId to identify a single instance of an event. If startEventCount and endEventCount are not specified then all events with the eventId will be referenced - an operation will be triggered at the event time + specified delta for every occurrence of this event. If 'repeat' is specified in TriggerDetails, then repeat operations will be created for each occurrence of the event.">
+                   comment="An alphanumeric event mnemonic relative to which the event trigger is specified. If the eventCount field is specified, it will be combined with the eventId to identify a single instance of an event. If startEventCount and endEventCount are not specified then all events with the eventId will be referenced - an operation will be triggered at the event time + specified delta for every occurrence of this event. If 'repeat' is specified in TimingDetails, then repeat operations will be created for each occurrence of the event.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
         <mal:field name="baseEventDefinition" canBeNull="true"
@@ -195,27 +195,31 @@ May be used for checking the attribute type.">
                   comment=""/>
         <mal:item value="REJECTED" nvalue="6"
                   comment=""/>
-        <mal:item value="PLANNED" nvalue="7"
+        <mal:item value="UNPLANNED" nvalue="7"
                   comment=""/>
-        <mal:item value="PLAN_CONFLICT" nvalue="8"
+        <mal:item value="PREPLANNED" nvalue="8"
                   comment=""/>
-        <mal:item value="SCHEDULED" nvalue="9"
+        <mal:item value="PLANNED" nvalue="9"
                   comment=""/>
-        <mal:item value="DISTRIBUTED_FOR_EXECUTION" nvalue="10"
+        <mal:item value="PLAN_CONFLICT" nvalue="10"
                   comment=""/>
-        <mal:item value="EXECUTE_COMPLETED" nvalue="11"
+        <mal:item value="SCHEDULED" nvalue="11"
                   comment=""/>
-        <mal:item value="EXECUTE_FAILED" nvalue="12"
+        <mal:item value="DISTRIBUTED_FOR_EXECUTION" nvalue="12"
                   comment=""/>
-        <mal:item value="EXECUTE_PAUSED" nvalue="13"
+        <mal:item value="EXECUTE_COMPLETED" nvalue="13"
                   comment=""/>
-        <mal:item value="EXECUTE_RESUMED" nvalue="14"
+        <mal:item value="EXECUTE_FAILED" nvalue="14"
                   comment=""/>
-        <mal:item value="ENABLED" nvalue="15"
+        <mal:item value="EXECUTE_PAUSED" nvalue="15"
                   comment=""/>
-        <mal:item value="DISABLED" nvalue="16"
+        <mal:item value="EXECUTE_RESUMED" nvalue="16"
                   comment=""/>
-        <mal:item value="GENERATED" nvalue="17"
+        <mal:item value="ENABLED" nvalue="17"
+                  comment=""/>
+        <mal:item value="DISABLED" nvalue="18"
+                  comment=""/>
+        <mal:item value="GENERATED" nvalue="19"
                   comment=""/>
       </mal:enumeration>
 	 <!-- TriggerName -->
