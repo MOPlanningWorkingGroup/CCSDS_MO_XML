@@ -8,7 +8,7 @@
 	 <!-- ArgumentDefinitionDetails -->
       <mal:composite name="ArgumentDefinitionDetails" shortFormPart="1"
                      comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.
-The 'value' of an argument is in AttributeValue. The value is expected to be one of MAL:Attribute primitive data types. Structures as values are not supported, although a workaround is to encode the value in a string, delimited with '|' (pipes), for example.">
+The 'value' of an argument is in ArgumentValue. The value is expected to be one of MAL:Attribute primitive data types. Structures as values are not supported, although a workaround is to encode the value in a string, delimited with '|' (pipes), for example.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
@@ -42,14 +42,18 @@ May be used for checking the attribute type.">
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
       </mal:composite>
-	  <!-- AttributeValue -->
-      <mal:composite name="AttributeValue" shortFormPart="2"
-                     comment="The AttributeValue structure holds an Attribute value. It allows a list of different Attribute types to be created whereas List&lt;Attribute&gt; would require the values to be all of the same type.">
+	  <!-- ArgumentValue -->
+      <mal:composite name="ArgumentValue" shortFormPart="2"
+                     comment="The ArgumentValue structure holds a MAL Attribute value. It allows a list of different Attribute types to be created whereas List&lt;Attribute&gt; would require the values to be all of the same type.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
+        <mal:field name="argDefName" canBeNull="false"
+                   comment="Reference to the argument definition name. Must not be empty or the wildcard value.">
+          <mal:type name="Identifier" area="MAL"/>
+        </mal:field>
         <mal:field name="value" canBeNull="false"
-                   comment="The argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete AttributeValue composite. The structure is identical to the MC AttributeValue.">
+                   comment="The argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete ArgumentValue composite. The structure is similar to the MC AttributeValue.">
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
       </mal:composite>

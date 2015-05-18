@@ -445,13 +445,9 @@
 					comment="Comment for the schedule instance.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
-          <mal:field name="argumentDefNames" canBeNull="true"
-                     comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name  in ScheduleDefinitionDetails:argumentDefs.">
-            <mal:type list="true" name="Identifier" area="MAL"/>
-          </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The argument values. The order of arguments corresponds to the order of argument definitions if the schedule definition object.">
-            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
+            <mal:type list="true" name="ArgumentValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="true"
                      comment="Synchronization constraints for the schedule.">
@@ -482,7 +478,7 @@
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The argument values for the delegate item.">
-            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
+            <mal:type list="true" name="ArgumentValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="false"
                      comment="Synchronization constraints for the schedule item.">
@@ -536,10 +532,6 @@
           <mal:field name="scheduleInstName" canBeNull="false"
                      comment="The name of the schedule instance associated with this schedule patch. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="argumentDefNames" canBeNull="true"
-                     comment="The patch operations to be applied to the argument definition names of  the associated schedule.">
-            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The patch operations to be applied to the argument values of  the associated schedule.">
@@ -916,13 +908,9 @@
                      comment="Reference to the procedure definition.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="argumentDefNames" canBeNull="true"
-                     comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name  in ProcedureDetails:argumentDefs.">
-            <mal:type list="true" name="Identifier" area="MAL"/>
-          </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
                      comment="The argument values. The arguments are in the order of argument definitions in the procedure definition object.">
-            <mal:type list="true" name="AttributeValue" area="PlanningDataTypes"/>
+            <mal:type list="true" name="ArgumentValue" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
 		<!-- ProcedureStatusDetails -->
