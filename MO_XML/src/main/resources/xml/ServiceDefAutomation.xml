@@ -119,28 +119,20 @@
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- patchSchedule -->
       <mal:submitIP name="patchSchedule" number="4" supportInReplay="false"
-                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The patch consists of two structures: 1) the schedule instance containing the updates (ScheduleInstanceDetails), and 2) the associated patch operations (SchedulePatchOperations) to be applied to the fields of fragment schedule instance. The fields of SchedulePatchOperations correspond to the fields of ScheduleInstanceDetails.&#xA;Example: if a schedule item is to be added, then the schedule item is specified in ScheduleInstanceDetails::scheduleItems[0], if it is a first item. The corresponding SchedulePatchOperations::scheduleItems[0] contains the value of PatchOperations::ADD.">
+                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be updated, 3) to be added. The target schedule id is the ScheduleInstanceDetails.id field. THe patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
           <mal:messages>
 			<mal:submit>
-              <mal:field name="defInstId"
-                         comment="The defInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleDefinition to be used. The definition applies both to the patch instance and the target schedule instance onto which the patch is to be merged.">
-                <mal:type name="Long" area="MAL"/>
+              <mal:field name="fragmentsToRemove"
+                         comment="fragmentsToRemove contains the fields that will be removed from the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
+                <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
-              <mal:field name="patchInstId"
-                         comment="The patchInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the patch ScheduleInstance to be used for the optional activity tracking events.">
-                <mal:type name="Long" area="MAL"/>
+              <mal:field name="fragmentsToUpdate"
+                         comment="fragmentsToUpdate contains the fields that will be updated in the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
+                <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
-              <mal:field name="patchInstDetails"
-                         comment="The schInstDetails part of the submission shall contain the information of the schedule patch instance.&#xA;The operation shall return once the schedule patch has been accepted by the provider.">
-                <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
-              </mal:field>
-              <mal:field name="patchInstOperations"
-                         comment="The patchInstOperations field of the submission shall contain the schedule patch operations (ADD, REMOVE, UPDATE) that correspond to the patchInstDetails.">
-                <mal:type name="SchedulePatchOperations" service="Schedule" area="Automation"/>
-              </mal:field>
-              <mal:field name="targetSchInstId"
-                         comment="The targetSchInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance of the target schedule onto which the patch is going to be merged.">
-                <mal:type name="Long" area="MAL"/>
+              <mal:field name="fragmentsToAdd"
+                         comment="fragmentsToAdd contains the fields that will be added to the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
+                <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
@@ -541,39 +533,6 @@
             <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
-		<!-- SchedulePatchOperations -->
-        <mal:composite name="SchedulePatchOperations" shortFormPart="7"
-                       comment="The SchedulePatchOperations structure holds the patch operations to be applied to the associated schedule in order to merge the associated schedule. The associated schedule instance is specified in patchSchedule operation submission. The fields of SchedulePatchOperations correspond to the fields of ScheduleInstanceDetails. &#xA;Example: if a schedule item is to be added, then the schedule item is specified in ScheduleInstanceDetails::scheduleItems[0], if it is a first item. The corresponding SchedulePatchOperations::scheduleItems[0] contains the value of PatchOperations::ADD.">
-          <mal:extends>
-            <mal:type name="Composite" area="MAL"/>
-          </mal:extends>
-          <mal:field name="scheduleInstName" canBeNull="false"
-                     comment="The name of the schedule instance associated with this schedule patch. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="argumentValues" canBeNull="true"
-                     comment="The patch operations to be applied to the argument values of  the associated schedule.">
-            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="timingConstraints" canBeNull="true"
-                     comment="The patch operations to be applied to the timing constraints of the associated schedule.">
-            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
-          </mal:field>
-          <mal:field name="scheduleItems" canBeNull="true"
-                     comment="The patch operations to be applied to the schedule items of  the associated schedule.">
-            <mal:type list="true" name="PatchOperation" service="Schedule" area="Automation"/>
-          </mal:field>
-        </mal:composite>
-		<!-- PatchOperation -->
-		<mal:enumeration name="PatchOperation" shortFormPart="9"
-						   comment="PatchOperation is an enumeration holding the types of updates in the merging a fragment schedule onto target schedule.">
-			<mal:item value="ADD" nvalue="1"
-					  comment="Add new item."/>
-			<mal:item value="REMOVE" nvalue="2"
-					  comment="Remove the item."/>
-			<mal:item value="UPDATE" nvalue="2"
-					  comment="Update the item by replacing it with the supplied item."/>
-		  </mal:enumeration>
       </mal:dataTypes>
 	<mal:errors>
       <mal:error name="SCHEDULE_RUNNING" number="70101" comment="Schedule is running"/>
