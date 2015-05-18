@@ -38,15 +38,21 @@
 <!--       </mal:documentation> -->
       <mal:capabilitySet number="1" comment="Submit schedule instance">
 	  <!-- submitSchedule -->
-      <mal:submitIP name="submitSchedule" number="1" supportInReplay="false"
+      <mal:requestIP name="submitSchedule" number="1" supportInReplay="false"
                       comment="The submitSchedule operation allows a consumer to submit a schedule instance to a provider.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="schDetails"
                          comment="The schDetails part of the submission shall contain the information of the schedule instance.&#xA;The operation shall return once the schedule has been accepted by the provider.">
                 <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="schStatus"
+                         comment="The operation shall return a ScheduleStatusDetails object">
+                <mal:type name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="Schedule definition is unknown.">
@@ -59,19 +65,25 @@
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="2" comment="Update and remove schedule instance">
 	  <!-- updateSchedule -->
-      <mal:submitIP name="updateSchedule" number="2" supportInReplay="false"
+      <mal:requestIP name="updateSchedule" number="2" supportInReplay="false"
                       comment="The updateSchedule operation allows a consumer to update a schedule by essentially replacing it. The difference between updateSchedule() and calling removeSchedule() + submitSchedule() is that in the latter case the ID of the schedule will change. The difference between updateSchedule() and patchSchedul() is that updateSchedule() will replace the whole schedule, while patchSchedule() will replace parts of a schedule.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="schDetails"
                          comment="The schDetails part of the submission shall contain the information of the updated schedule instance. The schDetails instance will become the schedule instance on the provider referenced by schInstId.&#xA;The operation shall return once the schedule has been accepted by the provider.">
                 <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="schStatus"
+                         comment="The operation shall return a ScheduleStatusDetails object">
+                <mal:type name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="Schedule definition is unknown.">
@@ -84,19 +96,25 @@
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
 	  <!-- removeSchedule -->
-      <mal:submitIP name="removeSchedule" number="3" supportInReplay="false"
+      <mal:requestIP name="removeSchedule" number="3" supportInReplay="false"
                       comment="The removeSchedule operation allows a consumer to remove an already submitted schedule.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="schInstId"
                          comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance that is going to be removed.">
                 <mal:type name="Long" area="MAL"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="schStatus"
+                         comment="The operation shall return a ScheduleStatusDetails object">
+                <mal:type name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
-        </mal:submitIP>
+        </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- patchSchedule -->

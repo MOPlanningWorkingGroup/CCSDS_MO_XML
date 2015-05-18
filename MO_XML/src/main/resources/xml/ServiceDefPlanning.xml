@@ -45,10 +45,9 @@
               </mal:field>
             </mal:request>
             <mal:response>
-            <!-- return status? -->
-              <mal:field name="prResponse"
-                         comment="The operation shall return a PlanningRequestResponseInstanceDetails object">
-                <mal:type list="true" name="PlanningRequestResponseInstanceDetails" service="PlanningRequest" area="Planning"/>
+              <mal:field name="prStatus"
+                         comment="The operation shall return a PlanningRequestStatusDetails object">
+                <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -70,15 +69,21 @@
       </mal:capabilitySet>
       <mal:capabilitySet number="2" comment="Update and remove planning request instance.">
 		<!-- updatePlanningRequest -->
-        <mal:submitIP name="updatePlanningRequest" number="2" supportInReplay="false"
+        <mal:requestIP name="updatePlanningRequest" number="2" supportInReplay="false"
                       comment="The updatePlanningRequest operation allows a consumer to update an already submitted planning request by essentially replacing the existing planning request with the provided planning request. The primary goal of this operation is to support the approach of long, medium and short term planning where some details of the planning request only become clear as the execution phase comes closer. The difference between this operation and calling removePlanningRequest() + submitPlanningRequest() is that in the latter case the Identifier will change. Also, when removePlanningRequest() is executed the provider does not know that the intention is to actually update the request and may take wrong actions. There are no methods to update individual properties of a planning request for the interface stability reasons.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="prDetails"
                          comment="The prDetails part of the submission shall contain the information of the updated planning request instance. The prDetails instance will become the planning request instance on the provider referenced by prInstId.&#xA;The operation shall return once the planning request has been accepted by the provider.">
                 <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="prStatus"
+                         comment="The operation shall return a PlanningRequestStatusDetails object">
+                <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
           <mal:errors>
             <mal:errorRef comment="Planning request or task definition is unknown.">
@@ -94,19 +99,25 @@
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
 		<!-- removePlanningRequest -->
-        <mal:submitIP name="removePlanningRequest" number="3" supportInReplay="false"
+        <mal:requestIP name="removePlanningRequest" number="3" supportInReplay="false"
                       comment="The removePlanningRequest operation allows a consumer to remove an already submitted planning request. NB! This operations removes all tasks that are part of the planning request.">
           <mal:messages>
-            <mal:submit>
+            <mal:request>
               <mal:field name="prInstId"
                          comment="The prInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestInstance that is going to be removed.">
                 <mal:type name="Long" area="MAL"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="prStatus"
+                         comment="The operation shall return a PlanningRequestStatusDetails object">
+                <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
-        </mal:submitIP>
+        </mal:requestIP>
       </mal:capabilitySet>
      <mal:capabilitySet number="3" comment="Get planning request status.">
 		<!-- getPlanningRequestStatus -->
@@ -313,8 +324,6 @@
 	                  comment="PlanningRequestDefinition"/>
 	        <mal:item value="TASK_DEF" nvalue="2"
 	                  comment="TaskDefinition"/>
-	        <mal:item value="PLANNING_REQUEST_RESPONSE_DEF" nvalue="3"
-	                  comment="PlanningRequestResponseDefinition"/>
 	      </mal:enumeration>
 		<!-- BaseDefinition -->
         <mal:composite name="BaseDefinition"
@@ -470,48 +479,6 @@
             <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
-		<!-- PlanningRequestResponseDefinitionDetails -->
-        <mal:composite name="PlanningRequestResponseDefinitionDetails" shortFormPart="7"
-                       comment="The PlanningRequestResponseDefinitionDetails structure holds the definition information of a planning request response.">
-          <mal:extends>
-            <mal:type name="BaseDefinition" service="PlanningRequest" area="Planning"/>
-          </mal:extends>
-          <mal:field name="name" canBeNull="false"
-                     comment="The unique name of the planning request response definition instance. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="prDefName" canBeNull="false"
-                     comment="The name of the planning request definition instance associated with this planning request response. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="description" canBeNull="false"
-                     comment="The description of the planning request response definition.">
-            <mal:type name="String" area="MAL"/>
-          </mal:field>
-          <mal:field name="argumentDefs" canBeNull="true"
-                     comment="Definitions of planning request response arguments. Arguments are specific to the planning system.">
-            <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
-          </mal:field>
-        </mal:composite>
-		<!-- PlanningRequestResponseInstanceDetails -->
-        <mal:composite name="PlanningRequestResponseInstanceDetails" shortFormPart="8"
-                       comment="The PlanningRequestResponseInstanceDetails structure holds the information required for an instance of a planning request response such as the argument values to use. The PlanningRequestResponse differs from the PlanningRequestStatus: the response object gives feedback to the planning request submission, while the status is a feedback relating to the planning request life cycle. NB! This is a placeholder structure, until the need for it becomes more clear after reviewing more mission data.">
-          <mal:extends>
-            <mal:type name="Composite" area="MAL"/>
-          </mal:extends>
-          <mal:field name="prInstName" canBeNull="false"
-                     comment="The name of the planning request instance. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
-          </mal:field>
-          <mal:field name="timestamp" canBeNull="false"
-                     comment="The date and time when the planning request response was generated.">
-            <mal:type name="Time" area="MAL"/>
-          </mal:field>
-          <mal:field name="argumentValues" canBeNull="true"
-                     comment="The planning request response argument values.">
-            <mal:type list="true" name="ArgumentValue" area="PlanningDataTypes"/>
-          </mal:field>
-        </mal:composite>
       </mal:dataTypes>
 		<!-- features-->
       <com:features>
@@ -558,23 +525,6 @@
               <com:objectType number="5" service="PlanningRequest" area="Planning"/>
             </com:relatedObject>
           </com:object>
-          <com:object name="PlanningRequestResponseDefinition" number="7">
-            <com:objectType>
-              <mal:type name="PlanningRequestResponseDefinitionDetails" service="PlanningRequest" area="Planning"/>
-            </com:objectType>
-            <com:relatedObject>
-              <com:objectType number="5" service="PlanningRequest" area="Planning"/>
-            </com:relatedObject>
-          </com:object>
-          <com:object name="PlanningRequestResponseInstance" number="8">
-            <com:objectType>
-              <mal:type name="PlanningRequestResponseInstanceDetails" service="PlanningRequest" area="Planning"/>
-            </com:objectType>
-            <com:relatedObject>
-              <com:objectType number="5" service="PlanningRequest" area="Planning"/>
-            </com:relatedObject>
-          </com:object>
-
 		  </com:objects>
 		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the planning request service.">
         </com:events>
