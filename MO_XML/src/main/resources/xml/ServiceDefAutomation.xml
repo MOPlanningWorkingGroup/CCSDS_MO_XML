@@ -42,14 +42,6 @@
                       comment="The submitSchedule operation allows a consumer to submit a schedule instance to a provider.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="defInstId"
-                         comment="The defInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleDefinition to be used.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="schInstId"
-                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance to be used for the optional activity tracking events.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="schDetails"
                          comment="The schDetails part of the submission shall contain the information of the schedule instance.&#xA;The operation shall return once the schedule has been accepted by the provider.">
                 <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
@@ -75,10 +67,6 @@
                       comment="The updateSchedule operation allows a consumer to update a schedule by essentially replacing it. The difference between updateSchedule() and calling removeSchedule() + submitSchedule() is that in the latter case the ID of the schedule will change. The difference between updateSchedule() and patchSchedul() is that updateSchedule() will replace the whole schedule, while patchSchedule() will replace parts of a schedule.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="schInstId"
-                         comment="The schInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the ScheduleInstance that is going to be updated.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="schDetails"
                          comment="The schDetails part of the submission shall contain the information of the updated schedule instance. The schDetails instance will become the schedule instance on the provider referenced by schInstId.&#xA;The operation shall return once the schedule has been accepted by the provider.">
                 <mal:type name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
@@ -418,6 +406,10 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the schedule definition. This id is also used by the COM Archive.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
           <mal:field name="name" canBeNull="false"
                      comment="The unique name of the schedule definition. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
@@ -441,9 +433,13 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="name" canBeNull="false"
-                     comment="The unique name of the schedule instance. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the schedule instance. This id is also used by the COM Archive.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="schDefId" canBeNull="false"
+                     comment="Reference to the schedule definition.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="comment" canBeNull="false"
 					comment="Comment for the schedule instance.">
@@ -472,13 +468,13 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="scheduleItemInstName" canBeNull="false"
-                     comment="The unique name of a schedule item. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the schedule instance.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="scheduleInstName" canBeNull="false"
-                     comment="The name of the schedule instance associated with this schedule item. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="schInstId" canBeNull="false"
+                     comment="Reference to the enclosing schedule instance.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="argumentTypes" canBeNull="true"
                      comment="The argument types of argument values for the delegate item.">
@@ -503,9 +499,9 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="scheduleInstName" canBeNull="false"
-                     comment="The name of the schedule instance associated with this schedule status. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="schInstId" canBeNull="false"
+                     comment="Reference to the schedule instance associated with this schedule status.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="status" canBeNull="true"
                      comment="Contains the schedule status details objects, eg SUBMITTED, EXECUTE_STARTED.">
@@ -736,15 +732,7 @@
                       comment="Invokes procedure execution. In schedule service this is equivalent to submit + start.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="procIds"
-                         comment="The procIds field of the submission shall contain a MAL::Long that is the object instance identifier of the ProcedureDefinition this procedure invocation refers to.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="procInvocIds"
-                         comment="The procInvocIds field of the submission shall contain a MAL::Long that is the object instance identifier of the ProcedureInvocationDetails to be invoked.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="procIncvcDetails"
+              <mal:field name="procInvocDetails"
                          comment="The procInvocDetails field of the submission shall contain the procedure invocation arguments.">
                 <mal:type list="true" name="ProcedureInvocationDetails" service="Procedure" area="Automation"/>
               </mal:field>
@@ -897,6 +885,10 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the procedure. This id is also used by the COM Archive.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
           <mal:field name="name" canBeNull="false"
                      comment="The unique name of the procedure definition. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
@@ -917,12 +909,12 @@
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
           <mal:field name="id" canBeNull="false"
-                     comment="The unique id of the procedure instance. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+                     comment="The unique id of the procedure invocation.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="procedureName" canBeNull="false"
-                     comment="The name of the procedure definition.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="procId" canBeNull="false"
+                     comment="Reference to the procedure definition.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="argumentDefNames" canBeNull="true"
                      comment="Argument definition names. ArgumentDefNames[i] corresponds to argumentValues[i]. Corresponds to ArgumentDefinitionDetails:name  in ProcedureDetails:argumentDefs.">
@@ -939,9 +931,9 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="procedureInvocId" canBeNull="false"
-                     comment="The name of the procedure invocation associated with this procedure status. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="procInvocId" canBeNull="false"
+                     comment="The id of the procedure invocation associated with this procedure invocation status.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="status" canBeNull="true"
                      comment="Contains the procedure status details objects, eg EXECUTE_STARTED.">

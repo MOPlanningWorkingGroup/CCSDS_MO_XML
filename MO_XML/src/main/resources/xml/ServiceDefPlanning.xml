@@ -39,28 +39,13 @@
                       comment="The submitPlanningRequest operation allows a consumer to submit a planning request to a provider.">
           <mal:messages>
             <mal:request>
-              <mal:field name="prDefInstId"
-                         comment="The prDefInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestDefinition to be used.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="prInstId"
-                         comment="The prInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestInstance to be used for the optional activity tracking events.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="prDetails"
                          comment="The prDetails part of the submission shall contain the information of the planning request instance.&#xA;The operation shall return once the planning request has been accepted by the provider.">
                 <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
-              <mal:field name="taskDefInstIds"
-                         comment="The taskDefInstIds field of the submission shall contain a list of MAL::Long that are the object instance identifiers of the TaskDefinition objects contained within the planning request instance.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="taskInstIds"
-                         comment="The taskInstIds field of the submission shall contain a list of MAL::Long that are the object instance identifier of the TaskInstance objects to be used for the optional activity tracking events.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
             </mal:request>
             <mal:response>
+            <!-- return status? -->
               <mal:field name="prResponse"
                          comment="The operation shall return a PlanningRequestResponseInstanceDetails object">
                 <mal:type list="true" name="PlanningRequestResponseInstanceDetails" service="PlanningRequest" area="Planning"/>
@@ -89,25 +74,9 @@
                       comment="The updatePlanningRequest operation allows a consumer to update an already submitted planning request by essentially replacing the existing planning request with the provided planning request. The primary goal of this operation is to support the approach of long, medium and short term planning where some details of the planning request only become clear as the execution phase comes closer. The difference between this operation and calling removePlanningRequest() + submitPlanningRequest() is that in the latter case the Identifier will change. Also, when removePlanningRequest() is executed the provider does not know that the intention is to actually update the request and may take wrong actions. There are no methods to update individual properties of a planning request for the interface stability reasons.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="prDefInstId"
-                         comment="The prDefInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestDefinition to be used.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="prInstId"
-                         comment="The prInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestInstance that is going to be updated.">
-                <mal:type name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="prDetails"
                          comment="The prDetails part of the submission shall contain the information of the updated planning request instance. The prDetails instance will become the planning request instance on the provider referenced by prInstId.&#xA;The operation shall return once the planning request has been accepted by the provider.">
                 <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
-              </mal:field>
-              <mal:field name="taskDefInstIds"
-                         comment="The taskDefInstIds field of the submission shall contain a list of MAL::Long that are the object instance identifiers of the TaskDefinition objects contained within the planning request instance.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
-              <mal:field name="taskInstIds"
-                         comment="The taskInstIds field of the submission shall contain a list of MAL::Long that are the object instance identifier of the TaskInstance objects to be used for the optional activity tracking events.">
-                <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
@@ -360,6 +329,10 @@
           <mal:extends>
             <mal:type name="BaseDefinition" service="PlanningRequest" area="Planning"/>
           </mal:extends>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the planning request definition. This id is also used by the COM Archive.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
           <mal:field name="name" canBeNull="false"
                      comment="The unique name of the planning request definition instance. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
@@ -383,6 +356,10 @@
           <mal:extends>
             <mal:type name="BaseDefinition" service="PlanningRequest" area="Planning"/>
           </mal:extends>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the task definition. This id is also used by the COM Archive.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
           <mal:field name="name" canBeNull="false"
                      comment="The unique name of the task definition instance. Must not be empty or the wildcard value.">
             <mal:type name="Identifier" area="MAL"/>
@@ -402,9 +379,13 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="name" canBeNull="false"
-                     comment="The unique name of the planning request instance. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the planning request instance. This id is also used by the COM Archive and the optional Activity Tracking service.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="prDefId" canBeNull="false"
+                     comment="Reference to the planning request definition.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="comment" canBeNull="true"
 					comment="Comment for the planning request instance.">
@@ -434,13 +415,17 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="name" canBeNull="false"
-                     comment="The unique name of the task instance. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="id" canBeNull="false"
+                     comment="The unique id of the task instance. This id is also used by the COM Archive.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="prName" canBeNull="false"
-                     comment="The name of the planning request instance associated with this task. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="taskDefId" canBeNull="false"
+                     comment="Reference to the task definition.">
+            <mal:type name="Long" area="MAL"/>
+          </mal:field>
+          <mal:field name="prInstId" canBeNull="false"
+                     comment="Reference to the enclosing planning request instance.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="comment" canBeNull="true"
 					comment="Comment for the task instance.">
@@ -465,9 +450,9 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="prInstName" canBeNull="false"
-                     comment="The name of the planning request instance associated with this planning request status. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="prInstId" canBeNull="false"
+                     comment="Reference to the planning request instance associated with this planning request status.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="status" canBeNull="true"
                      comment="Contains the planning request status details objects, eg PLANNED, SCHEDULED.">
@@ -484,9 +469,9 @@
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
-          <mal:field name="taskInstName" canBeNull="false"
-                     comment="The name of the task instance associated with this task status. Must not be empty or the wildcard value.">
-            <mal:type name="Identifier" area="MAL"/>
+          <mal:field name="taskInstId" canBeNull="false"
+                     comment="Reference to the task instance associated with this task status.">
+            <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="status" canBeNull="true"
                      comment="Contains the task status details objects, eg PLANNED, SCHEDULED.">
