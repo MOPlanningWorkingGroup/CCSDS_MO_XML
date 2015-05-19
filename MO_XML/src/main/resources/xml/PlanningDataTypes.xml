@@ -221,6 +221,8 @@ May be used for checking the attribute type.">
                   comment=""/>
         <mal:item value="GENERATED" nvalue="19"
                   comment=""/>
+        <mal:item value="REMOVED" nvalue="20"
+                  comment=""/>
       </mal:enumeration>
 	 <!-- TriggerName -->
       <mal:enumeration name="TriggerName" shortFormPart="10"
