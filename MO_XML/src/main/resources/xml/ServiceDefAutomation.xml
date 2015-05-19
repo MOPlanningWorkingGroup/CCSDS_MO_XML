@@ -49,7 +49,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object">
+                         comment="The operation shall return a ScheduleStatusDetails object. The status object contains the ids of the submitted schedules.">
                 <mal:type name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -198,7 +198,7 @@
       <mal:capabilitySet number="5" comment="Monitor schedule status">
 	  <!-- monitorSchedules -->
 		<mal:pubsubIP name="monitorSchedules" number="7" supportInReplay="true"
-                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;How to specify the schedule ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorSchedules operation allows a consumer to subscribe for schedule status updates.&#xA;How to specify the planning request ids that we wish to monitor? This problem is not solved in this specification. The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.&#xA;The notifications contain the schedule status objects. The amount of information in the status objects is defined by deployments. For example, some system may send the current state constant of a schedule (eg EXECUTED), others may send multiple constants with associated time-stamps (eg SUBMITTED, LAST_MODIFIED, EXECUTED).">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"

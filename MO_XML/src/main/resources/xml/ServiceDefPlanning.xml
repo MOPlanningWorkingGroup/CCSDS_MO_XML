@@ -46,7 +46,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
-                         comment="The operation shall return a PlanningRequestStatusDetails object">
+                         comment="The operation shall return a PlanningRequestStatusDetails object. The status object contains the ids of the submitted planning requests.">
                 <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
@@ -165,10 +165,10 @@
           </mal:messages>
         </mal:requestIP>
 	 </mal:capabilitySet>
-     <mal:capabilitySet number="4" comment="Monitor planning requests.">
+     <mal:capabilitySet number="4" comment="Monitor changes planning requests and tasks.">
 	<!-- monitorPlanningRequests -->
 		<mal:pubsubIP name="monitorPlanningRequests" number="6" supportInReplay="true"
-                      comment="The monitorPlanningRequests operation allows a consumer to subscribe for planning request status updates.&#xA;How to specify the planning request ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
+                      comment="The monitorPlanningRequests operation allows a consumer to subscribe for planning request and task status updates.&#xA;How to specify the planning request ids that we wish to monitor? This problem is not solved in this specification. The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.&#xA;The notifications contain the planning request status objects. The amount of information in the status objects is defined by deployments. For example, some system may send the current state constant of a planning request (eg PLANNED), others may send multiple constants with associated time-stamps (eg SUBMITTED, LAST_MODIFIED, PLANNED).">
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
@@ -323,24 +323,6 @@
           </mal:messages>
         </mal:requestIP>
 		</mal:capabilitySet>
-		<mal:capabilitySet number="8" comment="Monitor tasks.">
-		<!-- monitorTasks -->
-		<mal:pubsubIP name="monitorTasks" number="12" supportInReplay="true"
-                      comment="The monitorTasks operation allows a consumer to subscribe for task status updates.&#xA;How to specify the task ids that we wish to monitor? The problem is similar to the MC Parameter service. In MC Parameter service there is a general monitorValue operation, that takes no arguments. A related enableGeneration operation specifies the instance ids or groups of instances for which the updates are generated. Alternatively, there is a generationEnabled field in ParameterDefinitionDetails.">
-          <mal:messages>
-            <mal:publishNotify>
-              <mal:field name="objId"
-                         comment="The MAL EntityKey.firstSubKey shall contain the task name.&#xA;The MAL EntityKey.secondSubKey shall contain the TaskDefinition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the TaskInstance object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the TaskInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
-                <mal:type name="ObjectId" area="COM"/>
-              </mal:field>
-              <mal:field name="status"
-                         comment="The second part of the publish message shall be the TaskInstance object value.">
-                <mal:type name="TaskStatusDetails" service="PlanningRequest" area="Planning"/>
-              </mal:field>
-            </mal:publishNotify>
-          </mal:messages>
-        </mal:pubsubIP>
-		</mal:capabilitySet>
 		<!-- data types-->
       <mal:dataTypes>
       	  <!-- DefinitionType -->
@@ -454,7 +436,7 @@
                      comment="Reference to the task definition.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
-          <mal:field name="prInstId" canBeNull="false"
+          <mal:field name="prInstId" canBeNull="true"
                      comment="Reference to the enclosing planning request instance.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
