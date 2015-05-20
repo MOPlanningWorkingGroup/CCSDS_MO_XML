@@ -333,7 +333,7 @@
       </mal:capabilitySet>
       <mal:capabilitySet number="7" comment="List schedule definition">
 	  <!-- listDefinition -->
-	          <mal:requestIP name="listDefinition" number="12" supportInReplay="true"
+          <mal:requestIP name="listDefinition" number="12" supportInReplay="true"
                        comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ScheduleDefinition objects for the supported types of schedule of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ScheduleDefinition objects.">
           <mal:messages>
             <mal:request>
@@ -350,10 +350,30 @@
             </mal:response>
           </mal:messages>
         </mal:requestIP>
+        <!-- START -->
+		<!-- getDefinition -->
+        <mal:requestIP name="getDefinition" number="13" supportInReplay="true"
+                       comment="The getDefinition operation allows a consumer to request the definition objects for the supported types of schedules on the provider.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="defIds" canBeNull="true"
+                         comment="The defIds field shall contain a list of schedule definition ids.&#xA;If null then returns all schedule definitions.">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="schDefInst"
+                         comment="The response shall contain a list of matching PlanningRequestDefinition or TaskDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
+                <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
+        <!-- END -->
       </mal:capabilitySet>
       <mal:capabilitySet number="8" comment="Add, update, remove schedule definition">
 		<!-- addDefinition -->
-        <mal:requestIP name="addDefinition" number="13" supportInReplay="false"
+        <mal:requestIP name="addDefinition" number="14" supportInReplay="false"
                        comment="The addDefinition operation allows a consumer to define one or more schedule types that do not currently exist. The new ScheduleDefinition object is expected to be stored in the COM archive by the provider of the schedule service.">
           <mal:messages>
             <mal:request>
@@ -385,7 +405,7 @@
           </mal:errors>
         </mal:requestIP>
 		<!-- updateDefinition -->
-        <mal:submitIP name="updateDefinition" number="14" supportInReplay="false"
+        <mal:submitIP name="updateDefinition" number="15" supportInReplay="false"
                       comment="The updateDefinition operation allows a consumer to modify a definition for one or more schedules without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same schedule name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing schedule definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
@@ -415,7 +435,7 @@
           </mal:errors>
         </mal:submitIP>
 		<!-- removeDefinition -->
-        <mal:submitIP name="removeDefinition" number="15" supportInReplay="false"
+        <mal:submitIP name="removeDefinition" number="16" supportInReplay="false"
                       comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request types supported by the schedule provider.&#xA;The operation does not remove the ScheduleDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ScheduleInstance objects to continue to reference the correct ScheduleDefinition object in the COM archive.">
           <mal:messages>
             <mal:submit>

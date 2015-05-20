@@ -206,10 +206,32 @@
             </mal:response>
           </mal:messages>
         </mal:requestIP>
+		<!-- getDefinition -->
+        <mal:requestIP name="getDefinition" number="8" supportInReplay="true"
+                       comment="The getDefinition operation allows a consumer to request the definition objects of specific Definition types (eg PlanningRequestDefinition, TaskDefinition) for the supported types of planning request, tasks, etc on the provider.">
+          <mal:messages>
+            <mal:request>
+              <mal:field name="defType" canBeNull="false"
+                         comment="Type of definitions, eg planning request definition, task definition. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
+                <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
+              </mal:field>
+              <mal:field name="defIds" canBeNull="true"
+                         comment="The defIds field shall contain a list of planning request definition or task definition ids.&#xA;If null then returns all definitions of the specified defType (planning request, task).">
+                <mal:type list="true" name="Long" area="MAL"/>
+              </mal:field>
+            </mal:request>
+            <mal:response>
+              <mal:field name="prDefInst"
+                         comment="The response shall contain a list of matching PlanningRequestDefinition or TaskDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
+                <mal:type list="true" name="BaseDefinition" service="PlanningRequest" area="Planning"/>
+              </mal:field>
+            </mal:response>
+          </mal:messages>
+        </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="6" comment="Add, update, remove planning request definition.">
 		<!-- addDefinition -->
-        <mal:requestIP name="addDefinition" number="8" supportInReplay="false"
+        <mal:requestIP name="addDefinition" number="9" supportInReplay="false"
                        comment="The addDefinition operation allows a consumer to define one or more planning request, task, etc types that do not currently exist. The new PlanningRequestDefinition, TaskDefinition object is expected to be stored in the COM archive by the provider of the planning request service.">
           <mal:messages>
             <mal:request>
@@ -245,7 +267,7 @@
           </mal:errors>
         </mal:requestIP>
 		<!-- updateDefinition -->
-        <mal:submitIP name="updateDefinition" number="9" supportInReplay="false"
+        <mal:submitIP name="updateDefinition" number="10" supportInReplay="false"
                       comment="The updateDefinition operation allows a consumer to modify a definition for one or more planning requests, tasks without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same planning request, task name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
@@ -279,7 +301,7 @@
           </mal:errors>
         </mal:submitIP>
 		<!-- removeDefinition -->
-        <mal:submitIP name="removeDefinition" number="10" supportInReplay="false"
+        <mal:submitIP name="removeDefinition" number="11" supportInReplay="false"
                       comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request, task types supported by the planning request provider.&#xA;The operation does not remove the PlanningRequestDefinition or TaskDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, PlanningRequestInstance or TaskInstance objects to continue to reference the correct Definition object in the COM archive.">
           <mal:messages>
             <mal:submit>
@@ -305,7 +327,7 @@
       </mal:capabilitySet>
 		<mal:capabilitySet number="7" comment="Get task status.">
 		<!-- getTaskStatus -->
-        <mal:requestIP name="getTaskStatus" number="11" supportInReplay="true"
+        <mal:requestIP name="getTaskStatus" number="12" supportInReplay="true"
                        comment="The getTaskStatus operation allows a consumer to get a task status.">
           <mal:messages>
             <mal:request>
