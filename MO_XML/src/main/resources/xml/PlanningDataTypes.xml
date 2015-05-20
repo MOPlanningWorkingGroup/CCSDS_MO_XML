@@ -207,21 +207,33 @@ May be used for checking the attribute type.">
                   comment=""/>
         <mal:item value="DISTRIBUTED_FOR_EXECUTION" nvalue="12"
                   comment=""/>
-        <mal:item value="EXECUTE_COMPLETED" nvalue="13"
+        <mal:item value="EXECUTE_STARTED" nvalue="13"
                   comment=""/>
-        <mal:item value="EXECUTE_FAILED" nvalue="14"
+        <mal:item value="EXECUTE_START_FAILED" nvalue="14"
                   comment=""/>
         <mal:item value="EXECUTE_PAUSED" nvalue="15"
                   comment=""/>
-        <mal:item value="EXECUTE_RESUMED" nvalue="16"
+        <mal:item value="EXECUTE_PAUSE_FAILED" nvalue="16"
                   comment=""/>
-        <mal:item value="ENABLED" nvalue="17"
+        <mal:item value="EXECUTE_RESUMED" nvalue="17"
                   comment=""/>
-        <mal:item value="DISABLED" nvalue="18"
+        <mal:item value="EXECUTE_RESUME_FAILED" nvalue="18"
                   comment=""/>
-        <mal:item value="GENERATED" nvalue="19"
+        <mal:item value="EXECUTE_TERMINATED" nvalue="19"
                   comment=""/>
-        <mal:item value="REMOVED" nvalue="20"
+        <mal:item value="EXECUTE_TERMINATE_FAILED" nvalue="20"
+                  comment=""/>
+        <mal:item value="EXECUTE_COMPLETED" nvalue="21"
+                  comment=""/>
+        <mal:item value="EXECUTE_FAILED" nvalue="22"
+                  comment=""/>
+        <mal:item value="ENABLED" nvalue="23"
+                  comment=""/>
+        <mal:item value="DISABLED" nvalue="24"
+                  comment=""/>
+        <mal:item value="GENERATED" nvalue="25"
+                  comment=""/>
+        <mal:item value="REMOVED" nvalue="26"
                   comment=""/>
       </mal:enumeration>
 	 <!-- TriggerName -->
