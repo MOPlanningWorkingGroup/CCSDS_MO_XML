@@ -41,13 +41,13 @@
             <mal:request>
               <mal:field name="prDetails"
                          comment="The prDetails part of the submission shall contain the information of the planning request instance.&#xA;The operation shall return once the planning request has been accepted by the provider.">
-                <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
+                <mal:type list="true" name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
                          comment="The operation shall return a PlanningRequestStatusDetails object. The status object contains the ids of the submitted planning requests.">
-                <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
+                <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -101,13 +101,13 @@
             <mal:request>
               <mal:field name="prDetails"
                          comment="The prDetails part of the submission shall contain the information of the updated planning request instance. The prDetails instance will become the planning request instance on the provider referenced by prInstId.&#xA;The operation shall return once the planning request has been accepted by the provider.">
-                <mal:type name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
+                <mal:type list="true" name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
                          comment="The operation shall return a PlanningRequestStatusDetails object">
-                <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
+                <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -133,13 +133,13 @@
             <mal:request>
               <mal:field name="prInstId"
                          comment="The prInstId field of the submission shall contain a MAL::Long that is the object instance identifier of the PlanningRequestInstance that is going to be removed.">
-                <mal:type name="Long" area="MAL"/>
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
                          comment="The operation shall return a PlanningRequestStatusDetails object">
-                <mal:type name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
+                <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -384,9 +384,9 @@
                      comment="Definitions of planning request arguments. Arguments are mission-specific.">
             <mal:type list="true" name="ArgumentDefinitionDetails" area="PlanningDataTypes"/>
           </mal:field>
-          <mal:field name="taskDefNames" canBeNull="true"
+          <mal:field name="taskDefIds" canBeNull="true"
                      comment="The Ids of the permitted task definitions for this planning request.">
-            <mal:type list="true" name="Identifier" area="MAL"/>
+            <mal:type list="true" name="Long" area="MAL"/>
           </mal:field>
         </mal:composite>
 		<!-- TaskDefinitionDetails -->
