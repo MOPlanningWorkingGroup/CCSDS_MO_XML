@@ -49,22 +49,11 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object. The status object contains the ids of the submitted schedules.">
+                         comment="The operation shall return a ScheduleStatusDetails object. The status object contains the ids of the submitted schedules. Errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Schedule definition is unknown.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-            </mal:errorRef>
-            <mal:errorRef comment="Schedule instance contains invalid data.">
-              <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
         </mal:requestIP>
 		<!-- getSchedule -->
         <mal:requestIP name="getSchedule" number="2" supportInReplay="false"

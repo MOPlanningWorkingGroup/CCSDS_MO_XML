@@ -46,25 +46,11 @@
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
-                         comment="The operation shall return a PlanningRequestStatusDetails object. The status object contains the ids of the submitted planning requests.">
+                         comment="The operation shall return a PlanningRequestStatusDetails object. The status object contains the ids of the submitted planning requests. Errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Submitted planning request or task definition is unknown.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-            <mal:errorRef comment="Submitted planning request or task instance contains invalid data.">
-              <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
         </mal:requestIP>
 		<!-- getPlanningRequest -->
         <mal:requestIP name="getPlanningRequest" number="2" supportInReplay="false"

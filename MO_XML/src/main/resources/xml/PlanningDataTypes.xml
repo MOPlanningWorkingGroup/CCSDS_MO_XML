@@ -52,7 +52,7 @@ May be used for checking the attribute type.">
                    comment="Reference to the argument definition name. Must not be empty or the wildcard value.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
-        <mal:field name="value" canBeNull="false"
+        <mal:field name="value" canBeNull="true"
                    comment="The argument value. Must not be NULL. NULL may be represented by having a NULL in place of the complete ArgumentValue composite. The structure is similar to the MC AttributeValue.">
           <mal:type name="Attribute" area="MAL"/>
         </mal:field>
@@ -234,6 +234,8 @@ May be used for checking the attribute type.">
         <mal:item value="GENERATED" nvalue="25"
                   comment=""/>
         <mal:item value="REMOVED" nvalue="26"
+                  comment=""/>
+        <mal:item value="ERROR" nvalue="27"
                   comment=""/>
       </mal:enumeration>
 	 <!-- TriggerName -->
