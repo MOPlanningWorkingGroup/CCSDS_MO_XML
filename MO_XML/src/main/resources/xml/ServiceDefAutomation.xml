@@ -133,10 +133,10 @@
       </mal:capabilitySet>
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- patchSchedule -->
-      <mal:submitIP name="patchSchedule" number="5" supportInReplay="false"
-                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be updated, 3) to be added. The target schedule id is the ScheduleInstanceDetails.id field. THe patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
+      <mal:requestIP name="patchSchedule" number="5" supportInReplay="false"
+                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
           <mal:messages>
-			<mal:submit>
+			<mal:request>
               <mal:field name="fragmentsToRemove"
                          comment="fragmentsToRemove contains the fields that will be removed from the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
                 <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
@@ -149,20 +149,15 @@
                          comment="fragmentsToAdd contains the fields that will be added to the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
                 <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
-            </mal:submit>
+            </mal:request>
+            <mal:response>
+              <mal:field name="schStatus"
+                         comment="The operation shall return a ScheduleStatusDetails object for the patched schedules. The status is LAST_MODIFIED.">
+                <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
+              </mal:field>
+            </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Schedule definition is unknown.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-            </mal:errorRef>
-            <mal:errorRef comment="Schedule instance does not exist or contains invalid data.">
-              <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
-        </mal:submitIP>
+        </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="4" comment="Get schedule status">
 	  <!-- getScheduleStatus -->
