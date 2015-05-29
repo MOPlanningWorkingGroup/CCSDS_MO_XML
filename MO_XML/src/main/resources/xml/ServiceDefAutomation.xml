@@ -14,7 +14,7 @@
       <mal:documentation name="High Level Requirements" order="1">The schedule service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for submitting schedules;&lt;/li&gt;
- &lt;li&gt;the capability for updating and removing already submitted schedules;&lt;/li&gt;
+ &lt;li&gt;the capability for getting, updating and removing already submitted schedules;&lt;/li&gt;
  &lt;li&gt;the capability for submitting schedule patches for making a batch of changes to the schedule;&lt;/li&gt;
  &lt;li&gt;the capability for getting a schedule status;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring schedule status;&lt;/li&gt;
@@ -134,7 +134,7 @@
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- patchSchedule -->
       <mal:requestIP name="patchSchedule" number="5" supportInReplay="false"
-                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
+                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The patches are applied in the order of removals first, then additions, then updates. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. &#xA;If the field value is a list, then patching operates at the level of list items. The whole list item is either replaced, removed, or added. It works on the assumption that the list items are indexed, ie there is an element in the list item, whose value is unique across all list items. For example, argumentValues is indexed by the the ArgumentValue.name field, timingConstraints by TimingDetails.triggerName, scheduleItems by ScheduleItemInstanceDetails.id.&#xA;The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
           <mal:messages>
 			<mal:request>
               <mal:field name="fragmentsToRemove"
@@ -274,7 +274,7 @@
       <mal:capabilitySet number="7" comment="List schedule definition">
 	  <!-- listDefinition -->
           <mal:requestIP name="listDefinition" number="12" supportInReplay="true"
-                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ScheduleDefinition objects for the supported types of schedule of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ScheduleDefinition objects.">
+                       comment="The listDefinition operation allows a consumer to request the object instance identifiers of the ScheduleDefinition objects for the supported types of schedule of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ScheduleDefinition objects. If the schedule name does not exist the corresponding definition id is not returned and no error is reported.">
           <mal:messages>
             <mal:request>
               <mal:field name="schNames"
@@ -292,7 +292,7 @@
         </mal:requestIP>
 		<!-- getDefinition -->
         <mal:requestIP name="getDefinition" number="13" supportInReplay="true"
-                       comment="The getDefinition operation allows a consumer to request the definition objects for the supported types of schedules on the provider.">
+                       comment="The getDefinition operation allows a consumer to request the definition objects for the supported types of schedules on the provider. If the id does not exist the corresponding definition object is not returned and no error is reported.">
           <mal:messages>
             <mal:request>
               <mal:field name="defIds" canBeNull="true"
@@ -302,7 +302,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schDefInst"
-                         comment="The response shall contain a list of matching PlanningRequestDefinition or TaskDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
+                         comment="The response shall contain a list of matching ScheduleDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
                 <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -330,14 +330,14 @@
           <mal:errors>
             <mal:errorRef comment="One of the supplied schedule definitions contains an invalid schedule name.">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="One or more of the schedule definitions being added has supplied a schedule name that is already in use in the domain.">
               <mal:type name="DUPLICATE" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
@@ -347,34 +347,30 @@
                       comment="The updateDefinition operation allows a consumer to modify a definition for one or more schedules without needing to delete the existing definition first.&#xA;This differs from deleting an existing definition and adding a new definition with the same schedule name in the fact that the object instance identifier of the definition being modified is not changed therefore the operation is only expected to be used for minor modifications such as descriptions.&#xA;The operation must not be used to change the name of an existing schedule definition, removal of the existing definition and adding the new definition must be used in this case.&#xA;The replacement definition should be stored in the COM archive by the service provider.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="schDefInstIds"
-                         comment="The schDefInstIds field shall contain the list of object instance identifiers of the ScheduleDefinition objects to be updated.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="schDefDetails"
-                         comment="The schDefDetails field shall contain the list of replacement details for the matched ScheduleDefinition objects.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing definitions, an UNKNOWN error shall be raised if this is not the case.&#xA;Only the description or the unit fields of the arguments shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be modified as a result of this operation call.">
+                         comment="The schDefDetails field shall contain the list of replacement details for the matched ScheduleDefinition objects. The id of definition is in schDefDetails.&#xA;Only the description or the unit fields of the arguments shall be permitted to be changed. Any other modification shall cause an INVALID error to be returned.&#xA;If an error is raised then no definitions shall be modified as a result of this operation call.">
                 <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied schedule definitions is trying to change its schedule definition name.">
+            <mal:errorRef comment="One of the supplied schedule definitions is trying to change its schedule definition name or id.">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One of the supplied ScheduleDefinition object instance identifiers is unknown.">
+            <mal:errorRef comment="One of the supplied ScheduleDefinition object instance ids is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
         </mal:submitIP>
 		<!-- removeDefinition -->
         <mal:submitIP name="removeDefinition" number="16" supportInReplay="false"
-                      comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request types supported by the schedule provider.&#xA;The operation does not remove the ScheduleDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ScheduleInstance objects to continue to reference the correct ScheduleDefinition object in the COM archive.">
+                      comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of schedule types supported by the schedule provider.&#xA;The operation does not remove the ScheduleDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, ScheduleInstance objects to continue to reference the correct ScheduleDefinition object in the COM archive.">
           <mal:messages>
             <mal:submit>
               <mal:field name="schDefInstIds"
@@ -384,10 +380,10 @@
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied ScheduleDefinition object instance identifiers is unknown.">
+            <mal:errorRef comment="One of the supplied ScheduleDefinition object instance ids is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
@@ -497,7 +493,7 @@
                      comment="Contains the schedule status details objects, eg SUBMITTED, EXECUTE_STARTED.">
             <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
-          <mal:field name="scheduleItemStatuses" canBeNull="false"
+          <mal:field name="scheduleItemStatuses" canBeNull="true"
 					comment="Contains the schedule item details objects, in the order of the schedule items in the schedule.">
             <mal:type list="true" name="ScheduleItemStatusDetails" service="Schedule" area="Automation"/>
           </mal:field>
@@ -557,12 +553,11 @@
       <mal:documentation name="High Level Requirements" order="1">The procedure service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for listing the numeric identifiers for the procedures;&lt;/li&gt;
- &lt;li&gt;the capability for adding a new procedure definition;&lt;/li&gt;
- &lt;li&gt;the capability for updating an existing procedures;&lt;/li&gt;
- &lt;li&gt;the capability for removing an existing procedure;&lt;/li&gt;
+ &lt;li&gt;the capability for adding a new procedure;&lt;/li&gt;
+ &lt;li&gt;the capability for getting, updating and removing existing procedures;&lt;/li&gt;
  &lt;li&gt;the capability for getting a procedure status;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring procedure status;&lt;/li&gt;
- &lt;li&gt;the capability for controlling procedure execution.&lt;/li&gt;
+ &lt;li&gt;the capability for invoking and controlling procedure execution.&lt;/li&gt;
 &lt;/ol&gt;
         The procedure service may use the COM Activity Tracking service to report the delivery of added procedures.
       </mal:documentation>
@@ -572,7 +567,7 @@
       <mal:capabilitySet number="1" comment="List procedure definition">
 	  <!-- listProcedure -->
 	          <mal:requestIP name="listProcedure" number="1" supportInReplay="true"
-                       comment="The listProcedure operation allows a consumer to request the object instance identifiers of the ProcedureDetails objects for the existing procedures of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ProcedureDefinition objects.">
+                       comment="The listProcedure operation allows a consumer to request the object instance ids of the ProcedureDetails objects for the existing procedures of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual ProcedureDefinition objects. If the procedure name does not exist the corresponding definition id is not returned and no error is reported.">
           <mal:messages>
             <mal:request>
               <mal:field name="procNames"
@@ -590,7 +585,7 @@
         </mal:requestIP>
 		<!-- getProcedure -->
         <mal:requestIP name="getProcedure" number="2" supportInReplay="true"
-                       comment="The getProcedure operation allows a consumer to request the procedures on the provider.">
+                       comment="The getProcedure operation allows a consumer to request the procedures on the provider. If the id does not exist the corresponding definition object is not returned and no error is reported.">
           <mal:messages>
             <mal:request>
               <mal:field name="procIds" canBeNull="true"
@@ -601,7 +596,7 @@
             <mal:response>
               <mal:field name="procDefInst"
                          comment="The response shall contain a list of matching ProcedureDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
-                <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
+                <mal:type list="true" name="ProcedureDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:response>
           </mal:messages>
@@ -620,7 +615,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="procIds"
-                         comment="The response shall contain the list of object instance identifiers for the new procedures.&#xA;The returned list shall maintain the same order as the submitted procedures.">
+                         comment="The response shall contain the list of object instance ids for the new procedures.&#xA;The returned list shall maintain the same order as the submitted procedures.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:response>
@@ -628,14 +623,14 @@
           <mal:errors>
             <mal:errorRef comment="One of the supplied procedures contains an invalid procedure name.">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
             <mal:errorRef comment="One or more of the procedure definitions being added has supplied a procedure name that is already in use in the domain.">
               <mal:type name="DUPLICATE" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating request list.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
@@ -645,27 +640,23 @@
                       comment="The updateProcedure operation allows a consumer to modify a procedure without needing to delete the existing procedure first.">
           <mal:messages>
             <mal:submit>
-              <mal:field name="procIds"
-                         comment="The procIds field shall contain the list of object instance identifiers of the ProcedureDefinition objects to be updated.">
-                <mal:type list="true" name="Long" area="MAL"/>
-              </mal:field>
               <mal:field name="procDetails"
-                         comment="The procDetails field shall contain the list of replacement details for the matched ProcedureDefinition objects.&#xA;The two lists shall be ordered the same.&#xA;The supplied object instance identifiers shall match existing proceduers, an UNKNOWN error shall be raised if this is not the case.&#xA;If an error is raised then no procedures shall be modified as a result of this operation call.">
+                         comment="The procDetails field shall contain the list of replacement details for the matched ProcedureDefinition objects. The id of definition is in procDetails.&#xA;If an error is raised then no procedures shall be modified as a result of this operation call.">
                 <mal:type list="true" name="ProcedureDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied procedure definitions is trying to change its procedure definition name.">
+            <mal:errorRef comment="One of the supplied procedure definitions is trying to change its procedure definition name or id.">
               <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of the indexes of the erroneous values from the originating list supplied.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
-            <mal:errorRef comment="One of the supplied ProcedureDefinition object instance identifiers is unknown.">
+            <mal:errorRef comment="One of the supplied ProcedureDefinition object instance ids is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
@@ -682,10 +673,10 @@
             </mal:submit>
           </mal:messages>
           <mal:errors>
-            <mal:errorRef comment="One of the supplied ProcedureDefinition object instance identifiers is unknown.">
+            <mal:errorRef comment="One of the supplied ProcedureDefinition object instance ids is unknown.">
               <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="A list of the indexes of the error values shall be contained in the extra information field.">
-                <mal:type list="true" name="UInteger" area="MAL"/>
+              <mal:extraInformation comment="The extra information field contains a list of erroneous ids from the originating list supplied.">
+                <mal:type list="true" name="Long" area="MAL"/>
               </mal:extraInformation>
             </mal:errorRef>
           </mal:errors>
