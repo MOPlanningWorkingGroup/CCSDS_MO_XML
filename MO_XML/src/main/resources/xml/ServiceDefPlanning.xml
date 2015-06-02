@@ -8,8 +8,6 @@
                  comment="The planning request service allows consumers to submit planning requests to the planning system and to subsequently monitor the status changes of the submitted planning requests.
 				 &#xA;Planning request contains tasks. Task is a higher level construct to express what needs to be done. The planning request and task definitions are managed using the operations in the planning request service. The planning request definition specifies the types of task definitions that it is allowed to contain. The submitted planning request contains task instances.
 				 &#xA;A planning request is submitted to the provider using the submitPlanningRequest operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the planning request has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
-				 &#xA;The submitPlanningRequest operation takes the object instance identifier of the submitted planning request. This is required for the potential use of the COM activity tracking service, in order to populate the source fields of the activity tracking events. Coordination may be required between planning request service consumers to ensure the planning request object instance identifiers are unique. How this is done is outside the scope of this specification however a good approach is the use of a central COM archive as that can provide the unique instance identifiers.
-				 &#xA;The consumer is responsible for creating and archiving the planning request instance object and then using the submitPlanningRequest operation to submit it to the planning request service provider. 
 				 &#xA;The planning request and task statuses consist of a set of fields. The fields are related to planning request and task life cycle states (submitted, planned, etc). The planning request and task life cycles are not part of the specification.
 				 &#xA;Consumer may subscribe to the monitoring of planning request and task instances. The notifications contain the planning request and task status objects.">
       <mal:documentation name="High Level Requirements" order="1">The planning request service shall provide:
@@ -20,16 +18,9 @@
  &lt;li&gt;the capability for getting a planning request and task statuses;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring planning request and task statuses;&lt;/li&gt;
  &lt;li&gt;the capability for defining a new planning request and task definition;&lt;/li&gt;
- &lt;li&gt;the capability for updating an existing planning request and task definition;&lt;/li&gt;
- &lt;li&gt;the capability for removing an existing planning request and task definition.&lt;/li&gt;
+ &lt;li&gt;the capability for getting, updating and removing an existing planning request and task definition;&lt;/li&gt;
 &lt;/ol&gt;
         The list of planning request types and task types that are supported by the planning request service shall be declared when deploying that service.
-        Each planning request submission shall include:
-&lt;ol&gt;
- &lt;li&gt;the planning request definition numeric identifier;&lt;/li&gt;
- &lt;li&gt;the planning request instance numeric identifier;&lt;/li&gt;
- &lt;li&gt;the planning request instance object.&lt;/li&gt;
-&lt;/ol&gt;
         The planning request service may use the COM Activity Tracking service to report the delivery of a submitted planning request.
         The submitPlanningRequest operation shall be used to submit a planning request.
       </mal:documentation>
@@ -46,7 +37,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
-                         comment="The operation shall return a PlanningRequestStatusDetails object. The status object contains the ids of the submitted planning requests. Errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
+                         comment="The operation shall return a PlanningRequestStatusDetails object. The status object contains the ids of the submitted planning requests. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
@@ -64,19 +55,11 @@
             </mal:request>
             <mal:response>
               <mal:field name="prDetails"
-                         comment="The operation shall return PlanningRequestInstanceDetails objects.">
+                         comment="The operation shall return PlanningRequestInstanceDetails objects. If prInstId does not exist, then no object is returned.">
                 <mal:type list="true" name="PlanningRequestInstanceDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Submitted planning request instance ID does not exist.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
         </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="2" comment="Update and remove planning request instance.">
@@ -92,25 +75,11 @@
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
-                         comment="The operation shall return a PlanningRequestStatusDetails object">
+                         comment="The operation shall return a PlanningRequestStatusDetails object. The status reflects the changes done by this operation. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Planning request or task definition is unknown.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-            <mal:errorRef comment="Planning request or task instance does not exist or contains invalid data.">
-              <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
         </mal:requestIP>
 		<!-- removePlanningRequest -->
         <mal:requestIP name="removePlanningRequest" number="4" supportInReplay="false"
@@ -124,7 +93,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="prStatus"
-                         comment="The operation shall return a PlanningRequestStatusDetails object">
+                         comment="The operation shall return a PlanningRequestStatusDetails object. The status reflects the changes done by this operation. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="PlanningRequestStatusDetails" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
@@ -138,7 +107,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="prIds"
-                         comment="The prIds field shall contain a list of planning request ids to retrieve the planning request statuses for.&#xA;The request may contain the wildcard value of '*' to return statuses for all submitted planning requests.">
+                         comment="The prIds field shall contain a list of planning request ids to retrieve the planning request statuses for.&#xA;The request may contain the wildcard value of '0' to return statuses for all submitted planning requests.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
@@ -172,11 +141,11 @@
     <mal:capabilitySet number="5" comment="List planning request definition.">
 		<!-- listDefinition -->
         <mal:requestIP name="listDefinition" number="7" supportInReplay="true"
-                       comment="The listDefinition operation allows a consumer to request the object instance ids of specific Definition objects (eg PlanningRequestDefinition, TaskDefinition) for the supported types of planning request, tasks, etc of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual PlanningRequestDefinition, TaskDefinition objects. If the planning request name does not exist the corresponding definition id is not returned and no error is reported.">
+                       comment="The listDefinition operation allows a consumer to request the object instance ids of specific Definition objects (eg PlanningRequestDefinition, TaskDefinition) for the supported types of planning request and tasks of the provider. The operation is expected to be used in conjunction with the COM archive which holds the actual PlanningRequestDefinition, TaskDefinition objects. If the planning request name does not exist the corresponding definition id is not returned and no error is reported.">
           <mal:messages>
             <mal:request>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
+                         comment="defType is the type of definitions: planning request definition or task definition. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="prNames"
@@ -194,21 +163,21 @@
         </mal:requestIP>
 		<!-- getDefinition -->
         <mal:requestIP name="getDefinition" number="8" supportInReplay="true"
-                       comment="The getDefinition operation allows a consumer to request the definition objects of specific Definition types (eg PlanningRequestDefinition, TaskDefinition) for the supported types of planning request or tasks on the provider. If the id does not exist the corresponding definition object is not returned and no error is reported.">
+                       comment="The getDefinition operation allows a consumer to request the definition objects of specific Definition types (PlanningRequestDefinition, TaskDefinition) for the supported types of planning request or tasks on the provider. If the id does not exist the corresponding definition object is not returned and no error is reported.">
           <mal:messages>
             <mal:request>
               <mal:field name="defType" canBeNull="false"
-                         comment="Type of definitions, eg planning request definition, task definition. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
+                         comment="defType is the type of definitions: planning request definition or task definition. NB! The operation works for exactly one type of definitions. It is not possible to list both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="defInstIds" canBeNull="true"
-                         comment="The defInstIds field shall contain a list of planning request definition or task definition ids.&#xA;If null then returns all definitions of the specified defType (planning request, task).">
+                         comment="The defInstIds field shall contain a list of planning request definition or task definition ids. The wildcard value of '0' in the list of object instance identifiers shall be supported and matches all definitions of defType (planning request, task).">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="prDefInst"
-                         comment="The response shall contain a list of matching PlanningRequestDefinition or TaskDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
+                         comment="The response shall contain a list of matching PlanningRequestDefinition or TaskDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds={0}in the request.">
                 <mal:type list="true" name="BaseDefinition" service="PlanningRequest" area="Planning"/>
               </mal:field>
             </mal:response>
@@ -222,7 +191,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to add both planning request and task definitions in one operation call.">
+                         comment="defType is the type of definitions: planning request definition or task definition. NB! The operation works for exactly one type of definitions. It is not possible to add both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="prDefDetails"
@@ -258,7 +227,7 @@
           <mal:messages>
             <mal:submit>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to update both planning request and task definitions in one operation call.">
+                         comment="defType is the type of definitions: planning request definition or task definition. NB! The operation works for exactly one type of definitions. It is not possible to update both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="defDetails"
@@ -284,11 +253,11 @@
         </mal:submitIP>
 		<!-- removeDefinition -->
         <mal:submitIP name="removeDefinition" number="11" supportInReplay="false"
-                      comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of plannig request or task types supported by the planning request provider.&#xA;The operation does not remove the PlanningRequestDefinition or TaskDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, PlanningRequestInstance or TaskInstance objects to continue to reference the correct Definition object in the COM archive.">
+                      comment="The removeDefinition operation allows a consumer to remove one or more definitions from the list of planning request or task types supported by the planning request provider.&#xA;The operation does not remove the PlanningRequestDefinition or TaskDefinition object from the COM archive, merely removes the object from the provider. This permits active, and completed, PlanningRequestInstance or TaskInstance objects to continue to reference the correct Definition object in the COM archive.">
           <mal:messages>
             <mal:submit>
               <mal:field name="defType"
-                         comment="Type of definitions, eg planning request definition, task definition, etc. NB! The operation works for exactly one type of definitions. It is not possible to remove both planning request and task definitions in one operation call.">
+                         comment="defType is the type of definitions: planning request definition or task definition. NB! The operation works for exactly one type of definitions. It is not possible to remove both planning request and task definitions in one operation call.">
                 <mal:type name="DefinitionType" service="PlanningRequest" area="Planning"/>
               </mal:field>
               <mal:field name="defInstIds"
@@ -314,7 +283,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="taskIds"
-                         comment="The taskIds field shall contain a list of task ids to retrieve the task statuses for.&#xA;The request may contain the wildcard value of '*' to return statuses for all submitted tasks.">
+                         comment="The taskIds field shall contain a list of task ids to retrieve the task statuses for.&#xA;The request may contain the wildcard value of '0' to return statuses for all submitted tasks.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
@@ -494,7 +463,7 @@
       </mal:dataTypes>
 		<!-- features-->
       <com:features>
-        <com:objects comment="The definitions of the planning requests shall be represented as PlanningRequestDefinition COM objects.&#xA;The source link of the PlanningRequestDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a planning request that are submitted to a provider using the submitPlanningRequest operation shall be represented as PlanningRequestInstance COM object.&#xA;The object instance identifier for a PlanningRequestInstance object shall be populated by the consumer.&#xA;The PlanningRequestInstance object shall use the related link to indicate which PlanningRequestDefinition object it uses.&#xA;Instances of a planningRequest that are submitted to a provider using the submitPlanningRequest operation shall link to the submitPlanningRequest OperationActivity object using the source link.&#xA;The source link of the submitPlanningRequest OperationActivity object should be the object that caused it to be created, most likely an operator login or an automated script.">
+        <com:objects comment="The definitions of the planning requests shall be represented as PlanningRequestDefinition COM objects.&#xA;The source link of the PlanningRequestDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a planning request that are submitted to a provider using the submitPlanningRequest operation shall be represented as PlanningRequestInstance COM object.&#xA;The PlanningRequestInstance object shall use the related link to indicate which PlanningRequestDefinition object it uses.&#xA;Instances of a planningRequest that are submitted to a provider using the submitPlanningRequest operation shall link to the submitPlanningRequest OperationActivity object using the source link.&#xA;The source link of the submitPlanningRequest OperationActivity object should be the object that caused it to be created, most likely an operator login or an automated script.">
           <com:object name="PlanningRequestDefinition" number="1">
             <com:objectType>
               <mal:type name="PlanningRequestDefinitionDetails" service="PlanningRequest" area="Planning"/>
@@ -540,7 +509,7 @@
 		  </com:objects>
 		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the planning request service.">
         </com:events>
-        <com:archiveUsage comment="PlanningRequestDefinition and TaskDefinition objects should be stored in the COM archive by the service provider.&#xA;When a planning request is sent with the submitPlanningRequest operation, the PlanningRequestInstance and the contained TaskInstance objects should be stored in the COM archive by the consumer.&#xA;PlanningRequestStatus and TaskStatus objects should be stored in the COM archive by the consumer."/>
+        <com:archiveUsage comment="PlanningRequestDefinition and TaskDefinition objects should be stored in the COM archive.&#xA;When a planning request is sent with the submitPlanningRequest operation, the PlanningRequestInstance and the contained TaskInstance objects should be stored in the COM archive.&#xA;PlanningRequestStatus and TaskStatus objects should be stored in the COM archive."/>
         <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the submitPlanningRequest operation.&#xA;The COM Activity service can be used to monitor the transfer of PlanningRequestInstance objects."/>
       </com:features>
     </mal:service>

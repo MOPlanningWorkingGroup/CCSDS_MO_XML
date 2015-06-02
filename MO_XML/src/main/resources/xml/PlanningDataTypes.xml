@@ -8,7 +8,7 @@
 	 <!-- ArgumentDefinitionDetails -->
       <mal:composite name="ArgumentDefinitionDetails" shortFormPart="1"
                      comment="The ArgumentDefinitionDetails structure holds the details of an argument definition with a set of associated attributes. Nested/recursive definitions are not allowed.
-The 'value' of an argument is in ArgumentValue. The value is expected to be one of MAL:Attribute primitive data types. Structures as values are not supported, although a workaround is to encode the value in a string, delimited with '|' (pipes), for example.">
+The 'value' of an argument is in ArgumentValue. The value is expected to be one of MAL:Attribute primitive data types. Structures as values are not supported, although a workaround is to encode the value in a string, delimited with '/' (slash), for example. The '|' (pipe) and '_' (underscore) may not be used as delimiter characters, since they are reserved by MAL transport layer for field encoding. An alternative solution is to define an argument for each field in a structure.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
@@ -48,8 +48,8 @@ May be used for checking the attribute type.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>
-        <mal:field name="argDefName" canBeNull="false"
-                   comment="Reference to the argument definition name. Must not be empty or the wildcard value.">
+        <mal:field name="argDefName" canBeNull="true"
+                   comment="Reference to the argument definition name. Must not be wildcard value.">
           <mal:type name="Identifier" area="MAL"/>
         </mal:field>
         <mal:field name="value" canBeNull="true"
@@ -104,11 +104,11 @@ May be used for checking the attribute type.">
         </mal:field>
         <mal:field name="earliestOffset" canBeNull="true"
                    comment="The offset of the start of the time window for the operation. This field is mandatory if a latestOffset is provide and if specified, its value must be zero or negative.">
-          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+          <mal:type name="RelativeTime" area="PlanningDataTypes"/>
         </mal:field>
         <mal:field name="latestOffset" canBeNull="true"
                    comment="The offset of the end of the time window for the operation. This field is mandatory if an earliestOffset is provided and if specified, its value must be zero or positive.">
-          <mal:type name="EventTrigger" area="PlanningDataTypes"/>
+          <mal:type name="RelativeTime" area="PlanningDataTypes"/>
         </mal:field>
       </mal:composite>
  	  <!-- TimeTrigger -->
@@ -141,7 +141,7 @@ May be used for checking the attribute type.">
           <mal:type name="ObjectType" area="COM"/>
         </mal:field>
         <mal:field name="everyOccurrence" canBeNull="true"
-                   comment="If 'true' the is started on every occurrence of the event type.">
+                   comment="If 'true' then started on every occurrence of the event type.">
           <mal:type name="Boolean" area="MAL"/>
         </mal:field>
         <mal:field name="startEventCount" canBeNull="true"
@@ -167,7 +167,7 @@ May be used for checking the attribute type.">
       </mal:composite>
       <!-- RelativeTime -->
       <mal:composite name="RelativeTime" shortFormPart="7"
-                     comment="The RelativeTime structure is used to store relative time attributes. It represents a relative date and time to millisecond resolution. This structure wraps MAL:Time, which represents absolute date and time.">
+                     comment="The RelativeTime structure is used to store relative time attributes. It represents a relative date and time to millisecond resolution. This structure wraps MAL:Time, which represents absolute date and time. This structure may be removed when a MAL RelativeTime attribute is created.">
         <mal:extends>
           <mal:type name="Composite" area="MAL"/>
         </mal:extends>

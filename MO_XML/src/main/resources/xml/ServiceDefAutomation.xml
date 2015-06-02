@@ -5,9 +5,8 @@
   <mal:area name="Automation" number="7" version="2"
             comment="This section details the automation services. Both the services and structures are defined in terms of the MO MAL, which is defined in Message Abstraction Layer, Recommended Standard (Blue Book), CCSDS 521.0-B-2, so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in Mission Operations Common Object Model, Recommended Standard (Blue Book), CCSDS 521.1-B-1.&#xA;All service specifications in this document are part of the Automation area, which has a short form number of '7'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
-                 comment="The schedule service has three main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit and patch schedules, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
+                 comment="The schedule service has three main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit schedules and schedule fragments, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
 				 &#xA;A schedule is submitted to the provider using the submitSchedule operation, the progress of which may optionally be monitored using the COM activity tracking pattern, which completes when the schedule has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
-				 &#xA;The submitSchedule operation takes the object instance identifier of the submitted schedule. This is required for the potential use of the COM activity tracking service, in order to populate the source fields of the activity tracking events. Coordination may be required between schedule service consumers to ensure the schedule object instance identifiers are unique. How this is done is outside the scope of this specification however a good approach is the use of a central COM archive as that can provide the unique instance identifiers.
 				 &#xA;The consumer is responsible for creating and archiving the schedule instance object and then using the submitSchedule operation to submit it to the schedule service provider.
 				 &#xA;The schedule status consists of a set of fields. The fields are related to schedule life cycle states (submitted, started, etc). The schedule life cycle is not part of the specification.
 				 &#xA;Consumer may subscribe to the monitoring of schedule instances. The notifications contain the schedule status objects.">
@@ -15,22 +14,15 @@
 &lt;ol&gt;
  &lt;li&gt;the capability for submitting schedules;&lt;/li&gt;
  &lt;li&gt;the capability for getting, updating and removing already submitted schedules;&lt;/li&gt;
- &lt;li&gt;the capability for submitting schedule patches for making a batch of changes to the schedule;&lt;/li&gt;
+ &lt;li&gt;the capability for submitting schedule patches (fragments) for making a batch of changes to the schedule;&lt;/li&gt;
  &lt;li&gt;the capability for getting a schedule status;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring schedule status;&lt;/li&gt;
  &lt;li&gt;the capability for listing the numeric identifiers for the schedule definitions;&lt;/li&gt;
  &lt;li&gt;the capability for defining a new schedule definition;&lt;/li&gt;
- &lt;li&gt;the capability for updating an existing schedule definition;&lt;/li&gt;
- &lt;li&gt;the capability for removing an existing schedule definition.&lt;/li&gt;
+ &lt;li&gt;the capability for getting, updating and removing an existing schedule definition;&lt;/li&gt;
  &lt;li&gt;the capability for controlling a schedule execution.&lt;/li&gt;
 &lt;/ol&gt;
         The list of schedule types that are supported by the schedule service shall be declared when deploying that service.
-        Each schedule submission shall include:
-&lt;ol&gt;
- &lt;li&gt;the schedule definition numeric identifier;&lt;/li&gt;
- &lt;li&gt;the schedule instance numeric identifier;&lt;/li&gt;
- &lt;li&gt;the schedule instance object.&lt;/li&gt;
-&lt;/ol&gt;
         The schedule service may use the COM Activity Tracking service to report the delivery of a submitted schedules.
         The submitSchedule operation shall be used to submit a schedule.
       </mal:documentation>
@@ -49,7 +41,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object. The status object contains the ids of the submitted schedules. Errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
+                         comment="The operation shall return a ScheduleStatusDetails object. The status object contains the ids of the submitted schedules. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -67,19 +59,11 @@
             </mal:request>
             <mal:response>
               <mal:field name="schDetails"
-                         comment="The operation shall return ScheduleInstanceDetails objects.">
+                         comment="The operation shall return ScheduleInstanceDetails objects. If schInstId does not exist, then no object is returned.">
                 <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Submitted schedule instance ID does not exist.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
         </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="2" comment="Update and remove schedule instance">
@@ -95,22 +79,11 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object">
+                         comment="The operation shall return a ScheduleStatusDetails object. The status reflects the changes done by this operation. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
           </mal:messages>
-          <mal:errors>
-            <mal:errorRef comment="Schedule definition is unknown.">
-              <mal:type name="UNKNOWN" area="MAL"/>
-            </mal:errorRef>
-            <mal:errorRef comment="Schedule instance does not exist or contains invalid data.">
-              <mal:type name="INVALID" area="COM"/>
-              <mal:extraInformation comment="The extra information field contains a list of error messages, one per error.">
-                <mal:type list="true" name="String" area="MAL"/>
-              </mal:extraInformation>
-            </mal:errorRef>
-          </mal:errors>
         </mal:requestIP>
 	  <!-- removeSchedule -->
       <mal:requestIP name="removeSchedule" number="4" supportInReplay="false"
@@ -124,7 +97,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object">
+                         comment="The operation shall return a ScheduleStatusDetails object. The status reflects the changes done by this operation. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -134,7 +107,7 @@
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- patchSchedule -->
       <mal:requestIP name="patchSchedule" number="5" supportInReplay="false"
-                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The patches are applied in the order of removals first, then additions, then updates. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. &#xA;If the field value is a list, then patching operates at the level of list items. The whole list item is either replaced, removed, or added. It works on the assumption that the list items are indexed, ie there is an element in the list item, whose value is unique across all list items. For example, argumentValues is indexed by the the ArgumentValue.name field, timingConstraints by TimingDetails.triggerName, scheduleItems by ScheduleItemInstanceDetails.id.&#xA;The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
+                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The patches are applied in the order of removals first, then additions, then updates. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. &#xA;If the field value is a list, then patching operates at the level of list items. The whole list item is either replaced, removed, or added. It works on the assumption that the list items are indexed, ie there is an element in the list item, whose value is unique across all list items. For example, argumentValues is indexed by the ArgumentValue.name field, timingConstraints by TimingDetails.triggerName, scheduleItems by ScheduleItemInstanceDetails.id.&#xA;The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
           <mal:messages>
 			<mal:request>
               <mal:field name="fragmentsToRemove"
@@ -152,7 +125,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object for the patched schedules. The status is LAST_MODIFIED.">
+                         comment="The operation shall return a ScheduleStatusDetails object for the patched schedules. The status is LAST_MODIFIED. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -166,7 +139,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="schIds"
-                         comment="The schIds field shall contain a list of schedule ids to retrieve the schedule statuses for.&#xA;The request may contain the wildcard value of '*' to return statuses for all submitted schedules.">
+                         comment="The schIds field shall contain a list of schedule ids to retrieve the schedule statuses for.&#xA;The request may contain the wildcard value of '0' to return statuses for all submitted schedules.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
@@ -200,7 +173,7 @@
       <mal:capabilitySet number="6" comment="Control schedule execution">
 	  <!-- start -->
       <mal:requestIP name="start" number="8" supportInReplay="false"
-                      comment="The start operation allows a consumer to start executing a submitted or a paused schedule. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_START_FAILED.">
+                      comment="The start operation allows a consumer to start executing a submitted or a paused schedule.">
           <mal:messages>
             <mal:request>
               <mal:field name="schInstId"
@@ -210,7 +183,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object.">
+                         comment="The operation shall return a ScheduleStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_STARTED, EXECUTE_START_FAILED.">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -218,7 +191,7 @@
         </mal:requestIP>
 	  <!-- pause -->
       <mal:requestIP name="pause" number="9" supportInReplay="false"
-                      comment="The pause operation allows a consumer to pause an executing schedule. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_PAUSE_FAILED.">
+                      comment="The pause operation allows a consumer to pause an executing schedule.">
           <mal:messages>
             <mal:request>
               <mal:field name="schInstId"
@@ -228,7 +201,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object.">
+                         comment="The operation shall return a ScheduleStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_PAUSED, EXECUTE_PAUSE_FAILED.">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -236,7 +209,7 @@
         </mal:requestIP>
 	  <!-- resume -->
       <mal:requestIP name="resume" number="10" supportInReplay="false"
-                      comment="The resume operation allows a consumer to resume a paused schedule. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_RESUME_FAILED.">
+                      comment="The resume operation allows a consumer to resume a paused schedule.">
           <mal:messages>
             <mal:request>
               <mal:field name="schInstId"
@@ -246,7 +219,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object.">
+                         comment="The operation shall return a ScheduleStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_RESUMED, EXECUTE_RESUME_FAILED.">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -254,7 +227,7 @@
         </mal:requestIP>
 	  <!-- terminate -->
       <mal:requestIP name="terminate" number="11" supportInReplay="false"
-                      comment="The terminate operation allows a consumer to terminate a running or paused schedule. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_TERMINATE_FAILED.">
+                      comment="The terminate operation allows a consumer to terminate a running or paused schedule.">
           <mal:messages>
             <mal:request>
               <mal:field name="schInstId"
@@ -264,7 +237,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object.">
+                         comment="The operation shall return a ScheduleStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_TERMINATED, EXECUTE_TERMINATE_FAILED.">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -302,7 +275,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schDefInst"
-                         comment="The response shall contain a list of matching ScheduleDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
+                         comment="The response shall contain a list of matching ScheduleDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds={0}in the request.">
                 <mal:type list="true" name="ScheduleDefinitionDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -436,7 +409,7 @@
             <mal:type name="String" area="MAL"/>
           </mal:field>
           <mal:field name="argumentValues" canBeNull="true"
-                     comment="The argument values. The order of arguments corresponds to the order of argument definitions if the schedule definition object.">
+                     comment="The argument values.">
             <mal:type list="true" name="ArgumentValue" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="timingConstraints" canBeNull="true"
@@ -494,7 +467,7 @@
             <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
           <mal:field name="scheduleItemStatuses" canBeNull="true"
-					comment="Contains the schedule item details objects, in the order of the schedule items in the schedule.">
+					comment="Contains the schedule item status objects, in the order of the schedule items in the schedule.">
             <mal:type list="true" name="ScheduleItemStatusDetails" service="Schedule" area="Automation"/>
           </mal:field>
         </mal:composite>
@@ -540,16 +513,16 @@
         </com:objects>
 		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the schedule service.">
         </com:events>
-        <com:archiveUsage comment="ScheduleDefinition objects should be stored in the COM archive by the service provider.&#xA;When a schedule is sent with the submitSchedule or patchSchedule operation, the ScheduleInstance object should be stored in the COM archive by the consumer.&#xA;ScheduleStatus should be stored in the COM archive by the consumer."/>
+        <com:archiveUsage comment="ScheduleDefinition, ScheduleInstance, and ScheduleStatus objects may be stored in the COM archive by the service provider or service consumer."/>
         <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the submitSchedule and patchSchedule operation.&#xA;The COM Activity service can be used to monitor the transfer of ScheduleInstance objects."/>
       </com:features>
     </mal:service>
     <mal:service xsi:type="com:ExtendedServiceType" name="Procedure" number="2"
                  comment="The procedure service has three main functions: distribute procedures, invoke and control procedure execution, and report execution feedback.
-                 &#xA;A procedure definition is distributed and managed (update, remove) using the addProcedure, updateProcedure, and removeProcedure operations.
-                 &#xA;A procedure is started using the invoke operation, which refers to respective procedure definition and takes arguments according to the procedure definition. The progress of procedure invocation may optionally be monitored using the COM activity tracking pattern, which completes when the procedure has been delivered to the provider. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
+                 &#xA;A procedure definition is distributed and managed (update, remove) using the addProcedure, getProcedure, updateProcedure, and removeProcedure operations.
+                 &#xA;A procedure is started using the invoke operation, which refers to respective procedure definition and takes arguments according to the procedure definition. The progress of procedure invocation may optionally be monitored using the COM activity tracking pattern, which completes when the procedure has been invoked. The use of the COM activity tracking pattern is deployment specific. The usage pattern of the COM activity tracking is similar to the submitAction operation in the M&amp;C Action service.
                  &#xA;The procedure status consists of a set of fields. The fields are related to procedure life cycle states (started, terminated, etc). The procedure life cycle is not part of the specification.
-                 &#xA;Consumer may subscribe to the monitoring of procedure instances. The notifications contain the procedure status objects.">
+                 &#xA;Consumer may subscribe to the monitoring of procedure invocations. The notifications contain the procedure status objects.">
       <mal:documentation name="High Level Requirements" order="1">The procedure service shall provide:
 &lt;ol&gt;
  &lt;li&gt;the capability for listing the numeric identifiers for the procedures;&lt;/li&gt;
@@ -589,13 +562,13 @@
           <mal:messages>
             <mal:request>
               <mal:field name="procIds" canBeNull="true"
-                         comment="The procIds field shall contain a list of procedure ids.&#xA;If null then returns all procedueres.">
+                         comment="The procIds field shall contain a list of procedure ids.&#xA;If null then returns all procedures.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
             <mal:response>
               <mal:field name="procDefInst"
-                         comment="The response shall contain a list of matching ProcedureDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds=null in the request.">
+                         comment="The response shall contain a list of matching ProcedureDefinition object instances.&#xA;The returned list shall maintain the same order as the submitted list unless defIds={0}in the request.">
                 <mal:type list="true" name="ProcedureDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -686,7 +659,7 @@
       <mal:capabilitySet number="3" comment="Control procedure execution">
 	  <!-- invoke -->
       <mal:requestIP name="invoke" number="6" supportInReplay="false"
-                      comment="Invokes procedure execution. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_START_FAILED.">
+                      comment="Invokes procedure execution.">
           <mal:messages>
             <mal:request>
               <mal:field name="procInvocDetails"
@@ -696,7 +669,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="procStatus"
-                         comment="The operation shall return a ProcedureStatusDetails object.">
+                         comment="The operation shall return a ProcedureStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_STARTED, EXECUTE_START_FAILED.">
                 <mal:type list="true" name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -704,7 +677,7 @@
         </mal:requestIP>
 	  <!-- pause -->
       <mal:requestIP name="pause" number="7" supportInReplay="false"
-                      comment="The pause operation allows a consumer to pause an executing procedure. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_PAUSE_FAILED.">
+                      comment="The pause operation allows a consumer to pause an executing procedure.">
           <mal:messages>
             <mal:request>
               <mal:field name="procInvocIds"
@@ -714,7 +687,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="procStatus"
-                         comment="The operation shall return a ProcedureStatusDetails object.">
+                         comment="The operation shall return a ProcedureStatusDetails object.  If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_PAUSED,EXECUTE_PAUSE_FAILED.">
                 <mal:type list="true" name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -722,7 +695,7 @@
         </mal:requestIP>
 	  <!-- resume -->
       <mal:requestIP name="resume" number="8" supportInReplay="false"
-                      comment="The resume operation allows a consumer to resume a paused procedure. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_RESUME_FAILED.">
+                      comment="The resume operation allows a consumer to resume a paused procedure.">
           <mal:messages>
             <mal:request>
               <mal:field name="procInvocIds"
@@ -732,7 +705,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="procStatus"
-                         comment="The operation shall return a ProcedureStatusDetails object.">
+                         comment="The operation shall return a ProcedureStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_RESUMED, EXECUTE_RESUME_FAILED.">
                 <mal:type list="true" name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -740,7 +713,7 @@
         </mal:requestIP>
 	  <!-- terminate -->
       <mal:requestIP name="terminate" number="9" supportInReplay="false"
-                      comment="The terminate operation allows a consumer to terminate a running or paused procedure. If id does not exist, then use the INVALID status constant. Other possible status: EXECUTE_TERMINATE_FAILED.">
+                      comment="The terminate operation allows a consumer to terminate a running or paused procedure.">
           <mal:messages>
             <mal:request>
               <mal:field name="procInvocIds"
@@ -750,7 +723,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="procStatus"
-                         comment="The operation shall return a ProcedureStatusDetails object.">
+                         comment="The operation shall return a ProcedureStatusDetails object. If id does not exist, then use the INVALID status constant. Other possible statuses: EXECUTE_TERMINATED, EXECUTE_TERMINATE_FAILED.">
                 <mal:type list="true" name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -765,7 +738,7 @@
           <mal:messages>
             <mal:request>
               <mal:field name="procInvocIds"
-                         comment="The procInvocIds field shall contain a list of procedure ids to retrieve the procedure statuses for.&#xA;The request may contain the wildcard value of '*' to return statuses for all submitted procedures.">
+                         comment="The procInvocIds field shall contain a list of procedure ids to retrieve the procedure statuses for.&#xA;The request may contain the wildcard value of '0' to return statuses for all procedures.">
                 <mal:type list="true" name="Long" area="MAL"/>
               </mal:field>
             </mal:request>
@@ -785,11 +758,11 @@
           <mal:messages>
             <mal:publishNotify>
               <mal:field name="objId"
-                         comment="The MAL EntityKey.firstSubKey shall contain the procedure name.&#xA;The MAL EntityKey.secondSubKey shall contain the ProcedureDefinition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the ProcedureInstance object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the ProcedureInstance update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
+                         comment="The MAL EntityKey.firstSubKey shall contain the procedure name.&#xA;The MAL EntityKey.secondSubKey shall contain the ProcedureDefinition object instance identifier.&#xA;The MAL EntityKey.thirdSubKey shall contain the ProcedureInvocation object instance identifier.&#xA;The MAL EntityKey.fourthSubKey shall be NULL.&#xA;The timestamp of the ProcedureInvocation update shall be taken from the publish message.&#xA;The publish message shall include the ObjectId of the source link of the update.&#xA;If no source link is needed then the ObjectId shall be replaced with a NULL.">
                 <mal:type name="ObjectId" area="COM"/>
               </mal:field>
               <mal:field name="status"
-                         comment="The second part of the publish message shall be the ProcedureInstance object value.">
+                         comment="The second part of the publish message shall be the ProcedureInvocation object value.">
                 <mal:type name="ProcedureStatusDetails" service="Procedure" area="Automation"/>
               </mal:field>
             </mal:publishNotify>
@@ -882,7 +855,7 @@
         </com:objects>
 		  <com:events comment="The use of the COM event service is not foreseen in the draft specification of the procedure service.">
         </com:events>
-        <com:archiveUsage comment="ProcedureDefinition, ProcedureInstance, and ProcedureStatus objects may be stored in the COM archive by the service provider or service consumner."/>
+        <com:archiveUsage comment="ProcedureDefinition, ProcedureInvocation, and ProcedureStatus objects may be stored in the COM archive by the service provider or service consumer."/>
         <com:activityUsage comment="The COM Activity service usage is optional.&#xA;The COM Activity service can be used to monitor the transfer of the invoke operation.&#xA;"/>
       </com:features>
 	</mal:service>
