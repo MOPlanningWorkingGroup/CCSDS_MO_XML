@@ -24,7 +24,6 @@
 &lt;/ol&gt;
         The list of schedule types that are supported by the schedule service shall be declared when deploying that service.
         The schedule service may use the COM Activity Tracking service to report the delivery of a submitted schedules.
-        The submitSchedule operation shall be used to submit a schedule.
       </mal:documentation>
 <!--       <mal:documentation name="Functional Requirements" order="2"> -->
 <!--       </mal:documentation> -->
@@ -105,21 +104,13 @@
         </mal:requestIP>
       </mal:capabilitySet>
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
-	  <!-- patchSchedule -->
-      <mal:requestIP name="patchSchedule" number="5" supportInReplay="false"
-                      comment="The patchSchedule operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The patches are applied in the order of removals first, then additions, then updates. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. &#xA;If the field value is a list, then patching operates at the level of list items. The whole list item is either replaced, removed, or added. It works on the assumption that the list items are indexed, ie there is an element in the list item, whose value is unique across all list items. For example, argumentValues is indexed by the ArgumentValue.name field, timingConstraints by TimingDetails.triggerName, scheduleItems by ScheduleItemInstanceDetails.id.&#xA;The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
+	  <!-- submitScheduleIncrement -->
+      <mal:requestIP name="submitScheduleIncrement" number="5" supportInReplay="false"
+                      comment="The submitScheduleIncrement operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The patches are applied in the order of removals first, then additions, then updates. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. &#xA;If the field value is a list, then patching operates at the level of list items. The whole list item is either replaced, removed, or added. It works on the assumption that the list items are indexed, ie there is an element in the list item, whose value is unique across all list items. For example, argumentValues is indexed by the ArgumentValue.name field, timingConstraints by TimingDetails.triggerName, scheduleItems by ScheduleItemInstanceDetails.id.&#xA;The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
           <mal:messages>
 			<mal:request>
-              <mal:field name="fragmentsToRemove"
-                         comment="fragmentsToRemove contains the fields that will be removed from the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
-                <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
-              </mal:field>
-              <mal:field name="fragmentsToUpdate"
-                         comment="fragmentsToUpdate contains the fields that will be updated in the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
-                <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
-              </mal:field>
-              <mal:field name="fragmentsToAdd"
-                         comment="fragmentsToAdd contains the fields that will be added to the target schedule. The target schedule id is the ScheduleInstanceDetails:id field. The null fields of ScheduleInstanceDetails are ignored.">
+              <mal:field name="schIncrementDetails"
+                         comment="The schIncrementDetails part of the submission shall contain the information of the schedule increment.&#xA;The operation shall return once the schedule increment has been accepted by the provider.">
                 <mal:type list="true" name="ScheduleInstanceDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:request>
@@ -404,6 +395,10 @@
                      comment="Reference to the schedule definition.">
             <mal:type name="Long" area="MAL"/>
           </mal:field>
+          <mal:field name="scheduleType" canBeNull="true"
+                     comment="If null then the type is STANDALONE.">
+            <mal:type name="ScheduleType" service="Schedule" area="Automation"/>
+          </mal:field>
           <mal:field name="comment" canBeNull="false"
 					comment="Comment for the schedule instance.">
             <mal:type name="String" area="MAL"/>
@@ -486,6 +481,18 @@
             <mal:type list="true" name="StatusRecord" area="PlanningDataTypes"/>
           </mal:field>
         </mal:composite>
+	  <!-- ScheduleType -->
+      <mal:enumeration name="ScheduleType" shortFormPart="6"
+                       comment="The type of schedule: standalone or increment.">
+        <mal:item value="STANDALONE" nvalue="1"
+                  comment=""/>
+        <mal:item value="INCREMENT_ADD" nvalue="2"
+                  comment=""/>
+        <mal:item value="INCREMENT_REMOVE" nvalue="3"
+                  comment=""/>
+        <mal:item value="INCREMENT_UPDATE" nvalue="4"
+                  comment=""/>
+      </mal:enumeration>
       </mal:dataTypes>
       <com:features>
         <com:objects comment="The definitions of the schedules shall be represented as ScheduleDefinition COM objects.&#xA;The source link of the ScheduleDefinition object should be the object that caused it to be created, most likely a COM OperationActivity object or an operator login in the case of off-line editors being used.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall be represented as ScheduleInstance COM object.&#xA;The object instance identifier for an ScheduleInstance object shall be populated by the consumer.&#xA;The ScheduleInstance object shall use the related link to indicate which ScheduleDefinition object it uses.&#xA;Instances of a schedule that are submitted to a provider using the submitSchedule operation shall link to the submitSchdedule OperationActivity object using the source link.&#xA;The source link of the submitSchedule OperationActivity object should be the object that caused it to be created, most likely an operator login or automated procedure object.">
@@ -773,7 +780,7 @@
       <mal:dataTypes>
 		<!-- ProcedureDetails -->
         <mal:composite name="ProcedureDetails" shortFormPart="1"
-                       comment="The procedure definition is the signature and the body of a Procedure.">
+                       comment="The procedure definition is the signature and the body of a Procedure. It is the static definition of a procedure.">
           <mal:extends>
             <mal:type name="Composite" area="MAL"/>
           </mal:extends>
@@ -786,7 +793,7 @@
             <mal:type name="Identifier" area="MAL"/>
           </mal:field>
           <mal:field name="content" canBeNull="false"
-                     comment="Procedure signature and body.">
+                     comment="Procedure signature and body. Potentially the data type may be changed to a byte array.">
             <mal:type name="String" area="MAL"/>
           </mal:field>
           <mal:field name="argumentDefs" canBeNull="true"

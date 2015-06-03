@@ -22,7 +22,6 @@
 &lt;/ol&gt;
         The list of planning request types and task types that are supported by the planning request service shall be declared when deploying that service.
         The planning request service may use the COM Activity Tracking service to report the delivery of a submitted planning request.
-        The submitPlanningRequest operation shall be used to submit a planning request.
       </mal:documentation>
       <mal:capabilitySet number="1" comment="Submit and get planning request instance.">
 		<!-- submitPlanningRequest -->
