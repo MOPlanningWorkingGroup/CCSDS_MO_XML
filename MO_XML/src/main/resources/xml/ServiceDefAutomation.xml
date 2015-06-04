@@ -48,7 +48,7 @@
         </mal:requestIP>
 		<!-- getSchedule -->
         <mal:requestIP name="getSchedule" number="2" supportInReplay="false"
-                      comment="The getSchedule operation allows a consumer to get a schedule instance from the provider. The schedule instance may have been modified after the initial submission, and contains the current data, and not neccessarily the data that was initially submitted.">
+                      comment="The getSchedule operation allows a consumer to get a schedule instance from the provider. The schedule instance may have been modified after the initial submission, and contains the current data, and not necessarily the data that was initially submitted.">
           <mal:messages>
             <mal:request>
               <mal:field name="schInstId"
@@ -106,7 +106,10 @@
       <mal:capabilitySet number="3" comment="Submit a fragment (patch) schedule updates for a merge onto target schedule">
 	  <!-- submitScheduleIncrement -->
       <mal:requestIP name="submitScheduleIncrement" number="5" supportInReplay="false"
-                      comment="The submitScheduleIncrement operation allows a consumer to submit a fragment (patch) of a schedule to be applied to the target schedule, which essentially merges an update into existing schedule. The fragments are contained in three ScheduleInstanceDetails objects: 1) to be removed, 2) to be added, 3) to be updated. The patches are applied in the order of removals first, then additions, then updates. The target schedule id is in the ScheduleInstanceDetails.id field in one of the update/remove/add lists. &#xA;If the field value is a list, then patching operates at the level of list items. The whole list item is either replaced, removed, or added. It works on the assumption that the list items are indexed, ie there is an element in the list item, whose value is unique across all list items. For example, argumentValues is indexed by the ArgumentValue.name field, timingConstraints by TimingDetails.triggerName, scheduleItems by ScheduleItemInstanceDetails.id.&#xA;The patchSchedule operation differs from the updateSchedule operation: patchSchedule submits only the changes, while updateSchedule essentially replaces the target schedule with a new schedule.">
+                      comment="The submitScheduleIncrement operation allows a consumer to submit schedule increments (or fragments) to be merged into or removed from the target schedule. Schedule increment contains only the changes to be applied to target schedule. This differs from updateSchedule, which essentially replaces a schedule. The schedule increment uses the same data structure (ScheduleInstanceDetails) as the submitSchedule operation. submitScheduleIncrement is a separate operation from submitSchedule for the capability set reasons - not all providers may wish to implement it. Otherwise the submitScheduleIncrement and submitSchedule may belong to one operation, since they have the same input/output messages (ie method signature).
+&#xA;The schedule increment is distinguished from a standalone schedule by the 'scheduleType' field, which is an enumeration of type ScheduleType. The standalone schedule has scheduleType=STANDALONE. The increments are INCREMENT_ADD and INCREMENT_REMOVE. The target schedule for applying the increments is contained in the ScheduleInstanceDetails.id field.
+&#xA;If the schedule fragment type is INCREMENT_ADD, then all fields from the fragment ScheduleInstanceDetails will be added to the target schedule. Primitive fields such as 'comment' will be replaced with the value specified in the increment schedule. Primitive fields of null value in the fragment schedule are ignored. List items (argumentValues, timingConstraints, scheduleItems) will be added from the fragment schedule to the target schedule.
+&#xA;If the schedule fragment type is INCREMENT_REMOVE, then all fields from the fragment ScheduleInstanceDetails will be removed from the target schedule. If a primitive field is null in a fragment, then it is ignored. If a primitive field is not null in a fragment (for example, containing 'set to null' or 'delete', or '0' - whatever, depending on the data type), then it will be set to null in the target schedule. If 'argumentValues' is not null in a fragment, then corresponding list item ArgumentValue will be removed, matched by ArgumentValue.argDefName field and ArgumentValue.value field, if there are multiple argDefName references. If 'timingConstraints' is not null in a fragment, then corresponding list item TimingDetails will be removed, matched by TimingDetails.triggerName field. If 'scheduleItems' is not null in fragment, then corresponding list item ScheduleItemInstanceDetails will be removed, matched by ScheduleItemInstanceDetails.id field. For the removals it is only necessary to specify the indexing field of a structure, ie ScheduleItemInstanceDetails.id, as explained above, other fields are ignored.">
           <mal:messages>
 			<mal:request>
               <mal:field name="schIncrementDetails"
@@ -116,7 +119,7 @@
             </mal:request>
             <mal:response>
               <mal:field name="schStatus"
-                         comment="The operation shall return a ScheduleStatusDetails object for the patched schedules. The status is LAST_MODIFIED. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
+                         comment="The operation shall return ScheduleStatusDetails objects for the merged schedules. The status of merged schedules is LAST_MODIFIED. Possible errors are returned using the ERROR states in the status object (may use multiple ERROR states).">
                 <mal:type list="true" name="ScheduleStatusDetails" service="Schedule" area="Automation"/>
               </mal:field>
             </mal:response>
@@ -396,7 +399,7 @@
             <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="scheduleType" canBeNull="true"
-                     comment="If null then the type is STANDALONE.">
+                     comment="If null then the type is ScheduleType.STANDALONE.">
             <mal:type name="ScheduleType" service="Schedule" area="Automation"/>
           </mal:field>
           <mal:field name="comment" canBeNull="false"
@@ -485,13 +488,11 @@
       <mal:enumeration name="ScheduleType" shortFormPart="6"
                        comment="The type of schedule: standalone or increment.">
         <mal:item value="STANDALONE" nvalue="1"
-                  comment=""/>
+                  comment="The standalone schedule."/>
         <mal:item value="INCREMENT_ADD" nvalue="2"
-                  comment=""/>
+                  comment="Schedule increment, contains the changes to be added to the target schedule. See the documentation for submitScheduleIncrement operation."/>
         <mal:item value="INCREMENT_REMOVE" nvalue="3"
-                  comment=""/>
-        <mal:item value="INCREMENT_UPDATE" nvalue="4"
-                  comment=""/>
+                  comment="Schedule increment, contains the changes to be removed from the target schedule. See the documentation for submitScheduleIncrement operation."/>
       </mal:enumeration>
       </mal:dataTypes>
       <com:features>
