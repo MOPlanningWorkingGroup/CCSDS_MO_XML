@@ -2,7 +2,7 @@
 <mal:specification xmlns:com="http://www.ccsds.org/schema/COMSchema"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xmlns:mal="http://www.ccsds.org/schema/ServiceSchema">
-  <mal:area name="Automation" number="7" version="2"
+  <mal:area name="Automation" number="7" version="3"
             comment="This section details the automation services. Both the services and structures are defined in terms of the MO MAL, which is defined in Message Abstraction Layer, Recommended Standard (Blue Book), CCSDS 521.0-B-2, so it is possible to deploy them over any supported protocol and message transport.&#xA;The services defined here are also specified in terms of the COM, which is defined in Mission Operations Common Object Model, Recommended Standard (Blue Book), CCSDS 521.1-B-1.&#xA;All service specifications in this document are part of the Automation area, which has a short form number of '7'.">
     <mal:service xsi:type="com:ExtendedServiceType" name="Schedule" number="1"
                  comment="The schedule service has three main functions: distribute schedules, control schedule execution, and report schedule status. The schedule service allows consumers to submit schedules and schedule fragments, control schedule execution and to subsequently monitor the status changes of the submitted and executing schedules.
@@ -14,7 +14,7 @@
 &lt;ol&gt;
  &lt;li&gt;the capability for submitting schedules;&lt;/li&gt;
  &lt;li&gt;the capability for getting, updating and removing already submitted schedules;&lt;/li&gt;
- &lt;li&gt;the capability for submitting schedule patches (fragments) for making a batch of changes to the schedule;&lt;/li&gt;
+ &lt;li&gt;the capability for submitting schedule increments (fragments) for making a batch of changes to the schedule;&lt;/li&gt;
  &lt;li&gt;the capability for getting a schedule status;&lt;/li&gt;
  &lt;li&gt;the capability for monitoring schedule status;&lt;/li&gt;
  &lt;li&gt;the capability for listing the numeric identifiers for the schedule definitions;&lt;/li&gt;
@@ -399,7 +399,7 @@
             <mal:type name="Long" area="MAL"/>
           </mal:field>
           <mal:field name="scheduleType" canBeNull="true"
-                     comment="If null then the type is ScheduleType.STANDALONE.">
+                     comment="The type of schedule: standolone or increment. If null then the type is ScheduleType.STANDALONE.">
             <mal:type name="ScheduleType" service="Schedule" area="Automation"/>
           </mal:field>
           <mal:field name="comment" canBeNull="false"
